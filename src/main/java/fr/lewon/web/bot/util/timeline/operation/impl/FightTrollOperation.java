@@ -24,6 +24,10 @@ public class FightTrollOperation extends Operation {
 		String worldId = getWorldId(session);
 		String worldContent = RequestProcessor.INSTANCE.getWorldContent(session, worldId);
 		String trollId = HtmlAnalyzer.INSTANCE.getTrollId(worldContent);
+		if (trollId == null) {
+			LOGGER.info("No troll found in world {}. Trying again in an hour.", worldId);
+			return 3600;
+		}
 		String battleTrollContent = RequestProcessor.INSTANCE.getBattleTrollContent(session, trollId);
 		BattleMob battleMob = HtmlAnalyzer.INSTANCE.findOpponentBattleMob(battleTrollContent);
 		battleMob.setIdTroll(trollId);
@@ -38,7 +42,7 @@ public class FightTrollOperation extends Operation {
 	}
 
 	private String getWorldId(SessionResponse session) throws ServerException, IOException {
-		String preferedWorldId = FarmProperties.INSTANCE.getWorldId();
+		String preferedWorldId = FarmProperties.INSTANCE.getTrollWorld();
 		if (preferedWorldId != null) {
 			return preferedWorldId;
 		}

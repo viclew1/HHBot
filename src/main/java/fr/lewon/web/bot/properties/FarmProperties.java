@@ -9,19 +9,19 @@ public class FarmProperties extends AbstractPropertyStore {
 
 	public static final FarmProperties INSTANCE = new FarmProperties();
 
-	private static final String WORLD_ID_KEY = "world_id";
+	private static final String TROLL_WORLD_KEY = "troll_world";
 
 	private FarmProperties() {}
 
 
 	@Override
 	protected List<String> getNeededKeys() {
-		return Arrays.asList(WORLD_ID_KEY);
+		return Arrays.asList(TROLL_WORLD_KEY);
 	}
 
 
-	public String getWorldId() {
-		return getProperties().getProperty(WORLD_ID_KEY);
+	public String getTrollWorld() {
+		return getProperties().getProperty(TROLL_WORLD_KEY);
 	}
 
 }
