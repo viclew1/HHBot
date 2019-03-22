@@ -1,6 +1,8 @@
 package fr.lewon.web.bot.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -8,6 +10,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 
+import fr.lewon.bot.errors.ServerException;
+import fr.lewon.bot.http.RequestHelper;
 import fr.lewon.web.bot.entities.input.battle.ActionBattleMob;
 import fr.lewon.web.bot.entities.input.battle.ActionBattlePlayer;
 import fr.lewon.web.bot.entities.input.girl.ActionGirlAllSalaries;
@@ -25,14 +29,12 @@ import fr.lewon.web.bot.entities.output.OpponentInfoResponse;
 import fr.lewon.web.bot.entities.output.Response;
 import fr.lewon.web.bot.entities.output.SalaryResponse;
 import fr.lewon.web.bot.entities.output.SessionResponse;
-import fr.lewon.web.bot.exceptions.ServerException;
-import fr.lewon.web.bot.properties.GameProperties;
 
-public enum RequestProcessor {
+public enum HHRequestProcessor {
 
 	INSTANCE;
 
-	private static final String BASE_URL = GameProperties.INSTANCE.getUrl();
+	private static final String BASE_URL = "https://www.hentaiheroes.com/";
 
 	private static final String PHOENIX_AJAX = "/phoenix-ajax.php";
 	private static final String AJAX = "/ajax.php";
@@ -47,11 +49,26 @@ public enum RequestProcessor {
 
 	private static final String SLASH = "/";
 
-	private RequestProcessor() {}
+	private RequestHelper requestHelper;
+
+	private HHRequestProcessor() {
+		List<Header> neededHeaders = new ArrayList<>();
+		neededHeaders.add(new BasicHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"));
+		neededHeaders.add(new BasicHeader("Accept-Language", "fr-FR,fr;q=0.9,en-GB;q=0.8,en;q=0.7,en-US;q=0.6"));
+		neededHeaders.add(new BasicHeader("Cache-Control", "max-age=0"));
+		neededHeaders.add(new BasicHeader("Connection", "keep-alive"));
+		neededHeaders.add(new BasicHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
+		neededHeaders.add(new BasicHeader("Host", "www.hentaiheroes.com"));
+		neededHeaders.add(new BasicHeader("Upgrade-Insecure-Requests", "1"));
+		neededHeaders.add(new BasicHeader("Origin", "https://www.hentaiheroes.com"));
+		neededHeaders.add(new BasicHeader("Referer", "https://www.hentaiheroes.com/harem/1"));
+		neededHeaders.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"));
+		this.requestHelper = new RequestHelper(neededHeaders);
+	}
 
 	public SessionResponse getSession(String login, String password) throws ServerException, IOException {
 		String url = BASE_URL + PHOENIX_AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new PlayerInfos(login, password)));
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new PlayerInfos(login, password)));
 		SessionResponse response = generateResponse(SessionResponse.class, httpResponse);
 		String hhSess = "";
 		String stayOnline = "";
@@ -71,7 +88,7 @@ public enum RequestProcessor {
 	}
 
 	private String readAllContent(SessionResponse session, String url) throws IOException, ServerException {
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processGetRequest(url, session.getCookies());
+		HttpResponse httpResponse = requestHelper.processGetRequest(url, session.getCookies());
 		return EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 	}
 
@@ -122,55 +139,55 @@ public enum RequestProcessor {
 
 	public OpponentInfoResponse getOpponentInfo(SessionResponse session, String opponentId) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionLeaguesGetOpponentInfo(opponentId)), session.getCookies());
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionLeaguesGetOpponentInfo(opponentId)), session.getCookies());
 		return generateResponse(OpponentInfoResponse.class, httpResponse);
 	}
 
 	public SalaryResponse getSalary(SessionResponse session, int which) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionGirlSingleSalary(which)), session.getCookies());
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionGirlSingleSalary(which)), session.getCookies());
 		return generateResponse(SalaryResponse.class, httpResponse);
 	}
 
 	public SalaryResponse getAllSalaries(SessionResponse session) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionGirlAllSalaries()), session.getCookies());
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionGirlAllSalaries()), session.getCookies());
 		return generateResponse(SalaryResponse.class, httpResponse);
 	}
 
 	public Response startMission(SessionResponse session, Mission mission) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionMissionStartMission(mission.getIdMission(), mission.getIdMemberMission())), session.getCookies());
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionMissionStartMission(mission.getIdMission(), mission.getIdMemberMission())), session.getCookies());
 		return generateResponse(SalaryResponse.class, httpResponse);
 	}
 
 	public Response getFinalMissionGift(SessionResponse session) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionMissionGiveGift()), session.getCookies());
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionMissionGiveGift()), session.getCookies());
 		return generateResponse(SalaryResponse.class, httpResponse);
 	}
 
 	public Response claimReward(SessionResponse session, Mission mission) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionMissionClaimReward(mission.getIdMission(), mission.getIdMemberMission())), session.getCookies());
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionMissionClaimReward(mission.getIdMission(), mission.getIdMemberMission())), session.getCookies());
 		return generateResponse(SalaryResponse.class, httpResponse);
 	}
 
 	public Response fightOpponentPlayer(SessionResponse session, BattlePlayer battlePlayer) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionBattlePlayer(battlePlayer)), session.getCookies());
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionBattlePlayer(battlePlayer)), session.getCookies());
 		return generateResponse(Response.class, httpResponse);
 	}
 
 	public Response fightOpponentMob(SessionResponse session, BattleMob battleMob) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionBattleMob(battleMob)), session.getCookies());
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionBattleMob(battleMob)), session.getCookies());
 		return generateResponse(Response.class, httpResponse);
 	}
 
 	public Response continueQuest(SessionResponse session, Long questId) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = RequestHelper.INSTANCE.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionQuestNext(questId)), session.getCookies());
+		HttpResponse httpResponse = requestHelper.processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionQuestNext(questId)), session.getCookies());
 		return generateResponse(Response.class, httpResponse);
 	}
 

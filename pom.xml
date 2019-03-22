@@ -8,8 +8,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>DefaultClient</groupId>
-			<artifactId>DefaultClient</artifactId>
+			<groupId>DefaultBot</groupId>
+			<artifactId>DefaultBot</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -80,8 +80,8 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-        			<finalName>HHBot</finalName>
-        			<appendAssemblyId>false</appendAssemblyId>
+					<finalName>HHBot</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 			</plugin>
 		</plugins>

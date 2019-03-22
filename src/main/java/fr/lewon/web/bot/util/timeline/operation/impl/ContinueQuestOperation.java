@@ -3,27 +3,35 @@ package fr.lewon.web.bot.util.timeline.operation.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.lewon.bot.runner.BotRunner;
+import fr.lewon.bot.runner.Operation;
 import fr.lewon.web.bot.entities.output.SessionResponse;
+import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
-import fr.lewon.web.bot.util.RequestProcessor;
 import fr.lewon.web.bot.util.SessionManager;
-import fr.lewon.web.bot.util.timeline.operation.Operation;
 
 public class ContinueQuestOperation extends Operation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ContinueQuestOperation.class);
 
+	private SessionManager manager;
+
+	public ContinueQuestOperation(BotRunner runner, SessionManager manager) {
+		super(runner);
+		this.manager = manager;
+	}
+
 	@Override
 	public Integer process() throws Exception {
-		SessionResponse session = SessionManager.INSTANCE.getSession();
-		String mapContent = RequestProcessor.INSTANCE.getMapContent(session);
+		SessionResponse session = manager.getSession();
+		String mapContent = HHRequestProcessor.INSTANCE.getMapContent(session);
 		Long questId = HtmlAnalyzer.INSTANCE.getCurrentQuestId(mapContent);
 		if (questId == null) {
 			LOGGER.info("No current quest. Trying again in an hour.");
 			return 3600;
 		}
 		int steps = 0;
-		while (RequestProcessor.INSTANCE.continueQuest(session, questId).getSuccess()) {
+		while (HHRequestProcessor.INSTANCE.continueQuest(session, questId).getSuccess()) {
 			steps ++;
 		}
 		LOGGER.info("Quest {} advanced {} steps. Trying again in 30 minutes", questId, steps);

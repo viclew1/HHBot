@@ -3,29 +3,37 @@ package fr.lewon.web.bot.util.timeline.operation.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.lewon.bot.runner.BotRunner;
+import fr.lewon.bot.runner.Operation;
 import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.output.SessionResponse;
+import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
-import fr.lewon.web.bot.util.RequestProcessor;
 import fr.lewon.web.bot.util.SessionManager;
-import fr.lewon.web.bot.util.timeline.operation.Operation;
 
 public class FightArenaOperation extends Operation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FightArenaOperation.class);
 
+	private SessionManager manager;
+
+	public FightArenaOperation(BotRunner runner, SessionManager manager) {
+		super(runner);
+		this.manager = manager;
+	}
+
 	@Override
 	public Integer process() throws Exception {
-		SessionResponse session = SessionManager.INSTANCE.getSession();
-		RequestProcessor.INSTANCE.getArenaContent(session);
+		SessionResponse session = manager.getSession();
+		HHRequestProcessor.INSTANCE.getArenaContent(session);
 		int cpt = 0;
 		for (int i = 0 ; i <= 2 ; i++) {
-			String pageContent = RequestProcessor.INSTANCE.getBattleArenaContent(session, i);
+			String pageContent = HHRequestProcessor.INSTANCE.getBattleArenaContent(session, i);
 			BattlePlayer battlePlayer = HtmlAnalyzer.INSTANCE.findOpponentBattlePlayer(pageContent);
 			if (battlePlayer == null) {
 				continue;
 			}
-			if (RequestProcessor.INSTANCE.fightOpponentPlayer(session, battlePlayer).getSuccess()) {
+			if (HHRequestProcessor.INSTANCE.fightOpponentPlayer(session, battlePlayer).getSuccess()) {
 				cpt++;
 			}
 		}

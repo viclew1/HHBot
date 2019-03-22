@@ -2,18 +2,22 @@ package fr.lewon.web.bot.util;
 
 import java.io.IOException;
 
+import fr.lewon.bot.errors.ServerException;
 import fr.lewon.web.bot.entities.output.SessionResponse;
-import fr.lewon.web.bot.exceptions.ServerException;
-import fr.lewon.web.bot.properties.UserInfosProperties;
 
-public enum SessionManager {
-
-	INSTANCE;
+public class SessionManager {
 
 	private static final int MAX_TRIES = 7;
 
 	private SessionResponse session;
 	private Long lastGenerationTime;
+	private String login;
+	private String password;
+
+	public SessionManager(String login, String password) {
+		this.login = login;
+		this.password = password;
+	}
 
 	public SessionResponse getSession() throws Exception {
 
@@ -28,7 +32,7 @@ public enum SessionManager {
 		Exception error = null;
 		while (timesTried++ < MAX_TRIES) {
 			try {
-				session = RequestProcessor.INSTANCE.getSession(UserInfosProperties.INSTANCE.getLogin(), UserInfosProperties.INSTANCE.getPassword());
+				session = HHRequestProcessor.INSTANCE.getSession(login, password);
 				lastGenerationTime = System.currentTimeMillis();
 				return session;
 			} catch (IOException | ServerException e) {

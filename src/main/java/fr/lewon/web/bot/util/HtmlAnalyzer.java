@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.lewon.web.bot.entities.input.others.activity.Competition;
 import fr.lewon.web.bot.entities.input.others.activity.Mission;
 import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
 import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
@@ -135,6 +136,12 @@ public enum HtmlAnalyzer {
 			missions.add(mission);
 		}
 		return missions;
+	}
+
+	public List<Competition> getCompetitions(String activityPage) {
+		List<Competition> competitions = new ArrayList<>();
+		// TODO récupérer les compétitions finies
+		return competitions;
 	}
 
 }
