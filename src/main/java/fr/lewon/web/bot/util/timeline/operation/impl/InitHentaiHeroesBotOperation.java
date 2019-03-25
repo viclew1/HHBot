@@ -5,16 +5,16 @@ import org.slf4j.LoggerFactory;
 
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Operation;
-import fr.lewon.web.bot.util.SessionManager;
+import fr.lewon.web.bot.util.HHSessionManager;
 
 
 public class InitHentaiHeroesBotOperation extends Operation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(InitHentaiHeroesBotOperation.class);
 
-	private SessionManager manager;
+	private HHSessionManager manager;
 
-	public InitHentaiHeroesBotOperation(BotRunner runner, SessionManager manager) {
+	public InitHentaiHeroesBotOperation(BotRunner runner, HHSessionManager manager) {
 		super(runner);
 		this.manager = manager;
 	}

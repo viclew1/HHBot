@@ -7,16 +7,16 @@ import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Operation;
 import fr.lewon.web.bot.entities.output.SalaryResponse;
 import fr.lewon.web.bot.util.HHRequestProcessor;
-import fr.lewon.web.bot.util.SessionManager;
+import fr.lewon.web.bot.util.HHSessionManager;
 
 public class HarvestGirlOperation extends Operation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HarvestGirlOperation.class);
 
 	private int girlId;
-	private SessionManager manager;
+	private HHSessionManager manager;
 
-	public HarvestGirlOperation(BotRunner runner, SessionManager manager, int girlId) {
+	public HarvestGirlOperation(BotRunner runner, HHSessionManager manager, int girlId) {
 		super(runner);
 		this.manager = manager;
 		this.girlId = girlId;

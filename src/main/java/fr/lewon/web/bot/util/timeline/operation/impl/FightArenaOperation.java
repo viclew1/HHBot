@@ -9,15 +9,15 @@ import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.output.SessionResponse;
 import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
-import fr.lewon.web.bot.util.SessionManager;
+import fr.lewon.web.bot.util.HHSessionManager;
 
 public class FightArenaOperation extends Operation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FightArenaOperation.class);
 
-	private SessionManager manager;
+	private HHSessionManager manager;
 
-	public FightArenaOperation(BotRunner runner, SessionManager manager) {
+	public FightArenaOperation(BotRunner runner, HHSessionManager manager) {
 		super(runner);
 		this.manager = manager;
 	}

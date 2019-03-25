@@ -11,15 +11,15 @@ import fr.lewon.web.bot.entities.input.others.activity.Competition;
 import fr.lewon.web.bot.entities.output.SessionResponse;
 import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
-import fr.lewon.web.bot.util.SessionManager;
+import fr.lewon.web.bot.util.HHSessionManager;
 
 public class ExecuteCompetitionOperation extends Operation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteCompetitionOperation.class);
 
-	private SessionManager manager;
+	private HHSessionManager manager;
 
-	public ExecuteCompetitionOperation(BotRunner runner, SessionManager manager) {
+	public ExecuteCompetitionOperation(BotRunner runner, HHSessionManager manager) {
 		super(runner);
 		this.manager = manager;
 	}

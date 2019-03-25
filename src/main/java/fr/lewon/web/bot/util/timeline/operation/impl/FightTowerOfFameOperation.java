@@ -13,15 +13,15 @@ import fr.lewon.web.bot.entities.output.Response;
 import fr.lewon.web.bot.entities.output.SessionResponse;
 import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
-import fr.lewon.web.bot.util.SessionManager;
+import fr.lewon.web.bot.util.HHSessionManager;
 
 public class FightTowerOfFameOperation extends Operation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FightTowerOfFameOperation.class);
 
-	private SessionManager manager;
+	private HHSessionManager manager;
 
-	public FightTowerOfFameOperation(BotRunner runner, SessionManager manager) {
+	public FightTowerOfFameOperation(BotRunner runner, HHSessionManager manager) {
 		super(runner);
 		this.manager = manager;
 	}

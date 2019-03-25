@@ -11,15 +11,15 @@ import fr.lewon.web.bot.entities.input.others.activity.Mission;
 import fr.lewon.web.bot.entities.output.SessionResponse;
 import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
-import fr.lewon.web.bot.util.SessionManager;
+import fr.lewon.web.bot.util.HHSessionManager;
 
 public class ExecuteMissionOperation extends Operation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteMissionOperation.class);
 
-	private SessionManager manager;
+	private HHSessionManager manager;
 
-	public ExecuteMissionOperation(BotRunner runner, SessionManager manager) {
+	public ExecuteMissionOperation(BotRunner runner, HHSessionManager manager) {
 		super(runner);
 		this.manager = manager;
 	}
