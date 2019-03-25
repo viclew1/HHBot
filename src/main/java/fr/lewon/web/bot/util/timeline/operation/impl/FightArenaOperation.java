@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.lewon.bot.runner.BotRunner;
+import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.Operation;
+import fr.lewon.bot.runner.TimeScale;
 import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.output.SessionResponse;
 import fr.lewon.web.bot.util.HHRequestProcessor;
-import fr.lewon.web.bot.util.HtmlAnalyzer;
 import fr.lewon.web.bot.util.HHSessionManager;
+import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class FightArenaOperation extends Operation {
 
@@ -23,7 +25,7 @@ public class FightArenaOperation extends Operation {
 	}
 
 	@Override
-	public Integer process() throws Exception {
+	public Delay process() throws Exception {
 		SessionResponse session = manager.getSession();
 		HHRequestProcessor.INSTANCE.getArenaContent(session);
 		int cpt = 0;
@@ -38,7 +40,7 @@ public class FightArenaOperation extends Operation {
 			}
 		}
 		LOGGER.info("{} arena fights done. Trying again in 15 minutes.", cpt);
-		return 900;
+		return new Delay(15, TimeScale.MINUTES);
 	}
 
 }

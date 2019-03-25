@@ -7,13 +7,15 @@ import org.slf4j.LoggerFactory;
 
 import fr.lewon.bot.errors.ServerException;
 import fr.lewon.bot.runner.BotRunner;
+import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.Operation;
+import fr.lewon.bot.runner.TimeScale;
 import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
 import fr.lewon.web.bot.entities.output.SessionResponse;
 import fr.lewon.web.bot.properties.FarmProperties;
 import fr.lewon.web.bot.util.HHRequestProcessor;
-import fr.lewon.web.bot.util.HtmlAnalyzer;
 import fr.lewon.web.bot.util.HHSessionManager;
+import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class FightTrollOperation extends Operation {
 
@@ -27,14 +29,14 @@ public class FightTrollOperation extends Operation {
 	}
 
 	@Override
-	public Integer process() throws Exception {
+	public Delay process() throws Exception {
 		SessionResponse session = manager.getSession();
 		String worldId = getWorldId(session);
 		String worldContent = HHRequestProcessor.INSTANCE.getWorldContent(session, worldId);
 		String trollId = HtmlAnalyzer.INSTANCE.getTrollId(worldContent);
 		if (trollId == null) {
-			LOGGER.info("No troll found in world {}. Trying again in an hour.", worldId);
-			return 3600;
+			LOGGER.info("No troll found in world {}. Trying again in 1 hour.", worldId);
+			return new Delay(1, TimeScale.HOURS);
 		}
 		String battleTrollContent = HHRequestProcessor.INSTANCE.getBattleTrollContent(session, trollId);
 		BattleMob battleMob = HtmlAnalyzer.INSTANCE.findOpponentBattleMob(battleTrollContent);
@@ -45,8 +47,8 @@ public class FightTrollOperation extends Operation {
 		while (HHRequestProcessor.INSTANCE.fightOpponentMob(session, battleMob).getSuccess()) {
 			fightCpt++;
 		}
-		LOGGER.info("Troll {} fought. {} fights done. Trying again in 30 minutes.", trollId, fightCpt);
-		return 1800;
+		LOGGER.info("Troll {} fought. {} fights done. Trying again in 2 hours.", trollId, fightCpt);
+		return new Delay(2, TimeScale.HOURS);
 	}
 
 	private String getWorldId(SessionResponse session) throws ServerException, IOException {

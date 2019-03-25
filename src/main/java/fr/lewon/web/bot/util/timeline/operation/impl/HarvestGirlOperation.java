@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.lewon.bot.runner.BotRunner;
+import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.Operation;
+import fr.lewon.bot.runner.TimeScale;
 import fr.lewon.web.bot.entities.output.SalaryResponse;
 import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HHSessionManager;
@@ -23,15 +25,15 @@ public class HarvestGirlOperation extends Operation {
 	}
 
 	@Override
-	public Integer process() throws Exception {
+	public Delay process() throws Exception {
 		SalaryResponse sr = HHRequestProcessor.INSTANCE.getSalary(manager.getSession(), girlId);
 		if (sr.getSuccess()) {
 			int nextHarvestTime = sr.getTime();
 			LOGGER.info("Girl {} collected. Money made : {}. Next harvest in {} seconds.", girlId, sr.getMoney(), nextHarvestTime);
-			return nextHarvestTime + 5;
+			return new Delay(nextHarvestTime + 5);
 		}
-		LOGGER.info("Girl {} can't be collected. Trying again in 5 minutes", girlId);
-		return 300;
+		LOGGER.info("Girl {} can't be collected. Trying again in 20 minutes", girlId);
+		return new Delay(20, TimeScale.MINUTES);
 	}
 
 }

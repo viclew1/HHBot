@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.lewon.bot.runner.BotRunner;
+import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.Operation;
 import fr.lewon.web.bot.util.HHSessionManager;
 
@@ -20,7 +21,7 @@ public class InitHentaiHeroesBotOperation extends Operation {
 	}
 
 	@Override
-	public Integer process() throws Exception {
+	public Delay process() throws Exception {
 		getRunner().addAction(new GirlsHarvesterManagerOperation(getRunner(), manager), 0);
 		getRunner().addAction(new FightArenaOperation(getRunner(), manager), 0);
 		getRunner().addAction(new ExecuteMissionOperation(getRunner(), manager), 0);
