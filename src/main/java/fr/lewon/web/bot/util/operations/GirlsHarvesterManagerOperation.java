@@ -1,4 +1,4 @@
-package fr.lewon.web.bot.util.timeline.operation.impl;
+package fr.lewon.web.bot.util.operations;
 
 import java.util.ArrayList;
 import java.util.List;

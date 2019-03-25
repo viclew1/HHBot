@@ -7,7 +7,7 @@ import fr.lewon.bot.AbstractBot;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Operation;
 import fr.lewon.web.bot.util.HHSessionManager;
-import fr.lewon.web.bot.util.timeline.operation.impl.InitHentaiHeroesBotOperation;
+import fr.lewon.web.bot.util.operations.InitHentaiHeroesBotOperation;
 
 public class HHBot extends AbstractBot {
 
