@@ -1,23 +1,13 @@
 package fr.lewon.web.bot.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public enum BodyHelper {
 
 	INSTANCE;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(BodyHelper.class);
 
 	public String generateBody(Object toWrite) {
 		List<BodyElement> fieldsToWrite = getBodyElements(toWrite);
@@ -36,22 +26,6 @@ public enum BodyHelper {
 			}
 		}
 		return body.toString();
-	}
-
-
-	public String readBody(HttpResponse response) throws IOException {
-		return readInputStream(response.getEntity().getContent());
-	}
-
-	private String readInputStream(InputStream is) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		StringBuilder completeData = new StringBuilder();
-		String data;
-		while ((data = br.readLine()) != null) {
-			completeData.append(data);
-		}
-		LOGGER.debug("Decoded body : " + completeData.toString());
-		return completeData.toString();
 	}
 
 	private List<BodyElement> getBodyElements(Object toWrite) {
