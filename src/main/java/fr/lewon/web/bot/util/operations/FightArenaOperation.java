@@ -1,8 +1,5 @@
 package fr.lewon.web.bot.util.operations;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.Operation;
@@ -14,8 +11,6 @@ import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class FightArenaOperation extends Operation {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(FightArenaOperation.class);
 
 	private HHSessionManager manager;
 
@@ -39,7 +34,7 @@ public class FightArenaOperation extends Operation {
 				cpt++;
 			}
 		}
-		LOGGER.info("{} arena fights done. Trying again in 15 minutes.", cpt);
+		getRunner().logInfo("{} arena fights done. Trying again in 15 minutes.", cpt);
 		return new Delay(15, TimeScale.MINUTES);
 	}
 

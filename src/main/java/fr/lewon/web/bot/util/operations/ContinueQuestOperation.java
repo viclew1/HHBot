@@ -1,8 +1,5 @@
 package fr.lewon.web.bot.util.operations;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.Operation;
@@ -13,8 +10,6 @@ import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class ContinueQuestOperation extends Operation {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ContinueQuestOperation.class);
 
 	private HHSessionManager manager;
 
@@ -29,14 +24,14 @@ public class ContinueQuestOperation extends Operation {
 		String mapContent = HHRequestProcessor.INSTANCE.getMapContent(session);
 		Long questId = HtmlAnalyzer.INSTANCE.getCurrentQuestId(mapContent);
 		if (questId == null) {
-			LOGGER.info("No current quest. Trying again in an hour.");
+			getRunner().logInfo("No current quest. Trying again in an hour.");
 			return new Delay(1, TimeScale.HOURS);
 		}
 		int steps = 0;
 		while (HHRequestProcessor.INSTANCE.continueQuest(session, questId).getSuccess()) {
 			steps ++;
 		}
-		LOGGER.info("Quest {} advanced {} steps. Trying again in 30 minutes", questId, steps);
+		getRunner().logInfo("Quest {} advanced {} steps. Trying again in 30 minutes", questId, steps);
 		return new Delay(30, TimeScale.MINUTES);
 	}
 

@@ -1,8 +1,5 @@
 package fr.lewon.web.bot.util.operations;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.Operation;
@@ -10,8 +7,6 @@ import fr.lewon.web.bot.util.HHSessionManager;
 
 
 public class InitHentaiHeroesBotOperation extends Operation {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(InitHentaiHeroesBotOperation.class);
 
 	private HHSessionManager manager;
 
@@ -28,7 +23,7 @@ public class InitHentaiHeroesBotOperation extends Operation {
 		getRunner().addAction(new FightTowerOfFameOperation(getRunner(), manager), 0);
 		getRunner().addAction(new FightTrollOperation(getRunner(), manager), 0);
 		getRunner().addAction(new ContinueQuestOperation(getRunner(), manager), 0);
-		LOGGER.info("Initial operations started.");
+		getRunner().logInfo("Initial operations started.");
 		return null;
 	}
 

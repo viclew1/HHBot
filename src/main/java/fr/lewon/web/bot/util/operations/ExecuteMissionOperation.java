@@ -2,9 +2,6 @@ package fr.lewon.web.bot.util.operations;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.Operation;
@@ -16,8 +13,6 @@ import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class ExecuteMissionOperation extends Operation {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteMissionOperation.class);
 
 	private HHSessionManager manager;
 
@@ -35,15 +30,15 @@ public class ExecuteMissionOperation extends Operation {
 		for (Mission m : missions) {
 			if (m.getRemainingTime() != null && m.getRemainingTime() <= 0) {
 				HHRequestProcessor.INSTANCE.claimReward(session, m);
-				LOGGER.info("Mission {} claimed.", m.getIdMission());
+				getRunner().logInfo("Mission {} claimed.", m.getIdMission());
 			} else if (m.isStartable()) {
 				HHRequestProcessor.INSTANCE.startMission(session, m);
-				LOGGER.info("Mission {} started. Claiming it in {} seconds", m.getIdMission(), m.getDuration());
+				getRunner().logInfo("Mission {} started. Claiming it in {} seconds", m.getIdMission(), m.getDuration());
 				return new Delay(m.getDuration() + 5, TimeScale.SECONDS);
 			}
 		}
 
-		LOGGER.info("Every mission finished. Trying again in 2 hours.");
+		getRunner().logInfo("Every mission finished. Trying again in 2 hours.");
 		HHRequestProcessor.INSTANCE.getFinalMissionGift(session);
 		return new Delay(2, TimeScale.HOURS);
 

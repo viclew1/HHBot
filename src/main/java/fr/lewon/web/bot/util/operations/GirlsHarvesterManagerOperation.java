@@ -3,9 +3,6 @@ package fr.lewon.web.bot.util.operations;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.Operation;
@@ -16,8 +13,6 @@ import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class GirlsHarvesterManagerOperation extends Operation {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(GirlsHarvesterManagerOperation.class);
 
 	private HHSessionManager manager;
 
@@ -38,7 +33,7 @@ public class GirlsHarvesterManagerOperation extends Operation {
 			getRunner().addAction(new HarvestGirlOperation(getRunner(), manager, girlId), 0);
 		}
 		treatedGirls.addAll(availableGirls);
-		LOGGER.info("Harvest started on girls : {}. Trying again in 3 hours", availableGirls);
+		getRunner().logInfo("Harvest started on girls : {}. Trying again in 3 hours", availableGirls);
 		return new Delay(3, TimeScale.HOURS);
 	}
 

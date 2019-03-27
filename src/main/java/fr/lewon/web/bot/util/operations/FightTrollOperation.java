@@ -2,9 +2,6 @@ package fr.lewon.web.bot.util.operations;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.lewon.bot.errors.ServerException;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
@@ -18,8 +15,6 @@ import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class FightTrollOperation extends Operation {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(FightTrollOperation.class);
 
 	private HHSessionManager manager;
 
@@ -35,7 +30,7 @@ public class FightTrollOperation extends Operation {
 		String worldContent = HHRequestProcessor.INSTANCE.getWorldContent(session, worldId);
 		String trollId = HtmlAnalyzer.INSTANCE.getTrollId(worldContent);
 		if (trollId == null) {
-			LOGGER.info("No troll found in world {}. Trying again in 1 hour.", worldId);
+			getRunner().logInfo("No troll found in world {}. Trying again in 1 hour.", worldId);
 			return new Delay(1, TimeScale.HOURS);
 		}
 		String battleTrollContent = HHRequestProcessor.INSTANCE.getBattleTrollContent(session, trollId);
@@ -47,7 +42,7 @@ public class FightTrollOperation extends Operation {
 		while (HHRequestProcessor.INSTANCE.fightOpponentMob(session, battleMob).getSuccess()) {
 			fightCpt++;
 		}
-		LOGGER.info("Troll {} fought. {} fights done. Trying again in 2 hours.", trollId, fightCpt);
+		getRunner().logInfo("Troll {} fought. {} fights done. Trying again in 2 hours.", trollId, fightCpt);
 		return new Delay(2, TimeScale.HOURS);
 	}
 
