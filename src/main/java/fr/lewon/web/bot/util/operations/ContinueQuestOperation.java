@@ -31,8 +31,8 @@ public class ContinueQuestOperation extends Operation {
 		while (HHRequestProcessor.INSTANCE.continueQuest(session, questId).getSuccess()) {
 			steps ++;
 		}
-		getRunner().logInfo("Quest {} advanced {} steps. Trying again in 30 minutes", questId, steps);
-		return new Delay(30, TimeScale.MINUTES);
+		getRunner().logInfo("Quest {} advanced {} steps. Trying again in 2 hours", questId, steps);
+		return new Delay(2, TimeScale.HOURS);
 	}
 
 }
