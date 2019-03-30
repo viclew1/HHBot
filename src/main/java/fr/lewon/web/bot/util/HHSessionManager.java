@@ -1,7 +1,7 @@
 package fr.lewon.web.bot.util;
 
 import fr.lewon.bot.http.AbstractSessionManager;
-import fr.lewon.web.bot.entities.output.SessionResponse;
+import fr.lewon.web.bot.entities.SessionResponse;
 
 public class HHSessionManager extends AbstractSessionManager<SessionResponse> {
 

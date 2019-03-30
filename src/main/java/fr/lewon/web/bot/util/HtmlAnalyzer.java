@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.lewon.bot.http.util.JacksonHelper;
+import fr.lewon.web.bot.entities.girls.Girl;
 import fr.lewon.web.bot.entities.input.others.activity.Competition;
 import fr.lewon.web.bot.entities.input.others.activity.Mission;
 import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
@@ -18,6 +19,18 @@ public enum HtmlAnalyzer {
 	INSTANCE;
 
 	private HtmlAnalyzer() {}
+
+	public List<Girl> findAllGirls(String haremContent) throws IOException {
+		List<Girl> girls = new ArrayList<>();
+		String regex = "girlsDataList\\['[0-9]+'\\] = (\\{.*?};)";
+		Matcher matcher = matchPattern(haremContent, regex);
+
+		while (matcher.find()) {
+			Girl girl = JacksonHelper.INSTANCE.jsonToObject(Girl.class, matcher.group(1));
+			girls.add(girl);
+		}
+		return girls;
+	}
 
 	public BattlePlayer findOpponentBattlePlayer(String content) throws IOException {
 		String regex = "hh_battle_players =.*?\\{.*?},.*?(\\{.*?})";
@@ -39,16 +52,6 @@ public enum HtmlAnalyzer {
 		}
 		String battlePlayerStr = matcher.group(1);
 		return JacksonHelper.INSTANCE.jsonToObject(BattleMob.class, battlePlayerStr);
-	}
-
-	public List<Integer> getAvailableGirlsIds(String haremContent) {
-		String regex = "<div girl=\"([0-9]+)\"  class=\" \">";
-		Matcher matcher = matchPattern(haremContent, regex);
-		List<Integer> availableGirlsIds = new ArrayList<>();
-		while (matcher.find()) {
-			availableGirlsIds.add(Integer.parseInt(matcher.group(1)));
-		}
-		return availableGirlsIds;
 	}
 
 	public Long getCurrentQuestId(String content) throws IOException {

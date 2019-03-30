@@ -2,6 +2,7 @@ package fr.lewon.web.bot.entities.enums;
 
 public enum Rarity {
 
+	STARTING("starting", 0),
 	COMMON("common", 1),
 	RARE("rare", 2),
 	EPIC("epic", 3),

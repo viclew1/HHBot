@@ -1,4 +1,4 @@
-package fr.lewon.web.bot.entities.output;
+package fr.lewon.web.bot.entities;
 
 import org.apache.http.Header;
 

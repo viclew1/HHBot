@@ -17,7 +17,7 @@ public class InitHentaiHeroesBotOperation extends Operation {
 
 	@Override
 	public Delay process() throws Exception {
-		getRunner().addAction(new GirlsHarvesterManagerOperation(getRunner(), manager), 0);
+		getRunner().addAction(new GirlsManagerOperation(getRunner(), manager), 0);
 		getRunner().addAction(new FightArenaOperation(getRunner(), manager), 0);
 		getRunner().addAction(new ExecuteMissionOperation(getRunner(), manager), 0);
 		getRunner().addAction(new FightTowerOfFameOperation(getRunner(), manager), 0);

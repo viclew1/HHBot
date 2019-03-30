@@ -12,6 +12,10 @@ import org.apache.http.message.BasicHeader;
 import fr.lewon.bot.errors.ServerException;
 import fr.lewon.bot.http.AbstractRequestProcessor;
 import fr.lewon.bot.http.RequestHelper;
+import fr.lewon.web.bot.entities.OpponentInfoResponse;
+import fr.lewon.web.bot.entities.Response;
+import fr.lewon.web.bot.entities.SalaryResponse;
+import fr.lewon.web.bot.entities.SessionResponse;
 import fr.lewon.web.bot.entities.input.battle.ActionBattleMob;
 import fr.lewon.web.bot.entities.input.battle.ActionBattlePlayer;
 import fr.lewon.web.bot.entities.input.girl.ActionGirlAllSalaries;
@@ -25,10 +29,6 @@ import fr.lewon.web.bot.entities.input.others.activity.Mission;
 import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
 import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.input.quest.ActionQuestNext;
-import fr.lewon.web.bot.entities.output.OpponentInfoResponse;
-import fr.lewon.web.bot.entities.output.Response;
-import fr.lewon.web.bot.entities.output.SalaryResponse;
-import fr.lewon.web.bot.entities.output.SessionResponse;
 
 public class HHRequestProcessor extends AbstractRequestProcessor {
 
