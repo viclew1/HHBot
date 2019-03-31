@@ -6,10 +6,16 @@ import java.util.List;
 import fr.lewon.bot.AbstractBot;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Operation;
+import fr.lewon.web.bot.methods.FarmSpecificTrollMethod;
+import fr.lewon.web.bot.methods.GetUserInfosMethod;
+import fr.lewon.web.bot.operations.InitHentaiHeroesBotOperation;
 import fr.lewon.web.bot.util.HHSessionManager;
-import fr.lewon.web.bot.util.operations.InitHentaiHeroesBotOperation;
 
 public class HHBot extends AbstractBot {
+
+	public HHBot() {
+		super(new FarmSpecificTrollMethod(), new GetUserInfosMethod());
+	}
 
 	@Override
 	public List<Operation> getDefaultOperations(BotRunner runner, String login, String password) {

@@ -1,4 +1,4 @@
-package fr.lewon.web.bot.util.operations;
+package fr.lewon.web.bot.operations;
 
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;

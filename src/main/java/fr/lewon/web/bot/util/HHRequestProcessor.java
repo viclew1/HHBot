@@ -33,12 +33,13 @@ import fr.lewon.web.bot.entities.input.quest.ActionQuestNext;
 public class HHRequestProcessor extends AbstractRequestProcessor {
 
 	public static final HHRequestProcessor INSTANCE = new HHRequestProcessor();
-	
+
 	private static final String BASE_URL = "https://www.hentaiheroes.com/";
 
 	private static final String PHOENIX_AJAX = "/phoenix-ajax.php";
 	private static final String AJAX = "/ajax.php";
 
+	private static final String HOME = "/home.html";
 	private static final String HAREM = "/harem.html";
 	private static final String BATTLE = "/battle.html";
 	private static final String ARENA = "/arena.html";
@@ -68,7 +69,7 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 		neededHeaders.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"));
 		return neededHeaders;
 	}
-	
+
 	public SessionResponse getSession(String login, String password) throws ServerException, IOException {
 		String url = BASE_URL + PHOENIX_AJAX;
 		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new PlayerInfos(login, password)));
@@ -86,9 +87,14 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 		}
 		String value = "HAPBK=web5; age_verification=1; _pk_ses.2.6e07=1; lang=fr; member_guid=A55C4849-F42D-4A1A-A6C6-11556C261A9C; HH_SESS_13=" + hhSess + "; stay_online=" + stayOnline + "; _pk_id.2.6e07=5ab4aa907c7c5919.1551984183.1.1551995205.1551984183.";
 		Header cookie = new BasicHeader("Cookie", value);
-		
+
 		response.setCookies(cookie);
 		return response;
+	}
+
+	public String getHomeContent(SessionResponse session) throws ServerException, IOException {
+		String url = BASE_URL + HOME;
+		return readAllPageContent(url, session.getCookies());
 	}
 
 	public String getHaremContent(SessionResponse session) throws ServerException, IOException {

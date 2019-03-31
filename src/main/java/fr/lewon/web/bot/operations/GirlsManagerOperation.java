@@ -1,4 +1,4 @@
-package fr.lewon.web.bot.util.operations;
+package fr.lewon.web.bot.operations;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.lewon.bot.http.util.JacksonHelper;
+import fr.lewon.web.bot.entities.UserInfos;
 import fr.lewon.web.bot.entities.girls.Girl;
 import fr.lewon.web.bot.entities.input.others.activity.Competition;
 import fr.lewon.web.bot.entities.input.others.activity.Mission;
@@ -30,6 +31,17 @@ public enum HtmlAnalyzer {
 			girls.add(girl);
 		}
 		return girls;
+	}
+
+	public UserInfos getPlayerInfos(String homeContent) throws IOException {
+		String regex = "Hero.infos = (\\{.*?};)";
+		Matcher matcher = matchPattern(homeContent, regex);
+
+		if (!matcher.find()) {
+			return null;
+		}
+
+		return JacksonHelper.INSTANCE.jsonToObject(UserInfos.class, matcher.group(1));
 	}
 
 	public BattlePlayer findOpponentBattlePlayer(String content) throws IOException {
