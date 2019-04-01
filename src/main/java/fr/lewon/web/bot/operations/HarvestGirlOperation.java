@@ -25,7 +25,7 @@ public class HarvestGirlOperation extends Operation {
 		if (sr.getSuccess()) {
 			int nextHarvestTime = sr.getTime();
 			getRunner().logInfo("Girl {} collected. Money made : {}. Next harvest in {} seconds.", girlId, sr.getMoney(), nextHarvestTime);
-			return new Delay(nextHarvestTime + 5);
+			return new Delay(nextHarvestTime + 1);
 		}
 		getRunner().logInfo("Girl {} can't be collected. Trying again in 20 minutes", girlId);
 		return new Delay(20, TimeScale.MINUTES);

@@ -36,8 +36,8 @@ public class GirlsManagerOperation extends Operation {
 				.collect(Collectors.toList());
 
 		for (Girl girl : newGirls) {
-			getRunner().addAction(new HarvestGirlOperation(getRunner(), manager, girl.getId()), girl.getPayIn() + 5);
-			getRunner().logInfo("Harvest will start on girl {} in {} seconds", girl.getId(), girl.getPayIn() + 5);
+			getRunner().addAction(new HarvestGirlOperation(getRunner(), manager, girl.getId()), girl.getPayIn() + 1);
+			getRunner().logInfo("Harvest will start on girl {} in {} seconds", girl.getId(), girl.getPayIn() + 1);
 			ownedGirls.add(girl);
 		}
 
