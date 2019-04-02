@@ -16,17 +16,16 @@ public class ExecuteCompetitionOperation extends Operation {
 
 	private HHSessionManager manager;
 
-	public ExecuteCompetitionOperation(BotRunner runner, HHSessionManager manager) {
-		super(runner);
+	public ExecuteCompetitionOperation(HHSessionManager manager) {
 		this.manager = manager;
 	}
 
 	@Override
-	public Delay process() throws Exception {
+	public Delay process(BotRunner runner) throws Exception {
 		SessionResponse session = manager.getSession();
 		String activityPage = HHRequestProcessor.INSTANCE.getActivitiesContent(session);
 		List<Competition> competitions = HtmlAnalyzer.INSTANCE.getCompetitions(activityPage);
-		getRunner().logInfo("Every competitions finished. Trying again in 1 day.");
+		runner.logInfo("Every competitions finished. Trying again in 1 day.");
 		HHRequestProcessor.INSTANCE.getFinalMissionGift(session);
 		return new Delay(1, TimeScale.DAYS);
 	}

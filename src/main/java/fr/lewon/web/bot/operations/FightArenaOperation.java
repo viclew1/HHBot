@@ -14,13 +14,12 @@ public class FightArenaOperation extends Operation {
 
 	private HHSessionManager manager;
 
-	public FightArenaOperation(BotRunner runner, HHSessionManager manager) {
-		super(runner);
+	public FightArenaOperation(HHSessionManager manager) {
 		this.manager = manager;
 	}
 
 	@Override
-	public Delay process() throws Exception {
+	public Delay process(BotRunner runner) throws Exception {
 		SessionResponse session = manager.getSession();
 		HHRequestProcessor.INSTANCE.getArenaContent(session);
 		int cpt = 0;
@@ -34,7 +33,7 @@ public class FightArenaOperation extends Operation {
 				cpt++;
 			}
 		}
-		getRunner().logInfo("{} arena fights done. Trying again in 15 minutes.", cpt);
+		runner.logInfo("{} arena fights done. Trying again in 15 minutes.", cpt);
 		return new Delay(15, TimeScale.MINUTES);
 	}
 

@@ -10,20 +10,19 @@ public class InitHentaiHeroesBotOperation extends Operation {
 
 	private HHSessionManager manager;
 
-	public InitHentaiHeroesBotOperation(BotRunner runner, HHSessionManager manager) {
-		super(runner);
+	public InitHentaiHeroesBotOperation(HHSessionManager manager) {
 		this.manager = manager;
 	}
 
 	@Override
-	public Delay process() throws Exception {
-		getRunner().addAction(new GirlsManagerOperation(getRunner(), manager), 0);
-		getRunner().addAction(new FightArenaOperation(getRunner(), manager), 0);
-		getRunner().addAction(new ExecuteMissionOperation(getRunner(), manager), 0);
-		getRunner().addAction(new FightTowerOfFameOperation(getRunner(), manager), 0);
-		getRunner().addAction(new FightTrollOperation(getRunner(), manager), 0);
-		getRunner().addAction(new ContinueQuestOperation(getRunner(), manager), 0);
-		getRunner().logInfo("Initial operations started.");
+	public Delay process(BotRunner runner) throws Exception {
+		runner.addAction(new GirlsManagerOperation(manager), 0);
+		runner.addAction(new FightArenaOperation(manager), 0);
+		runner.addAction(new ExecuteMissionOperation(manager), 0);
+		runner.addAction(new FightTowerOfFameOperation(manager), 0);
+		runner.addAction(new FightTrollOperation(manager), 0);
+		runner.addAction(new ContinueQuestOperation(manager), 0);
+		runner.logInfo("Initial operations started.");
 		return null;
 	}
 

@@ -13,21 +13,20 @@ public class HarvestGirlOperation extends Operation {
 	private int girlId;
 	private HHSessionManager manager;
 
-	public HarvestGirlOperation(BotRunner runner, HHSessionManager manager, int girlId) {
-		super(runner);
+	public HarvestGirlOperation(HHSessionManager manager, int girlId) {
 		this.manager = manager;
 		this.girlId = girlId;
 	}
 
 	@Override
-	public Delay process() throws Exception {
+	public Delay process(BotRunner runner) throws Exception {
 		SalaryResponse sr = HHRequestProcessor.INSTANCE.getSalary(manager.getSession(), girlId);
 		if (sr.getSuccess()) {
 			int nextHarvestTime = sr.getTime();
-			getRunner().logInfo("Girl {} collected. Money made : {}. Next harvest in {} seconds.", girlId, sr.getMoney(), nextHarvestTime);
+			runner.logInfo("Girl {} collected. Money made : {}. Next harvest in {} seconds.", girlId, sr.getMoney(), nextHarvestTime);
 			return new Delay(nextHarvestTime + 1);
 		}
-		getRunner().logInfo("Girl {} can't be collected. Trying again in 20 minutes", girlId);
+		runner.logInfo("Girl {} can't be collected. Trying again in 20 minutes", girlId);
 		return new Delay(20, TimeScale.MINUTES);
 	}
 

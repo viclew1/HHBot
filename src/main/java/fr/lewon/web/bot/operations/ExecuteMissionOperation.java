@@ -16,13 +16,12 @@ public class ExecuteMissionOperation extends Operation {
 
 	private HHSessionManager manager;
 
-	public ExecuteMissionOperation(BotRunner runner, HHSessionManager manager) {
-		super(runner);
+	public ExecuteMissionOperation(HHSessionManager manager) {
 		this.manager = manager;
 	}
 
 	@Override
-	public Delay process() throws Exception {
+	public Delay process(BotRunner runner) throws Exception {
 		SessionResponse session = manager.getSession();
 		String activityPage = HHRequestProcessor.INSTANCE.getActivitiesContent(session);
 		List<Mission> missions = HtmlAnalyzer.INSTANCE.getMissions(activityPage);
@@ -30,15 +29,15 @@ public class ExecuteMissionOperation extends Operation {
 		for (Mission m : missions) {
 			if (m.getRemainingTime() != null && m.getRemainingTime() <= 0) {
 				HHRequestProcessor.INSTANCE.claimReward(session, m);
-				getRunner().logInfo("Mission {} claimed.", m.getIdMission());
+				runner.logInfo("Mission {} claimed.", m.getIdMission());
 			} else if (m.isStartable()) {
 				HHRequestProcessor.INSTANCE.startMission(session, m);
-				getRunner().logInfo("Mission {} started. Claiming it in {} seconds", m.getIdMission(), m.getDuration());
+				runner.logInfo("Mission {} started. Claiming it in {} seconds", m.getIdMission(), m.getDuration());
 				return new Delay(m.getDuration() + 5, TimeScale.SECONDS);
 			}
 		}
 
-		getRunner().logInfo("Every mission finished. Trying again in 2 hours.");
+		runner.logInfo("Every mission finished. Trying again in 2 hours.");
 		HHRequestProcessor.INSTANCE.getFinalMissionGift(session);
 		return new Delay(2, TimeScale.HOURS);
 

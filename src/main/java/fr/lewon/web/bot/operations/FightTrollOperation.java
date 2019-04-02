@@ -18,19 +18,18 @@ public class FightTrollOperation extends Operation {
 
 	private HHSessionManager manager;
 
-	public FightTrollOperation(BotRunner runner, HHSessionManager manager) {
-		super(runner);
+	public FightTrollOperation(HHSessionManager manager) {
 		this.manager = manager;
 	}
 
 	@Override
-	public Delay process() throws Exception {
+	public Delay process(BotRunner runner) throws Exception {
 		SessionResponse session = manager.getSession();
-		String worldId = getWorldId(session);
+		String worldId = getWorldId(runner, session);
 		String worldContent = HHRequestProcessor.INSTANCE.getWorldContent(session, worldId);
 		String trollId = HtmlAnalyzer.INSTANCE.getTrollId(worldContent);
 		if (trollId == null) {
-			getRunner().logInfo("No troll found in world {}. Trying again in 1 hour.", worldId);
+			runner.logInfo("No troll found in world {}. Trying again in 1 hour.", worldId);
 			return new Delay(1, TimeScale.HOURS);
 		}
 		String battleTrollContent = HHRequestProcessor.INSTANCE.getBattleTrollContent(session, trollId);
@@ -42,12 +41,12 @@ public class FightTrollOperation extends Operation {
 		while (HHRequestProcessor.INSTANCE.fightOpponentMob(session, battleMob).getSuccess()) {
 			fightCpt++;
 		}
-		getRunner().logInfo("Troll {} fought. {} fights done. Trying again in 2 hours.", trollId, fightCpt);
+		runner.logInfo("Troll {} fought. {} fights done. Trying again in 2 hours.", trollId, fightCpt);
 		return new Delay(2, TimeScale.HOURS);
 	}
 
-	private String getWorldId(SessionResponse session) throws ServerException, IOException {
-		String preferedWorldId = getRunner().getBot().getGameProperties().getProperty(FarmProperties.TROLL_WORLD_KEY);
+	private String getWorldId(BotRunner runner, SessionResponse session) throws ServerException, IOException {
+		String preferedWorldId = runner.getBot().getGameProperties().getProperty(FarmProperties.TROLL_WORLD_KEY);
 		if (preferedWorldId != null) {
 			return preferedWorldId;
 		}

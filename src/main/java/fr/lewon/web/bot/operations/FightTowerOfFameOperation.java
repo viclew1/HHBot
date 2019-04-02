@@ -18,13 +18,12 @@ public class FightTowerOfFameOperation extends Operation {
 
 	private HHSessionManager manager;
 
-	public FightTowerOfFameOperation(BotRunner runner, HHSessionManager manager) {
-		super(runner);
+	public FightTowerOfFameOperation(HHSessionManager manager) {
 		this.manager = manager;
 	}
 
 	@Override
-	public Delay process() throws Exception {
+	public Delay process(BotRunner runner) throws Exception {
 		SessionResponse session = manager.getSession();
 		String pageContent = HHRequestProcessor.INSTANCE.getTowerOfFameContent(session);
 		List<TowerOfFameOpponentPremise> premises = HtmlAnalyzer.INSTANCE.findHallOfFameOpponents(pageContent);
@@ -42,12 +41,12 @@ public class FightTowerOfFameOperation extends Operation {
 				cpt++;
 			}
 			if ("Not enough challenge energy.".equals(fight.getError())) {
-				getRunner().logInfo("{} Tower of fame fights done. Trying again in 30 minutes", cpt);
+				runner.logInfo("{} Tower of fame fights done. Trying again in 30 minutes", cpt);
 				return new Delay(30, TimeScale.MINUTES);
 			}
 		}
 
-		getRunner().logInfo("No opponent to fight. Trying again in 1 hour");
+		runner.logInfo("No opponent to fight. Trying again in 1 hour");
 		return new Delay(1, TimeScale.HOURS);
 	}
 

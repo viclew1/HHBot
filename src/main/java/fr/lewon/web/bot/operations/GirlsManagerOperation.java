@@ -19,14 +19,13 @@ public class GirlsManagerOperation extends Operation {
 	private HHSessionManager manager;
 	private List<Girl> ownedGirls = new ArrayList<>();
 
-	public GirlsManagerOperation(BotRunner runner, HHSessionManager manager) {
-		super(runner);
+	public GirlsManagerOperation(HHSessionManager manager) {
 		this.manager = manager;
 	}
 
 
 	@Override
-	public Delay process() throws Exception {
+	public Delay process(BotRunner runner) throws Exception {
 		SessionResponse session = manager.getSession();
 		String haremContent = HHRequestProcessor.INSTANCE.getHaremContent(session);
 
@@ -36,8 +35,8 @@ public class GirlsManagerOperation extends Operation {
 				.collect(Collectors.toList());
 
 		for (Girl girl : newGirls) {
-			getRunner().addAction(new HarvestGirlOperation(getRunner(), manager, girl.getId()), girl.getPayIn() + 1);
-			getRunner().logInfo("Harvest will start on girl {} in {} seconds", girl.getId(), girl.getPayIn() + 1);
+			runner.addAction(new HarvestGirlOperation(manager, girl.getId()), girl.getPayIn() + 1);
+			runner.logInfo("Harvest will start on girl {} in {} seconds", girl.getId(), girl.getPayIn() + 1);
 			ownedGirls.add(girl);
 		}
 
