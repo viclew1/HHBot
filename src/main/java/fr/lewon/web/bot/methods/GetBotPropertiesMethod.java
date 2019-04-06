@@ -4,11 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.lewon.bot.errors.BotRunnerException;
-import fr.lewon.bot.methods.AbstractBotMethod;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.web.bot.properties.FarmProperties;
+import fr.lewon.web.bot.util.HHRequestProcessor;
+import fr.lewon.web.bot.util.HHSessionManager;
 
-public class GetBotPropertiesMethod extends AbstractBotMethod {
+public class GetBotPropertiesMethod extends HHBotMethod {
+
+	public GetBotPropertiesMethod(HHSessionManager manager, HHRequestProcessor requestProcessor) {
+		super(manager, requestProcessor);
+	}
 
 	@Override
 	public Map<String, Object> getneededParameters() {
@@ -21,7 +26,7 @@ public class GetBotPropertiesMethod extends AbstractBotMethod {
 	}
 
 	@Override
-	public Object doProcess(BotRunner runner, Map<String, Object> params) {
+	protected Object doProcess(BotRunner runner, HHSessionManager manager, HHRequestProcessor requestProcessor, Map<String, Object> params) {
 		StringBuilder sb = new StringBuilder();
 		addProperty(sb, runner, FarmProperties.TROLL_WORLD_KEY);
 		return sb.toString();

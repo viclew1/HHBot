@@ -4,7 +4,6 @@ import java.util.List;
 
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
-import fr.lewon.bot.runner.Operation;
 import fr.lewon.bot.runner.TimeScale;
 import fr.lewon.web.bot.entities.Response;
 import fr.lewon.web.bot.entities.SessionResponse;
@@ -14,30 +13,30 @@ import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
-public class FightTowerOfFameOperation extends Operation {
+public class FightTowerOfFameOperation extends HHOperation {
 
-	private HHSessionManager manager;
-
-	public FightTowerOfFameOperation(HHSessionManager manager) {
-		this.manager = manager;
+	public FightTowerOfFameOperation(HHSessionManager manager, HHRequestProcessor requestProcessor) {
+		super(manager, requestProcessor);
 	}
 
 	@Override
-	public Delay process(BotRunner runner) throws Exception {
-		SessionResponse session = manager.getSession();
-		String pageContent = HHRequestProcessor.INSTANCE.getTowerOfFameContent(session);
+	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
+			throws Exception {
+
+		SessionResponse session = sessionManager.getSession();
+		String pageContent = requestProcessor.getTowerOfFameContent(session);
 		List<TowerOfFameOpponentPremise> premises = HtmlAnalyzer.INSTANCE.findHallOfFameOpponents(pageContent);
 		premises.sort((o1, o2) -> o1.getLvl() - o2.getLvl());
 
 		int cpt = 0;
 		for (TowerOfFameOpponentPremise premise : premises) {
-			String battlePageContent = HHRequestProcessor.INSTANCE.getLeagueBattleContent(session, premise.getId());
+			String battlePageContent = requestProcessor.getLeagueBattleContent(session, premise.getId());
 			BattlePlayer battlePlayer = HtmlAnalyzer.INSTANCE.findOpponentBattlePlayer(battlePageContent);
 			if (battlePlayer == null) {
 				continue;
 			}
 			Response fight = null;
-			while ((fight = HHRequestProcessor.INSTANCE.fightOpponentPlayer(session, battlePlayer)).getSuccess()) {
+			while ((fight = requestProcessor.fightOpponentPlayer(session, battlePlayer)).getSuccess()) {
 				cpt++;
 			}
 			if ("Not enough challenge energy.".equals(fight.getError())) {

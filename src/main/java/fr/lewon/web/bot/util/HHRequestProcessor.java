@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicHeader;
 
 import fr.lewon.bot.errors.ServerException;
 import fr.lewon.bot.http.AbstractRequestProcessor;
+import fr.lewon.bot.http.DefaultResponse;
 import fr.lewon.bot.http.RequestHelper;
 import fr.lewon.web.bot.entities.OpponentInfoResponse;
 import fr.lewon.web.bot.entities.Response;
@@ -32,8 +32,6 @@ import fr.lewon.web.bot.entities.input.quest.ActionQuestNext;
 
 public class HHRequestProcessor extends AbstractRequestProcessor {
 
-	public static final HHRequestProcessor INSTANCE = new HHRequestProcessor();
-
 	private static final String BASE_URL = "https://www.hentaiheroes.com/";
 
 	private static final String PHOENIX_AJAX = "/phoenix-ajax.php";
@@ -50,7 +48,7 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 
 	private static final String SLASH = "/";
 
-	private HHRequestProcessor() {
+	public HHRequestProcessor() {
 		super(new RequestHelper());
 	}
 
@@ -70,25 +68,10 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 		return neededHeaders;
 	}
 
-	public SessionResponse getSession(String login, String password) throws ServerException, IOException {
+	public DefaultResponse<SessionResponse> getSession(String login, String password) throws ServerException, IOException {
 		String url = BASE_URL + PHOENIX_AJAX;
 		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new PlayerInfos(login, password)));
-		SessionResponse response = generateResponse(SessionResponse.class, httpResponse).getEntity();
-		String hhSess = "";
-		String stayOnline = "";
-		for (Header h : httpResponse.getHeaders("Set-Cookie")) {
-			for (HeaderElement he : h.getElements()) {
-				if (he.getName().equals("HH_SESS_13")) {
-					hhSess = he.getValue();
-				} else if (he.getName().equals("stay_online")) {
-					stayOnline = he.getValue();
-				}
-			}
-		}
-		String value = "HAPBK=web5; age_verification=1; _pk_ses.2.6e07=1; lang=fr; member_guid=A55C4849-F42D-4A1A-A6C6-11556C261A9C; HH_SESS_13=" + hhSess + "; stay_online=" + stayOnline + "; _pk_id.2.6e07=5ab4aa907c7c5919.1551984183.1.1551995205.1551984183.";
-		Header cookie = new BasicHeader("Cookie", value);
-
-		response.setCookies(cookie);
+		DefaultResponse<SessionResponse> response = generateResponse(SessionResponse.class, httpResponse);
 		return response;
 	}
 

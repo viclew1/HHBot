@@ -5,11 +5,16 @@ import java.util.Map;
 
 import fr.lewon.bot.errors.BotRunnerException;
 import fr.lewon.bot.errors.InvalidValueParameterException;
-import fr.lewon.bot.methods.AbstractBotMethod;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.web.bot.properties.FarmProperties;
+import fr.lewon.web.bot.util.HHRequestProcessor;
+import fr.lewon.web.bot.util.HHSessionManager;
 
-public class FarmSpecificTrollMethod extends AbstractBotMethod {
+public class FarmSpecificTrollMethod extends HHBotMethod {
+
+	public FarmSpecificTrollMethod(HHSessionManager manager, HHRequestProcessor requestProcessor) {
+		super(manager, requestProcessor);
+	}
 
 	@Override
 	public Map<String, Object> getneededParameters() {
@@ -24,7 +29,7 @@ public class FarmSpecificTrollMethod extends AbstractBotMethod {
 	}
 
 	@Override
-	public Object doProcess(BotRunner runner, Map<String, Object> params) {
+	protected Object doProcess(BotRunner runner, HHSessionManager manager, HHRequestProcessor requestProcessor, Map<String, Object> params) {
 		Object val = params.get(FarmProperties.TROLL_WORLD_KEY);
 		runner.getBot().getGameProperties().put(FarmProperties.TROLL_WORLD_KEY, val);
 		return "Now farming troll from world " + val;
