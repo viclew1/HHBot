@@ -31,6 +31,9 @@ public class Girl {
 	@JsonProperty("pay_in")
 	private Integer payIn;
 
+	@JsonProperty
+	private GirlQuests quests;
+
 
 	public Integer getId() {
 		return id;
@@ -102,6 +105,14 @@ public class Girl {
 
 	public void setPayIn(Integer payIn) {
 		this.payIn = payIn;
+	}
+
+	public GirlQuests getQuests() {
+		return quests;
+	}
+
+	public void setQuests(GirlQuests quests) {
+		this.quests = quests;
 	}
 
 	@Override

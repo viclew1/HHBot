@@ -14,12 +14,23 @@ import fr.lewon.web.bot.entities.input.others.activity.Mission;
 import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
 import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.input.others.battle.TowerOfFameOpponentPremise;
+import fr.lewon.web.bot.entities.quests.QuestStep;
 
 public enum HtmlAnalyzer {
 
 	INSTANCE;
 
 	private HtmlAnalyzer() {}
+
+	public QuestStep[] getQuestSteps(String questContent) throws IOException {
+		String regex = "Q.steps = (\\[.*?\\]);";
+		Matcher matcher = matchPattern(questContent, regex);
+		if (!matcher.find()) {
+			return null;
+		}
+		String json = matcher.group(1).replace("\"cost\":[]", "\"cost\":{}");
+		return JacksonHelper.INSTANCE.jsonToObject(QuestStep[].class, json);
+	}
 
 	public List<Girl> findAllGirls(String haremContent) throws IOException {
 		List<Girl> girls = new ArrayList<>();
@@ -64,15 +75,6 @@ public enum HtmlAnalyzer {
 		}
 		String battlePlayerStr = matcher.group(1);
 		return JacksonHelper.INSTANCE.jsonToObject(BattleMob.class, battlePlayerStr);
-	}
-
-	public Long getCurrentQuestId(String content) throws IOException {
-		String regex = "<a href=\"/quest/([0-9]*)\">";
-		Matcher matcher = matchPattern(content, regex);
-		if (!matcher.find()) {
-			return null;
-		}
-		return Long.parseLong(matcher.group(1));
 	}
 
 	public String getCurrentWorldId(String mapContent) {

@@ -2,6 +2,8 @@ package fr.lewon.web.bot.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import fr.lewon.web.bot.entities.quests.QuestPremise;
+
 public class UserInfos {
 
 	@JsonProperty("energy_quest")
@@ -27,6 +29,9 @@ public class UserInfos {
 
 	@JsonProperty("energy_challenge_max")
 	private Integer energyChallengeMax;
+
+	@JsonProperty
+	private QuestPremise questing;
 
 	public Integer getEnergyQuest() {
 		return energyQuest;
@@ -66,6 +71,38 @@ public class UserInfos {
 
 	public void setHardCurrency(Integer hardCurrency) {
 		this.hardCurrency = hardCurrency;
+	}
+
+	public Integer getEnergyQuestMax() {
+		return energyQuestMax;
+	}
+
+	public void setEnergyQuestMax(Integer energyQuestMax) {
+		this.energyQuestMax = energyQuestMax;
+	}
+
+	public Integer getEnergyFightMax() {
+		return energyFightMax;
+	}
+
+	public void setEnergyFightMax(Integer energyFightMax) {
+		this.energyFightMax = energyFightMax;
+	}
+
+	public Integer getEnergyChallengeMax() {
+		return energyChallengeMax;
+	}
+
+	public void setEnergyChallengeMax(Integer energyChallengeMax) {
+		this.energyChallengeMax = energyChallengeMax;
+	}
+
+	public QuestPremise getQuesting() {
+		return questing;
+	}
+
+	public void setQuesting(QuestPremise questing) {
+		this.questing = questing;
 	}
 
 }

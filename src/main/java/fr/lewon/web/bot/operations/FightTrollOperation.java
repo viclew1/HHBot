@@ -6,9 +6,11 @@ import fr.lewon.bot.errors.ServerException;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.TimeScale;
+import fr.lewon.web.bot.entities.Response;
 import fr.lewon.web.bot.entities.SessionResponse;
+import fr.lewon.web.bot.entities.UserInfos;
 import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
-import fr.lewon.web.bot.properties.FarmProperties;
+import fr.lewon.web.bot.properties.HHBotProperties;
 import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
@@ -24,7 +26,17 @@ public class FightTrollOperation extends HHOperation {
 			throws Exception {
 
 		SessionResponse session = sessionManager.getSession();
+
+		String homeContent = requestProcessor.getHomeContent(session);
+		UserInfos userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
+		Integer energy = userInfos.getEnergyFight();
+
 		String worldId = getWorldId(runner, requestProcessor, session);
+		if (worldId == null) {
+			runner.logInfo("No world found. Trying again in 1 hour.");
+			return new Delay(1, TimeScale.HOURS);
+		}
+
 		String worldContent = requestProcessor.getWorldContent(session, worldId);
 		String trollId = HtmlAnalyzer.INSTANCE.getTrollId(worldContent);
 		if (trollId == null) {
@@ -37,7 +49,11 @@ public class FightTrollOperation extends HHOperation {
 		battleMob.setIdWorld(worldId);
 
 		int fightCpt = 0;
-		while (requestProcessor.fightOpponentMob(session, battleMob).getSuccess()) {
+		for (int i = 0 ; i < energy ; i++) {
+			Response response = requestProcessor.fightOpponentMob(session, battleMob);
+			if (!response.getSuccess()) {
+				break;
+			}
 			fightCpt++;
 		}
 		runner.logInfo("Troll {} fought. {} fights done. Trying again in 2 hours.", trollId, fightCpt);
@@ -45,9 +61,9 @@ public class FightTrollOperation extends HHOperation {
 	}
 
 	private String getWorldId(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session) throws ServerException, IOException {
-		String preferedWorldId = runner.getBot().getGameProperties().getProperty(FarmProperties.TROLL_WORLD_KEY);
+		Object preferedWorldId = HHBotProperties.TROLL_WORLD.getValue();
 		if (preferedWorldId != null) {
-			return preferedWorldId;
+			return String.valueOf(HHBotProperties.TROLL_WORLD.getValue());
 		}
 		String mapContent = requestProcessor.getMapContent(session);
 		return HtmlAnalyzer.INSTANCE.getCurrentWorldId(mapContent);

@@ -45,6 +45,7 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 	private static final String ACTIVITEIS = "/activities.html";
 	private static final String MAP = "/map.html";
 	private static final String WORLD = "/world";
+	private static final String QUEST = "/quest";
 
 	private static final String SLASH = "/";
 
@@ -122,6 +123,11 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 
 	public String getLeagueBattleContent(SessionResponse session, String id) throws ServerException, IOException {
 		String url = BASE_URL + BATTLE + "?league_battle=1&id_member=" + id;
+		return readAllPageContent(url, session.getCookies());
+	}
+
+	public String getQuestContent(SessionResponse session, Long questId) throws ServerException, IOException {
+		String url = BASE_URL + QUEST + SLASH + questId;
 		return readAllPageContent(url, session.getCookies());
 	}
 
