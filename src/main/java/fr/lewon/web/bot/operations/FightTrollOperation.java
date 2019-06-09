@@ -30,6 +30,7 @@ public class FightTrollOperation extends HHOperation {
 		String homeContent = requestProcessor.getHomeContent(session);
 		UserInfos userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
 		Integer energy = userInfos.getEnergyFight();
+		Integer energyToKeep = Integer.parseInt(runner.getBot().getPropStore().getProperty(HHBotProperties.FIGHT_ENERGY_TO_KEEP.getKey()).getValue().toString());
 
 		String worldId = getWorldId(runner, requestProcessor, session);
 		if (worldId == null) {
@@ -49,7 +50,7 @@ public class FightTrollOperation extends HHOperation {
 		battleMob.setIdWorld(worldId);
 
 		int fightCpt = 0;
-		for (int i = 0 ; i < energy ; i++) {
+		for (int i = energyToKeep ; i < energy ; i++) {
 			Response response = requestProcessor.fightOpponentMob(session, battleMob);
 			if (!response.getSuccess()) {
 				break;
@@ -61,9 +62,9 @@ public class FightTrollOperation extends HHOperation {
 	}
 
 	private String getWorldId(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session) throws ServerException, IOException {
-		Object preferedWorldId = HHBotProperties.TROLL_WORLD.getValue();
+		Object preferedWorldId = runner.getBot().getPropStore().getProperty(HHBotProperties.TROLL_WORLD.getKey()).getValue();
 		if (preferedWorldId != null) {
-			return String.valueOf(HHBotProperties.TROLL_WORLD.getValue());
+			return String.valueOf(preferedWorldId);
 		}
 		String mapContent = requestProcessor.getMapContent(session);
 		return HtmlAnalyzer.INSTANCE.getCurrentWorldId(mapContent);

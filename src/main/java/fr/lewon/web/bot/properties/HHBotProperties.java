@@ -1,26 +1,27 @@
 package fr.lewon.web.bot.properties;
 
-import fr.lewon.bot.props.BotPropertyType;
-import fr.lewon.bot.props.IBotProperty;
+import fr.lewon.bot.props.BotPropertyDescriptor;
+import fr.lewon.bot.props.IBotPropertyBuilder;
 
-public enum HHBotProperties implements IBotProperty {
+public enum HHBotProperties implements IBotPropertyBuilder {
 
-	TROLL_WORLD("troll_world", null, false, "Troll to farm. NULL to define based on the current world.", BotPropertyType.INTEGER);
+	TROLL_WORLD("troll_world", null, false, true, "Troll to farm. NULL to define based on the current world."),
+	FIGHT_ENERGY_TO_KEEP("fight_energy_to_keep", 0, true, false, "Energy to keep when fighting trolls."),
+	TOWER_ENERGY_TO_KEEP("tower_energy_to_keep", 0, true, false, "Energy to keep when fighting in tower of fame.");
 
 	private final String key;
-	private Object value;
-	private boolean needed;
-	private final String description;
-	private final BotPropertyType type;
-	private final Object[] acceptedValues;
+	private final Object defaultValue;
+	private final BotPropertyDescriptor descriptor;
 
-	private HHBotProperties(String key, Object value, boolean needed, String description, BotPropertyType type, Object... acceptedValues) {
+	private HHBotProperties(String key, Object defaultValue, boolean needed, boolean nullable, String description, Object... acceptedValues) {
 		this.key = key;
-		this.value = value;
-		this.needed = needed;
-		this.description = description;
-		this.type = type;
-		this.acceptedValues = acceptedValues;
+		this.defaultValue = defaultValue;
+		this.descriptor = new BotPropertyDescriptor(description, needed, nullable, acceptedValues);
+	}
+
+	@Override
+	public BotPropertyDescriptor getDescriptor() {
+		return descriptor;
 	}
 
 	@Override
@@ -29,33 +30,8 @@ public enum HHBotProperties implements IBotProperty {
 	}
 
 	@Override
-	public String getDescription() {
-		return description;
-	}
-
-	@Override
-	public Object[] getAcceptedValues() {
-		return acceptedValues;
-	}
-
-	@Override
-	public BotPropertyType getType() {
-		return type;
-	}
-
-	@Override
-	public Object getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(Object value) {
-		this.value = value;
-	}
-
-	@Override
-	public boolean isNeeded() {
-		return needed;
+	public Object getDefaultValue() {
+		return defaultValue;
 	}
 
 }
