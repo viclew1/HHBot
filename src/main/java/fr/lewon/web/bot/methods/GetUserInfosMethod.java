@@ -1,24 +1,33 @@
 package fr.lewon.web.bot.methods;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+import fr.lewon.bot.errors.BotRunnerException;
+import fr.lewon.bot.props.BotPropertyDescriptor;
+import fr.lewon.bot.props.BotPropertyStore;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
-public class GetUserInfosMethod implements HHBotProcessor {
+public class GetUserInfosMethod extends HHBotProcessor {
 
-	@Override
-	public Map<String, Object> getNeededParameters(BotRunner runner) {
-		return new HashMap<>();
+	public GetUserInfosMethod(String id, String label) {
+		super(id, label, new ArrayList<>());
 	}
 
 	@Override
-	public Object process(BotRunner runner, HHSessionManager manager, HHRequestProcessor requestProcessor, Map<String, Object> params) {
+	protected List<BotPropertyDescriptor> getSpecificParamBuilders(BotRunner runner) {
+		return new ArrayList<>();
+	}
+
+	@Override
+	protected Object doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor,
+			BotPropertyStore params) throws BotRunnerException {
+		
 		try {
-			String homeContent = requestProcessor.getHomeContent(manager.getSession());
+			String homeContent = requestProcessor.getHomeContent(sessionManager.getSession());
 			return HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
 		} catch (Exception e) {
 			return e.getMessage();

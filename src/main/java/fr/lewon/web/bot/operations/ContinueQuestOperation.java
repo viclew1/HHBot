@@ -30,7 +30,7 @@ public class ContinueQuestOperation extends HHOperation {
 			stepCpt ++;
 		}
 
-		runner.logInfo("Quest {} advanced {} steps. Trying again in 4 hours", questId, stepCpt);
+		runner.getBotLogger().info("Quest {} advanced {} steps. Trying again in 4 hours", questId, stepCpt);
 		return new Delay(4, TimeScale.HOURS);
 	}
 

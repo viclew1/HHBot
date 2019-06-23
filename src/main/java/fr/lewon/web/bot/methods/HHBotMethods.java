@@ -1,34 +1,22 @@
 package fr.lewon.web.bot.methods;
 
-import fr.lewon.bot.methods.IBotMethod;
-import fr.lewon.bot.methods.IBotMethodProcessor;
+import fr.lewon.bot.methods.AbstractBotMethodProcessor;
+import fr.lewon.bot.methods.IBotMethodEnum;
 import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HHSessionManager;
 
-public enum HHBotMethods implements IBotMethod<HHSessionManager, HHRequestProcessor> {
+public enum HHBotMethods implements IBotMethodEnum<HHSessionManager, HHRequestProcessor> {
 
-	GET_USER_INFOS("Get user infos", new GetUserInfosMethod());
+	GET_USER_INFOS(new GetUserInfosMethod("GET_USER_INFOS", "Get user infos"));
 
-	private final String label;
 	private final HHBotProcessor botMethod;
 	
-	private HHBotMethods(String label, HHBotProcessor botMethod) {
-		this.label = label;
+	private HHBotMethods(HHBotProcessor botMethod) {
 		this.botMethod = botMethod;
 	}
 
 	@Override
-	public String getId() {
-		return name();
-	}
-
-	@Override
-	public String getLabel() {
-		return label;
-	}
-
-	@Override
-	public IBotMethodProcessor<HHSessionManager, HHRequestProcessor> getProcessor() {
+	public AbstractBotMethodProcessor<HHSessionManager, HHRequestProcessor> getProcessor() {
 		return botMethod;
 	}
 

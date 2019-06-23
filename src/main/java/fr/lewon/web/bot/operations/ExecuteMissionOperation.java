@@ -29,15 +29,15 @@ public class ExecuteMissionOperation extends HHOperation {
 		for (Mission m : missions) {
 			if (m.getRemainingTime() != null && m.getRemainingTime() <= 0) {
 				requestProcessor.claimReward(session, m);
-				runner.logInfo("Mission {} claimed.", m.getIdMission());
+				runner.getBotLogger().info("Mission {} claimed.", m.getIdMission());
 			} else if (m.isStartable()) {
 				requestProcessor.startMission(session, m);
-				runner.logInfo("Mission {} started. Claiming it in {} seconds", m.getIdMission(), m.getDuration());
+				runner.getBotLogger().info("Mission {} started. Claiming it in {} seconds", m.getIdMission(), m.getDuration());
 				return new Delay(m.getDuration() + 5, TimeScale.SECONDS);
 			}
 		}
 
-		runner.logInfo("Every mission finished. Trying again in 2 hours.");
+		runner.getBotLogger().info("Every mission finished. Trying again in 2 hours.");
 		requestProcessor.getFinalMissionGift(session);
 		return new Delay(2, TimeScale.HOURS);
 

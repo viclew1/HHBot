@@ -30,18 +30,18 @@ public class FightTrollOperation extends HHOperation {
 		String homeContent = requestProcessor.getHomeContent(session);
 		UserInfos userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
 		Integer energy = userInfos.getEnergyFight();
-		Integer energyToKeep = Integer.parseInt(runner.getBot().getPropStore().getProperty(HHBotProperties.FIGHT_ENERGY_TO_KEEP.getKey()).getValue().toString());
+		Integer energyToKeep = (Integer) runner.getBot().getPropStore().get(HHBotProperties.FIGHT_ENERGY_TO_KEEP.getDescriptor().getKey());
 
 		String worldId = getWorldId(runner, requestProcessor, session);
 		if (worldId == null) {
-			runner.logInfo("No world found. Trying again in 1 hour.");
+			runner.getBotLogger().info("No world found. Trying again in 1 hour.");
 			return new Delay(1, TimeScale.HOURS);
 		}
 
 		String worldContent = requestProcessor.getWorldContent(session, worldId);
 		String trollId = HtmlAnalyzer.INSTANCE.getTrollId(worldContent);
 		if (trollId == null) {
-			runner.logInfo("No troll found in world {}. Trying again in 1 hour.", worldId);
+			runner.getBotLogger().info("No troll found in world {}. Trying again in 1 hour.", worldId);
 			return new Delay(1, TimeScale.HOURS);
 		}
 		String battleTrollContent = requestProcessor.getBattleTrollContent(session, trollId);
@@ -57,12 +57,12 @@ public class FightTrollOperation extends HHOperation {
 			}
 			fightCpt++;
 		}
-		runner.logInfo("Troll {} fought. {} fights done. Trying again in 2 hours.", trollId, fightCpt);
+		runner.getBotLogger().info("Troll {} fought. {} fights done. Trying again in 2 hours.", trollId, fightCpt);
 		return new Delay(2, TimeScale.HOURS);
 	}
 
 	private String getWorldId(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session) throws ServerException, IOException {
-		Object preferedWorldId = runner.getBot().getPropStore().getProperty(HHBotProperties.TROLL_WORLD.getKey()).getValue();
+		Integer preferedWorldId = (Integer) runner.getBot().getPropStore().get(HHBotProperties.TROLL_WORLD.getDescriptor().getKey());
 		if (preferedWorldId != null) {
 			return String.valueOf(preferedWorldId);
 		}

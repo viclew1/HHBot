@@ -41,7 +41,7 @@ public class GirlsManagerOperation extends HHOperation {
 
 		for (Girl girl : newGirls) {
 			runner.addAction(new HarvestGirlOperation(sessionManager, requestProcessor, girl.getId()), girl.getPayIn() + 1);
-			runner.logInfo("Harvest will start on girl {} in {} seconds", girl.getId(), girl.getPayIn() + 1);
+			runner.getBotLogger().info("Harvest will start on girl {} in {} seconds", girl.getId(), girl.getPayIn() + 1);
 			ownedGirls.add(girl);
 		}
 
@@ -51,9 +51,9 @@ public class GirlsManagerOperation extends HHOperation {
 		//			if (toUpgrade != null) {
 		//				if (upgradeGirl(requestProcessor, session, toUpgrade, userInfos.getSoftCurrency())) {
 		//					toUpgrade.setCanUpgrade(false);
-		//					runner.logInfo("Girl {} upgraded", toUpgrade.getId());
+		//					runner.getBotLogger().info("Girl {} upgraded", toUpgrade.getId());
 		//				} else {
-		//					runner.logInfo("Not enough money to upgrade girl {}.", toUpgrade.getId());
+		//					runner.getBotLogger().info("Not enough money to upgrade girl {}.", toUpgrade.getId());
 		//					break;
 		//				}
 		//			} else {

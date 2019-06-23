@@ -32,7 +32,7 @@ public class FightArenaOperation extends HHOperation {
 				cpt++;
 			}
 		}
-		runner.logInfo("{} arena fights done. Trying again in 15 minutes.", cpt);
+		runner.getBotLogger().info("{} arena fights done. Trying again in 15 minutes.", cpt);
 		return new Delay(15, TimeScale.MINUTES);
 	}
 

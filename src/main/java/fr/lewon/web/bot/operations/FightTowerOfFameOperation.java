@@ -30,11 +30,11 @@ public class FightTowerOfFameOperation extends HHOperation {
 		String homeContent = requestProcessor.getHomeContent(session);
 		UserInfos userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
 		Integer energy = userInfos.getEnergyChallenge();
-		Integer energyToKeep = Integer.parseInt(runner.getBot().getPropStore().getProperty(HHBotProperties.TOWER_ENERGY_TO_KEEP.getKey()).getValue().toString());
+		Integer energyToKeep = (Integer) runner.getBot().getPropStore().get(HHBotProperties.TOWER_ENERGY_TO_KEEP.getDescriptor().getKey());
 		Integer fightCount = energy - energyToKeep;
 		
 		if (fightCount <= 0) {
-			runner.logInfo("Not enough energy. Trying again in 2 hour");
+			runner.getBotLogger().info("Not enough energy. Trying again in 2 hour");
 			return new Delay(2, TimeScale.HOURS);
 		}
 		
@@ -52,17 +52,17 @@ public class FightTowerOfFameOperation extends HHOperation {
 			Response fight = null;
 			while ((fight = requestProcessor.fightOpponentPlayer(session, battlePlayer)).getSuccess()) {
 				if (++cpt >= fightCount) {
-					runner.logInfo("{} Tower of fame fights done. Trying again in 2 hours", cpt);
+					runner.getBotLogger().info("{} Tower of fame fights done. Trying again in 2 hours", cpt);
 					return new Delay(2, TimeScale.HOURS);
 				}
 			}
 			if ("Not enough challenge energy.".equals(fight.getError())) {
-				runner.logInfo("Stopped by error : Not enough energy - {} Tower of fame fights done. Trying again in 2 hours", cpt);
+				runner.getBotLogger().info("Stopped by error : Not enough energy - {} Tower of fame fights done. Trying again in 2 hours", cpt);
 				return new Delay(2, TimeScale.HOURS);
 			}
 		}
 
-		runner.logInfo("No opponent to fight. Trying again in 5 hours");
+		runner.getBotLogger().info("No opponent to fight. Trying again in 5 hours");
 		return new Delay(5, TimeScale.HOURS);
 	}
 

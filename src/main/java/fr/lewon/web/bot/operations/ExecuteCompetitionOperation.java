@@ -24,7 +24,7 @@ public class ExecuteCompetitionOperation extends HHOperation {
 		SessionResponse session = sessionManager.getSession();
 		String activityPage = requestProcessor.getActivitiesContent(session);
 		List<Competition> competitions = HtmlAnalyzer.INSTANCE.getCompetitions(activityPage);
-		runner.logInfo("Every competitions finished. Trying again in 1 day.");
+		runner.getBotLogger().info("Every competitions finished. Trying again in 1 day.");
 		requestProcessor.getFinalMissionGift(session);
 		return new Delay(1, TimeScale.DAYS);
 	}

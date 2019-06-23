@@ -22,7 +22,7 @@ public class InitHentaiHeroesBotOperation extends HHOperation {
 		runner.addAction(new FightTowerOfFameOperation(sessionManager, requestProcessor), 0);
 		runner.addAction(new FightTrollOperation(sessionManager, requestProcessor), 0);
 		runner.addAction(new ContinueQuestOperation(sessionManager, requestProcessor), 0);
-		runner.logInfo("Initial operations started.");
+		runner.getBotLogger().info("Initial operations started.");
 		return null;
 	}
 

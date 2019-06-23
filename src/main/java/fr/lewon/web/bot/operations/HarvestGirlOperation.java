@@ -23,10 +23,10 @@ public class HarvestGirlOperation extends HHOperation {
 		SalaryResponse sr = requestProcessor.getSalary(sessionManager.getSession(), girlId);
 		if (sr.getSuccess()) {
 			int nextHarvestTime = sr.getTime();
-			runner.logInfo("Girl {} collected. Money made : {}. Next harvest in {} seconds.", girlId, sr.getMoney(), nextHarvestTime);
+			runner.getBotLogger().info("Girl {} collected. Money made : {}. Next harvest in {} seconds.", girlId, sr.getMoney(), nextHarvestTime);
 			return new Delay(nextHarvestTime + 1);
 		}
-		runner.logInfo("Girl {} can't be collected. Trying again in 20 minutes", girlId);
+		runner.getBotLogger().info("Girl {} can't be collected. Trying again in 20 minutes", girlId);
 		return new Delay(20, TimeScale.MINUTES);
 	}
 
