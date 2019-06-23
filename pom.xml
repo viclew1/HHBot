@@ -10,7 +10,7 @@
 		<dependency>
 			<groupId>lewon.bot.manager</groupId>
 			<artifactId>DefaultBot</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
