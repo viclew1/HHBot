@@ -54,7 +54,7 @@ public enum BodyHelper {
 
 	private String getElementValue(Field field, Object refObj) {
 		try {
-			boolean accessible = field.isAccessible();
+			boolean accessible = field.canAccess(refObj);
 			field.setAccessible(true);
 			Object val = field.get(refObj);
 			field.setAccessible(accessible);
