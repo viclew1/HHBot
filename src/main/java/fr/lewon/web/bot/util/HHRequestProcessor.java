@@ -5,13 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicHeader;
 
 import fr.lewon.bot.errors.ServerException;
 import fr.lewon.bot.http.AbstractRequestProcessor;
 import fr.lewon.bot.http.DefaultResponse;
-import fr.lewon.bot.http.RequestHelper;
 import fr.lewon.web.bot.entities.OpponentInfoResponse;
 import fr.lewon.web.bot.entities.Response;
 import fr.lewon.web.bot.entities.SalaryResponse;
@@ -49,10 +47,6 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 
 	private static final String SLASH = "/";
 
-	public HHRequestProcessor() {
-		super(new RequestHelper());
-	}
-
 	@Override
 	protected List<Header> getNeededHeaders() {
 		List<Header> neededHeaders = new ArrayList<>();
@@ -71,9 +65,7 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 
 	public DefaultResponse<SessionResponse> getSession(String login, String password) throws ServerException, IOException {
 		String url = BASE_URL + PHOENIX_AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new PlayerInfos(login, password)));
-		DefaultResponse<SessionResponse> response = generateResponse(SessionResponse.class, httpResponse);
-		return response;
+		return processPostRequest(SessionResponse.class, url, BodyHelper.INSTANCE.generateBody(new PlayerInfos(login, password)));
 	}
 
 	public String getHomeContent(SessionResponse session) throws ServerException, IOException {
@@ -133,56 +125,47 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 
 	public OpponentInfoResponse getOpponentInfo(SessionResponse session, String opponentId) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionLeaguesGetOpponentInfo(opponentId)), session.getCookies());
-		return generateResponse(OpponentInfoResponse.class, httpResponse).getEntity();
+		return processPostRequest(OpponentInfoResponse.class, url, BodyHelper.INSTANCE.generateBody(new ActionLeaguesGetOpponentInfo(opponentId)), session.getCookies()).getEntity();
 	}
 
 	public SalaryResponse getSalary(SessionResponse session, int which) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionGirlSingleSalary(which)), session.getCookies());
-		return generateResponse(SalaryResponse.class, httpResponse).getEntity();
+		return processPostRequest(SalaryResponse.class, url, BodyHelper.INSTANCE.generateBody(new ActionGirlSingleSalary(which)), session.getCookies()).getEntity();
 	}
 
 	public SalaryResponse getAllSalaries(SessionResponse session) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionGirlAllSalaries()), session.getCookies());
-		return generateResponse(SalaryResponse.class, httpResponse).getEntity();
+		return processPostRequest(SalaryResponse.class, url, BodyHelper.INSTANCE.generateBody(new ActionGirlAllSalaries()), session.getCookies()).getEntity();
 	}
 
 	public Response startMission(SessionResponse session, Mission mission) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionMissionStartMission(mission.getIdMission(), mission.getIdMemberMission())), session.getCookies());
-		return generateResponse(SalaryResponse.class, httpResponse).getEntity();
+		return processPostRequest(SalaryResponse.class, url, BodyHelper.INSTANCE.generateBody(new ActionMissionStartMission(mission.getIdMission(), mission.getIdMemberMission())), session.getCookies()).getEntity();
 	}
 
 	public Response getFinalMissionGift(SessionResponse session) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionMissionGiveGift()), session.getCookies());
-		return generateResponse(SalaryResponse.class, httpResponse).getEntity();
+		return processPostRequest(SalaryResponse.class, url, BodyHelper.INSTANCE.generateBody(new ActionMissionGiveGift()), session.getCookies()).getEntity();
 	}
 
 	public Response claimReward(SessionResponse session, Mission mission) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionMissionClaimReward(mission.getIdMission(), mission.getIdMemberMission())), session.getCookies());
-		return generateResponse(SalaryResponse.class, httpResponse).getEntity();
+		return processPostRequest(SalaryResponse.class, url, BodyHelper.INSTANCE.generateBody(new ActionMissionClaimReward(mission.getIdMission(), mission.getIdMemberMission())), session.getCookies()).getEntity();
 	}
 
 	public Response fightOpponentPlayer(SessionResponse session, BattlePlayer battlePlayer) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionBattlePlayer(battlePlayer)), session.getCookies());
-		return generateResponse(Response.class, httpResponse).getEntity();
+		return processPostRequest(Response.class, url, BodyHelper.INSTANCE.generateBody(new ActionBattlePlayer(battlePlayer)), session.getCookies()).getEntity();
 	}
 
 	public Response fightOpponentMob(SessionResponse session, BattleMob battleMob) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionBattleMob(battleMob)), session.getCookies());
-		return generateResponse(Response.class, httpResponse).getEntity();
+		return processPostRequest(Response.class, url, BodyHelper.INSTANCE.generateBody(new ActionBattleMob(battleMob)), session.getCookies()).getEntity();
 	}
 
 	public Response continueQuest(SessionResponse session, Long questId) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
-		HttpResponse httpResponse = getRequestHelper().processPostRequest(url, BodyHelper.INSTANCE.generateBody(new ActionQuestNext(questId)), session.getCookies());
-		return generateResponse(Response.class, httpResponse).getEntity();
+		return processPostRequest(Response.class, url, BodyHelper.INSTANCE.generateBody(new ActionQuestNext(questId)), session.getCookies()).getEntity();
 	}
 
 }
