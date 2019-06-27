@@ -7,7 +7,8 @@ import fr.lewon.web.bot.util.HHSessionManager;
 
 public enum HHBotMethods implements IBotMethodEnum<HHSessionManager, HHRequestProcessor> {
 
-	GET_USER_INFOS(new GetUserInfosMethod("GET_USER_INFOS", "Get user infos"));
+	GET_USER_INFOS(new GetUserInfosMethod("GET_USER_INFOS", "Get user infos")),
+	UPGRADE_STATS(new UpgradeStatMethod("UPGRADE_STAT", "Upgrade hero stats"));
 
 	private final HHBotProcessor botMethod;
 	

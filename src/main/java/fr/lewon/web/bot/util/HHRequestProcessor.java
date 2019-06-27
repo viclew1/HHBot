@@ -27,6 +27,7 @@ import fr.lewon.web.bot.entities.input.others.activity.Mission;
 import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
 import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.input.quest.ActionQuestNext;
+import fr.lewon.web.bot.entities.input.stat.ActionUpgradeStat;
 
 public class HHRequestProcessor extends AbstractRequestProcessor {
 
@@ -166,6 +167,11 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 	public Response continueQuest(SessionResponse session, Long questId) throws ServerException, IOException {
 		String url = BASE_URL + AJAX;
 		return processPostRequest(Response.class, url, BodyHelper.INSTANCE.generateBody(new ActionQuestNext(questId)), session.getCookies()).getEntity();
+	}
+
+	public Response upgradeStat(SessionResponse session, int statToUpgrade) throws ServerException, IOException {
+		String url = BASE_URL + AJAX;
+		return processPostRequest(Response.class, url, BodyHelper.INSTANCE.generateBody(new ActionUpgradeStat(statToUpgrade)), session.getCookies()).getEntity();
 	}
 
 }
