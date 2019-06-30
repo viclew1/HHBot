@@ -41,7 +41,7 @@ public class UpgradeStatMethod extends HHBotProcessor {
 				cpt++;
 			}
 		} catch (Exception e) {
-			return e.getMessage();
+			runner.getBotLogger().error("Upgrade failed", e);
 		}
 		return "Stat " + statToUpgrade + " upgraded " + cpt + " times";
 	}

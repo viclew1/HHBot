@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.lewon.bot.http.util.JacksonHelper;
+import fr.lewon.bot.http.json.JacksonHelper;
 import fr.lewon.web.bot.entities.UserInfos;
 import fr.lewon.web.bot.entities.girls.Girl;
 import fr.lewon.web.bot.entities.input.others.activity.Competition;
