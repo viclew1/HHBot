@@ -6,7 +6,7 @@ import fr.lewon.bot.props.IBotPropertyDescriptorEnum;
 
 public enum HHBotProperties implements IBotPropertyDescriptorEnum {
 
-	TROLL_WORLD("troll_world", BotPropertyType.INTEGER, null, false, true, "Troll to farm. NULL to define based on the current world."),
+	TROLL_WORLD("troll_world", BotPropertyType.INTEGER, null, false, true, "World containing the troll to farm. NULL to define based on the current world."),
 	FIGHT_ENERGY_TO_KEEP("fight_energy_to_keep", BotPropertyType.INTEGER, 0, true, false, "Energy to keep when fighting trolls."),
 	TOWER_ENERGY_TO_KEEP("tower_energy_to_keep", BotPropertyType.INTEGER, 0, true, false, "Energy to keep when fighting in tower of fame.");
 
