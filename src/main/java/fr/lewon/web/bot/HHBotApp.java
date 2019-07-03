@@ -35,7 +35,7 @@ public class HHBotApp extends AbstractParameterizedApp {
 	}
 
 	@Override
-	protected void run() throws ParameterizedAppException {
+	protected void run(String[] args) throws ParameterizedAppException {
 		try {
 			BotRunner runner = new HHBotRunnerBuilder().buildRunner(LOGIN_PARAMETER.getValue(), PASSWORD_PARAMETER.getValue());
 			Map<String, Object> params = new HashMap<>();
@@ -51,7 +51,7 @@ public class HHBotApp extends AbstractParameterizedApp {
 	}
 	
 	public static void main(String[] args) throws ParameterizedAppException {
-		new HHBotApp().launch();
+		new HHBotApp().launch(args);
 	}
 
 	
