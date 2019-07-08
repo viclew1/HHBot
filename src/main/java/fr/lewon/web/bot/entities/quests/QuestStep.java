@@ -2,7 +2,7 @@ package fr.lewon.web.bot.entities.quests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fr.lewon.web.bot.entities.Cost;
+import fr.lewon.web.bot.entities.diverse.Cost;
 
 public class QuestStep {
 

@@ -16,12 +16,13 @@ public class InitHentaiHeroesBotOperation extends HHOperation {
 	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		runner.addAction(new GirlsManagerOperation(sessionManager, requestProcessor), 0);
-		runner.addAction(new FightArenaOperation(sessionManager, requestProcessor), 0);
-		runner.addAction(new ExecuteMissionOperation(sessionManager, requestProcessor), 0);
-		runner.addAction(new FightTowerOfFameOperation(sessionManager, requestProcessor), 0);
-		runner.addAction(new FightTrollOperation(sessionManager, requestProcessor), 0);
-		runner.addAction(new ContinueQuestOperation(sessionManager, requestProcessor), 0);
+		runner.addAction(new GirlsManagerOperation(sessionManager, requestProcessor));
+		runner.addAction(new FightArenaOperation(sessionManager, requestProcessor));
+		runner.addAction(new ExecuteMissionOperation(sessionManager, requestProcessor));
+		runner.addAction(new FightTowerOfFameOperation(sessionManager, requestProcessor));
+		runner.addAction(new FightTrollOperation(sessionManager, requestProcessor));
+		runner.addAction(new ContinueQuestOperation(sessionManager, requestProcessor));
+		runner.addAction(new ChampionsFightsManagerOperation(sessionManager, requestProcessor));
 		runner.getBotLogger().info("Initial operations started.");
 		return null;
 	}

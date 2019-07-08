@@ -33,6 +33,9 @@ public class Girl {
 
 	@JsonProperty
 	private GirlQuests quests;
+	
+	@JsonProperty
+	private Integer damage;
 
 
 	public Integer getId() {
@@ -113,6 +116,14 @@ public class Girl {
 
 	public void setQuests(GirlQuests quests) {
 		this.quests = quests;
+	}
+
+	public Integer getDamage() {
+		return damage;
+	}
+
+	public void setDamage(Integer damage) {
+		this.damage = damage;
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.lewon.bot.http.json.JacksonHelper;
-import fr.lewon.web.bot.entities.UserInfos;
+import fr.lewon.web.bot.entities.champions.ChampionPremise;
 import fr.lewon.web.bot.entities.girls.Girl;
 import fr.lewon.web.bot.entities.input.others.activity.Competition;
 import fr.lewon.web.bot.entities.input.others.activity.Mission;
@@ -15,12 +15,58 @@ import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
 import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.input.others.battle.TowerOfFameOpponentPremise;
 import fr.lewon.web.bot.entities.quests.QuestStep;
+import fr.lewon.web.bot.entities.response.ChampionData;
+import fr.lewon.web.bot.entities.response.UserInfos;
 
 public enum HtmlAnalyzer {
 
 	INSTANCE;
 
 	private HtmlAnalyzer() {}
+
+	
+	public List<Competition> getCompetitions(String activityPage) {
+		List<Competition> competitions = new ArrayList<>();
+		// TODO récupérer les compétitions finies
+		return competitions;
+	}
+	
+	public ChampionData getChampionData(String championContent) throws IOException {
+		String regex = "var championData = (\\{.*?});";
+		Matcher matcher = matchPattern(championContent, regex);
+		if (matcher.find()) {
+			return JacksonHelper.INSTANCE.jsonToObject(ChampionData.class, matcher.group(1));
+		}
+		return null;
+	}
+	
+	public List<ChampionPremise> getChampionsIds(String championsMapContent) {
+		String regex = "<a href=\"champions/([0-9]+)\" class=\"champion-lair\""
+				+ ".*?"
+				+ "<div class=\"champion-lair-name map-label-link\">"
+				+ "(.*?)"
+				+ "</div>";
+		Matcher matcher = matchPattern(championsMapContent, regex);
+		List<ChampionPremise> premises = new ArrayList<>();
+		while (matcher.find()) {
+			int id = Integer.parseInt(matcher.group(1));
+			int waitTime = getWaitTime(matcher.group(2));
+			premises.add(new ChampionPremise(id, waitTime));
+		}
+		return premises;
+	}
+	
+	private int getWaitTime(String championLairContent) {
+		String regex = "<div rel=\"timer\" timer=\"([0-9]+)\">";
+		Matcher matcher = matchPattern(championLairContent, regex);
+		if (matcher.find()) {
+			Long timer = Long.parseLong(matcher.group(1));
+			Integer waitTime = (int) (timer - System.currentTimeMillis() / 1000);
+			return waitTime < 0 ? 0 : waitTime;
+		}
+		return 0;
+	}
+
 
 	public QuestStep[] getQuestSteps(String questContent) throws IOException {
 		String regex = "Q.steps = (\\[.*?\\]);";
@@ -154,12 +200,6 @@ public enum HtmlAnalyzer {
 			missions.add(mission);
 		}
 		return missions;
-	}
-
-	public List<Competition> getCompetitions(String activityPage) {
-		List<Competition> competitions = new ArrayList<>();
-		// TODO récupérer les compétitions finies
-		return competitions;
 	}
 
 }

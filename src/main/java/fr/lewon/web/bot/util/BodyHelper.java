@@ -2,6 +2,7 @@ package fr.lewon.web.bot.util;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,12 +39,25 @@ public enum BodyHelper {
 				continue;
 			}
 			String elementName = getElementName(f, bodyMember);
-			String elementValue = getElementValue(f, toWrite);
-			elements.add(new BodyElement(elementName, elementValue));
+			Object elementValue = getElementValue(f, toWrite);
+			if (elementValue != null) {
+				addBodyElement(elements, elementName, elementValue);
+			}
 		}
 		return elements;
 	}
 
+
+	private void addBodyElement(List<BodyElement> elements, String elementName, Object elementValue) {
+		if (Collection.class.isInstance(elementValue)) {
+			Collection<?> elementValCollec = (Collection<?>) elementValue;
+			for (Object elem : elementValCollec) {
+				elements.add(new BodyElement(elementName, elem.toString()));
+			}		
+		} else {
+			elements.add(new BodyElement(elementName, elementValue.toString()));	
+		}	
+	}
 
 	private String getElementName(Field field, BodyMember bodyMember) {
 		if ("".equals(bodyMember.value())) {
@@ -52,18 +66,15 @@ public enum BodyHelper {
 		return bodyMember.value();
 	}
 
-	private String getElementValue(Field field, Object refObj) {
+	private Object getElementValue(Field field, Object refObj) {
 		try {
 			boolean accessible = field.canAccess(refObj);
 			field.setAccessible(true);
 			Object val = field.get(refObj);
 			field.setAccessible(accessible);
-			if (val == null) {
-				return "";
-			}
-			return val.toString();
+			return val;
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			return "";
+			return null;
 		}
 	}
 
