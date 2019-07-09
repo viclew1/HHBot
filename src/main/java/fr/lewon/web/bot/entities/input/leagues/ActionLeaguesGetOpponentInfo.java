@@ -1,10 +1,10 @@
 package fr.lewon.web.bot.entities.input.leagues;
 
-import fr.lewon.web.bot.util.BodyMember;
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 
 public class ActionLeaguesGetOpponentInfo extends ActionLeagues {
 
-	@BodyMember("opponent_id")
+	@FUEMember("opponent_id")
 	private String opponentId;
 
 	public ActionLeaguesGetOpponentInfo(String opponentId) {

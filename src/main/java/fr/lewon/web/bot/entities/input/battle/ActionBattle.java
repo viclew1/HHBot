@@ -2,31 +2,31 @@ package fr.lewon.web.bot.entities.input.battle;
 
 import java.math.BigDecimal;
 
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 import fr.lewon.web.bot.entities.input.Action;
 import fr.lewon.web.bot.entities.input.others.battle.AbstractBattleOpponent;
-import fr.lewon.web.bot.util.BodyMember;
 
 public abstract class ActionBattle extends Action {
 
-	@BodyMember("who[orgasm]")
+	@FUEMember("who[orgasm]")
 	private Integer whoOrgasm;
 
-	@BodyMember("who[ego]")
+	@FUEMember("who[ego]")
 	private BigDecimal whoEgo;
 
-	@BodyMember("who[x]")
+	@FUEMember("who[x]")
 	private Integer whoX;
 
-	@BodyMember("who[curr_ego]")
+	@FUEMember("who[curr_ego]")
 	private BigDecimal whoCurrEgo;
 
-	@BodyMember("who[nb_org]")
+	@FUEMember("who[nb_org]")
 	private Integer whoNbOrg;
 
-	@BodyMember("who[figure]")
+	@FUEMember("who[figure]")
 	private Integer whoFigure;
 
-	@BodyMember
+	@FUEMember
 	private Integer autoFight;
 
 

@@ -1,13 +1,13 @@
 package fr.lewon.web.bot.entities.input;
 
-import fr.lewon.web.bot.util.BodyMember;
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 
 public abstract class Action {
 
-	@BodyMember("class")
+	@FUEMember("class")
 	private String clazz;
 
-	@BodyMember
+	@FUEMember
 	private String action;
 
 	public Action(String clazz, String action) {

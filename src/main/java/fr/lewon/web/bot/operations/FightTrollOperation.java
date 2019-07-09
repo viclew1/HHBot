@@ -1,8 +1,5 @@
 package fr.lewon.web.bot.operations;
 
-import java.io.IOException;
-
-import fr.lewon.bot.errors.ServerException;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.TimeScale;
@@ -61,7 +58,7 @@ public class FightTrollOperation extends HHOperation {
 		return new Delay(2, TimeScale.HOURS);
 	}
 
-	private String getWorldId(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session) throws ServerException, IOException {
+	private String getWorldId(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session) throws Exception {
 		Integer preferedWorldId = (Integer) runner.getBot().getPropStore().get(HHBotProperties.TROLL_WORLD.getDescriptor().getKey());
 		if (preferedWorldId != null) {
 			return String.valueOf(preferedWorldId);

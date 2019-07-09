@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.lewon.bot.http.json.JacksonHelper;
+import fr.lewon.bot.http.util.JsonHelper;
 import fr.lewon.web.bot.entities.champions.ChampionPremise;
 import fr.lewon.web.bot.entities.girls.Girl;
 import fr.lewon.web.bot.entities.input.others.activity.Competition;
@@ -24,6 +24,7 @@ public enum HtmlAnalyzer {
 
 	private HtmlAnalyzer() {}
 
+	private JsonHelper jsonHelper = new JsonHelper();
 	
 	public List<Competition> getCompetitions(String activityPage) {
 		List<Competition> competitions = new ArrayList<>();
@@ -35,7 +36,7 @@ public enum HtmlAnalyzer {
 		String regex = "var championData = (\\{.*?});";
 		Matcher matcher = matchPattern(championContent, regex);
 		if (matcher.find()) {
-			return JacksonHelper.INSTANCE.jsonToObject(ChampionData.class, matcher.group(1));
+			return jsonHelper.jsonToObject(ChampionData.class, matcher.group(1));
 		}
 		return null;
 	}
@@ -75,7 +76,7 @@ public enum HtmlAnalyzer {
 			return null;
 		}
 		String json = matcher.group(1).replace("\"cost\":[]", "\"cost\":{}");
-		return JacksonHelper.INSTANCE.jsonToObject(QuestStep[].class, json);
+		return jsonHelper.jsonToObject(QuestStep[].class, json);
 	}
 
 	public List<Girl> findAllGirls(String haremContent) throws IOException {
@@ -84,7 +85,7 @@ public enum HtmlAnalyzer {
 		Matcher matcher = matchPattern(haremContent, regex);
 
 		while (matcher.find()) {
-			Girl girl = JacksonHelper.INSTANCE.jsonToObject(Girl.class, matcher.group(1));
+			Girl girl = jsonHelper.jsonToObject(Girl.class, matcher.group(1));
 			girls.add(girl);
 		}
 		return girls;
@@ -98,7 +99,7 @@ public enum HtmlAnalyzer {
 			return null;
 		}
 
-		return JacksonHelper.INSTANCE.jsonToObject(UserInfos.class, matcher.group(1));
+		return jsonHelper.jsonToObject(UserInfos.class, matcher.group(1));
 	}
 
 	public BattlePlayer findOpponentBattlePlayer(String content) throws IOException {
@@ -109,7 +110,7 @@ public enum HtmlAnalyzer {
 			return null;
 		}
 		String battlePlayerStr = matcher.group(1);
-		return JacksonHelper.INSTANCE.jsonToObject(BattlePlayer.class, battlePlayerStr);
+		return jsonHelper.jsonToObject(BattlePlayer.class, battlePlayerStr);
 	}
 
 	public BattleMob findOpponentBattleMob(String battleTrollContent) throws IOException {
@@ -120,7 +121,7 @@ public enum HtmlAnalyzer {
 			return null;
 		}
 		String battlePlayerStr = matcher.group(1);
-		return JacksonHelper.INSTANCE.jsonToObject(BattleMob.class, battlePlayerStr);
+		return jsonHelper.jsonToObject(BattleMob.class, battlePlayerStr);
 	}
 
 	public String getCurrentWorldId(String mapContent) {
@@ -194,7 +195,7 @@ public enum HtmlAnalyzer {
 			String displayStart = matcherMissions.group(3);
 			boolean startable = displayStart == null || "".equals(displayStart);
 
-			Mission mission = JacksonHelper.INSTANCE.jsonToObject(Mission.class, missionBody);
+			Mission mission = jsonHelper.jsonToObject(Mission.class, missionBody);
 			mission.setRarity(rarity);
 			mission.setStartable(startable);
 			missions.add(mission);

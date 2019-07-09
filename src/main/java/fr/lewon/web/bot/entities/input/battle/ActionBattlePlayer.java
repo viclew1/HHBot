@@ -1,14 +1,14 @@
 package fr.lewon.web.bot.entities.input.battle;
 
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
-import fr.lewon.web.bot.util.BodyMember;
 
 public class ActionBattlePlayer extends ActionBattle {
 
-	@BodyMember("who[id_member]")
+	@FUEMember("who[id_member]")
 	private String whoIdMember;
 
-	@BodyMember("who[id_arena]")
+	@FUEMember("who[id_arena]")
 	private String whoIdArena;
 
 	public ActionBattlePlayer(BattlePlayer battlePlayer) {

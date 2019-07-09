@@ -1,25 +1,25 @@
 package fr.lewon.web.bot.entities.input.others;
 
-import fr.lewon.web.bot.util.BodyMember;
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 
 public class PlayerInfos {
 
-	@BodyMember
+	@FUEMember
 	private String login;
 
-	@BodyMember("password")
+	@FUEMember("password")
 	private String password;
 
-	@BodyMember("stay_online")
+	@FUEMember("stay_online")
 	private String stayOnline = "1";
 
-	@BodyMember("module")
+	@FUEMember("module")
 	private String module = "Member";
 
-	@BodyMember("action")
+	@FUEMember("action")
 	private String action = "form_log_in";
 
-	@BodyMember("call")
+	@FUEMember("call")
 	private String call = "Member";
 
 

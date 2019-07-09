@@ -1,14 +1,14 @@
 package fr.lewon.web.bot.entities.input.mission;
 
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 import fr.lewon.web.bot.entities.input.Action;
-import fr.lewon.web.bot.util.BodyMember;
 
 public abstract class ActionMission extends Action {
 
-	@BodyMember("id_mission")
+	@FUEMember("id_mission")
 	private Long idMission;
 
-	@BodyMember("id_member_mission")
+	@FUEMember("id_member_mission")
 	private Long idMemberMission;
 
 	public ActionMission(String action, Long idMission, Long idMemberMission) {

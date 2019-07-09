@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.lewon.web.bot.util.BodyMember;
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 
 public class ActionChampionsTeamDraft extends ActionChampions {
 
-	@BodyMember("id_champion")
+	@FUEMember("id_champion")
 	private Integer idChampion;
 	
-	@BodyMember
+	@FUEMember
 	private String namespace = "h%5CChampions";
 	
-	@BodyMember(value = "girls_to_keep%5B%5D")
+	@FUEMember(value = "girls_to_keep%5B%5D")
 	private List<Integer> girlsToKeep;
 	
 	public ActionChampionsTeamDraft(Integer idChampion, Integer... girlsToKeep) {

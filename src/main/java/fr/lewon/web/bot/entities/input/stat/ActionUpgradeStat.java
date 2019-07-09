@@ -1,11 +1,11 @@
 package fr.lewon.web.bot.entities.input.stat;
 
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 import fr.lewon.web.bot.entities.input.Action;
-import fr.lewon.web.bot.util.BodyMember;
 
 public class ActionUpgradeStat extends Action {
 
-	@BodyMember
+	@FUEMember
 	private Integer carac;
 	
 	public ActionUpgradeStat(Integer carac) {

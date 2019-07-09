@@ -1,10 +1,10 @@
 package fr.lewon.web.bot.entities.input.quest;
 
-import fr.lewon.web.bot.util.BodyMember;
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 
 public class ActionQuestNext extends ActionQuest {
 
-	@BodyMember("id_quest")
+	@FUEMember("id_quest")
 	private Long idQuest;
 
 	public ActionQuestNext(Long idQuest) {

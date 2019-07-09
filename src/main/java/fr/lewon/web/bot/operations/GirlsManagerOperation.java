@@ -1,12 +1,10 @@
 package fr.lewon.web.bot.operations;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.lewon.bot.errors.ServerException;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.TimeScale;
@@ -67,12 +65,12 @@ public class GirlsManagerOperation extends HHOperation {
 
 
 
-	private UserInfos getUserInfos(HHRequestProcessor requestProcessor, SessionResponse session) throws ServerException, IOException {
+	private UserInfos getUserInfos(HHRequestProcessor requestProcessor, SessionResponse session) throws Exception {
 		String homeContent = requestProcessor.getHomeContent(session);
 		return HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
 	}
 
-	private boolean upgradeGirl(HHRequestProcessor requestProcessor, SessionResponse session, Girl girl, Integer currentMoney) throws ServerException, IOException {
+	private boolean upgradeGirl(HHRequestProcessor requestProcessor, SessionResponse session, Girl girl, Integer currentMoney) throws Exception {
 		Long idQuest = girl.getQuests().getForUpgrade().getIdQuest();
 		String girlQuestContent = requestProcessor.getQuestContent(session, idQuest);
 		QuestStep[] steps = HtmlAnalyzer.INSTANCE.getQuestSteps(girlQuestContent);

@@ -1,10 +1,10 @@
 package fr.lewon.web.bot.entities.input.girl;
 
-import fr.lewon.web.bot.util.BodyMember;
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 
 public class ActionGirlSingleSalary extends ActionGirl {
 
-	@BodyMember
+	@FUEMember
 	private int which;
 
 	public ActionGirlSingleSalary(int which) {

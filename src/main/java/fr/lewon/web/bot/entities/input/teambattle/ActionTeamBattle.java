@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.lewon.bot.http.body.urlencoded.FUEMember;
 import fr.lewon.web.bot.entities.enums.Currency;
 import fr.lewon.web.bot.entities.input.Action;
-import fr.lewon.web.bot.util.BodyMember;
 
 public abstract class ActionTeamBattle extends Action {
 
-	@BodyMember("battle_type")
+	@FUEMember("battle_type")
 	private String battleType;
 	
-	@BodyMember
+	@FUEMember
 	private String currency;
 	
-	@BodyMember("defender_id")
+	@FUEMember("defender_id")
 	private Integer defenderId;
 	
-	@BodyMember("attacker%5Bteam%5D%5B%5D")
+	@FUEMember("attacker%5Bteam%5D%5B%5D")
 	private List<Integer> attackerTeam;
 	
 	public ActionTeamBattle(String action, String battleType, Currency currency, Integer defenderId, Integer... attackerTeam) {
