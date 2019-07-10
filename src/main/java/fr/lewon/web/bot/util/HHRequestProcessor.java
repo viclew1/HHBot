@@ -25,6 +25,7 @@ import fr.lewon.web.bot.entities.input.others.activity.Mission;
 import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
 import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.input.quest.ActionQuestNext;
+import fr.lewon.web.bot.entities.input.shop.ActionBuyItem;
 import fr.lewon.web.bot.entities.input.stat.ActionUpgradeStat;
 import fr.lewon.web.bot.entities.input.teambattle.ActionTeamBattleChampion;
 import fr.lewon.web.bot.entities.response.DraftResponse;
@@ -33,6 +34,7 @@ import fr.lewon.web.bot.entities.response.Response;
 import fr.lewon.web.bot.entities.response.SalaryResponse;
 import fr.lewon.web.bot.entities.response.SessionResponse;
 import fr.lewon.web.bot.entities.response.TeamBattleResponse;
+import fr.lewon.web.bot.entities.shop.Item;
 
 public class HHRequestProcessor extends AbstractRequestProcessor {
 
@@ -42,6 +44,7 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 	private static final String AJAX = "/ajax.php";
 
 	private static final String HOME = "/home.html";
+	private static final String SHOP = "/shop.html";
 	private static final String HAREM = "/harem.html";
 	private static final String BATTLE = "/battle.html";
 	private static final String ARENA = "/arena.html";
@@ -130,6 +133,10 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 	public String getQuestContent(SessionResponse session, Long questId) throws Exception {
 		return readAllPageContent(BASE_URL + QUEST + SLASH + questId, session.getCookieHeader());
 	}
+	
+	public String getShopContent(SessionResponse session) throws Exception {
+		return readAllPageContent(BASE_URL + SHOP, session.getCookieHeader());
+	}
 
 	public OpponentInfoResponse getOpponentInfo(SessionResponse session, String opponentId) throws Exception {
 		return processPostRequest(OpponentInfoResponse.class, BASE_URL + AJAX, 
@@ -190,5 +197,11 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 		return processPostRequest(Response.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionUpgradeStat(statToUpgrade)), session.getCookieHeader()).getEntity();
 	}
+
+	public Response buyItem(Item item, SessionResponse session) throws Exception {
+		return processPostRequest(Response.class, BASE_URL + AJAX,
+				bodyBuilder.generateBody(new ActionBuyItem(item)), session.getCookieHeader()).getEntity();
+	}
+
 
 }

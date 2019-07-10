@@ -17,6 +17,8 @@ import fr.lewon.web.bot.entities.input.others.battle.TowerOfFameOpponentPremise;
 import fr.lewon.web.bot.entities.quests.QuestStep;
 import fr.lewon.web.bot.entities.response.ChampionData;
 import fr.lewon.web.bot.entities.response.UserInfos;
+import fr.lewon.web.bot.entities.shop.Item;
+import fr.lewon.web.bot.entities.shop.Shop;
 
 public enum HtmlAnalyzer {
 
@@ -142,6 +144,49 @@ public enum HtmlAnalyzer {
 		}
 		return null;
 	}
+	
+	public Integer getNextStock(String shopContent) {
+		String regex = "<span rel=\"count\" time=\"([0-9]+)\">";
+		Matcher matcher = matchPattern(shopContent, regex);
+		if (matcher.find()) {
+			return Integer.parseInt(matcher.group(1));
+		}
+		return null;
+	}
+	
+	public Shop getShop(String shopContent) throws IOException {
+		String regex = "<div tab class=\"armor\" type=\"armor\">(.*?)<button rel=\"buy\"";
+		Matcher matcher = matchPattern(shopContent, regex);
+		if (matcher.find()) {
+			String subShopContent = matcher.group(1)
+					.replace("&quot;", "\"")
+					.replace("data-d=", "\ndata-d=");
+			List<Item> books = getBooks(subShopContent);
+			List<Item> gifts = getGifts(subShopContent);
+			return new Shop(books, gifts);
+		}
+		return null;
+	}
+
+	private List<Item> getGifts(String subShopContent) throws IOException {
+		String regex = "data-d=\"(\\{.*?\"type\":\"gift\".*?})\">";
+		Matcher matcher = matchPattern(subShopContent, regex, false);
+		List<Item> gifts = new ArrayList<>();
+		while (matcher.find()) {
+			gifts.add(jsonHelper.jsonToObject(Item.class, matcher.group(1)));
+		}
+		return gifts;
+	}
+
+	private List<Item> getBooks(String subShopContent) throws IOException {
+		String regex = "data-d=\"(\\{.*?\"type\":\"potion\".*?})\">";
+		Matcher matcher = matchPattern(subShopContent, regex, false);
+		List<Item> books = new ArrayList<>();
+		while (matcher.find()) {
+			books.add(jsonHelper.jsonToObject(Item.class, matcher.group(1)));
+		}
+		return books;
+	}
 
 	public List<TowerOfFameOpponentPremise> findHallOfFameOpponents(String content) {
 		String regexLeadTable = "<div class=\"lead_table_view\">.*?<tbody class=\"leadTable\" sorting_table>(.*?)<\\/div>";
@@ -170,7 +215,11 @@ public enum HtmlAnalyzer {
 	}
 
 	private Matcher matchPattern(String content, String regex) {
-		content = flattenContent(content);
+		return matchPattern(content, regex, true);
+	}
+	
+	private Matcher matchPattern(String content, String regex, boolean flatten) {
+		content = flatten ? flattenContent(content) : content;
 		Pattern pattern = Pattern.compile(regex);
 		return pattern.matcher(content);
 	}
@@ -202,5 +251,6 @@ public enum HtmlAnalyzer {
 		}
 		return missions;
 	}
+
 
 }

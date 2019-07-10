@@ -13,13 +13,14 @@ import fr.lewon.web.bot.entities.girls.Girl;
 import fr.lewon.web.bot.entities.quests.QuestStep;
 import fr.lewon.web.bot.entities.response.SessionResponse;
 import fr.lewon.web.bot.entities.response.UserInfos;
+import fr.lewon.web.bot.properties.HHBotProperties;
 import fr.lewon.web.bot.util.HHRequestProcessor;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class GirlsManagerOperation extends HHOperation {
 
-	private List<Girl> ownedGirls = new ArrayList<>();
+	private List<Integer> ownedGirlsIds = new ArrayList<>();
 
 	public GirlsManagerOperation(HHSessionManager manager, HHRequestProcessor requestProcessor) {
 		super(manager, requestProcessor);
@@ -32,42 +33,47 @@ public class GirlsManagerOperation extends HHOperation {
 		SessionResponse session = sessionManager.getSession();
 		String haremContent = requestProcessor.getHaremContent(session);
 
-		List<Girl> newGirls = HtmlAnalyzer.INSTANCE.findAllGirls(haremContent).stream()
+		List<Girl> ownedGirls = HtmlAnalyzer.INSTANCE.findAllGirls(haremContent).stream()
 				.filter(Girl::getOwn)
-				.filter(g -> !ownedGirls.contains(g))
+				.collect(Collectors.toList());
+		
+		List<Girl> newGirls = ownedGirls.stream()
+				.filter(g -> !ownedGirlsIds.contains(g.getId()))
 				.collect(Collectors.toList());
 
 		for (Girl girl : newGirls) {
 			runner.addAction(new HarvestGirlOperation(sessionManager, requestProcessor, girl.getId()), girl.getPayIn() + 1);
 			runner.getBotLogger().info("Harvest will start on girl {} in {} seconds", girl.getId(), girl.getPayIn() + 1);
-			ownedGirls.add(girl);
+			ownedGirlsIds.add(girl.getId());
 		}
 
-		//		while (true) {
-		//			UserInfos userInfos = getUserInfos(requestProcessor, session);
-		//			Girl toUpgrade = getGirlToUpgrade();
-		//			if (toUpgrade != null) {
-		//				if (upgradeGirl(requestProcessor, session, toUpgrade, userInfos.getSoftCurrency())) {
-		//					toUpgrade.setCanUpgrade(false);
-		//					runner.getBotLogger().info("Girl {} upgraded", toUpgrade.getId());
-		//				} else {
-		//					runner.getBotLogger().info("Not enough money to upgrade girl {}.", toUpgrade.getId());
-		//					break;
-		//				}
-		//			} else {
-		//				break;
-		//			}
-		//		}
-
+		if ((boolean) runner.getBot().getPropStore().get(HHBotProperties.AUTO_FEED_GIRLS.getDescriptor())) {
+			autoFeedGirls(runner, requestProcessor, session, ownedGirls);
+		}
+		
+		if ((boolean) runner.getBot().getPropStore().get(HHBotProperties.AUTO_UPGRADE_GIRLS.getDescriptor())) {
+			autoUpgradeGirls(runner, requestProcessor, session, ownedGirls);
+		}
 
 		return new Delay(3, TimeScale.HOURS);
 	}
 
-
-
 	private UserInfos getUserInfos(HHRequestProcessor requestProcessor, SessionResponse session) throws Exception {
 		String homeContent = requestProcessor.getHomeContent(session);
 		return HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
+	}
+
+	private void autoUpgradeGirls(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session, List<Girl> girls) throws Exception {
+		List<Girl> girlsToUpgrade = getGirlsToUpgrade(girls);
+		for (Girl toUpgrade : girlsToUpgrade) {
+			UserInfos userInfos = getUserInfos(requestProcessor, session);
+			if (upgradeGirl(requestProcessor, session, toUpgrade, userInfos.getSoftCurrency())) {
+				runner.getBotLogger().info("Girl {} upgraded", toUpgrade.getId());
+			} else {
+				runner.getBotLogger().info("Couldn't upgrade girl {}.", toUpgrade.getId());
+				break;
+			}
+		}
 	}
 
 	private boolean upgradeGirl(HHRequestProcessor requestProcessor, SessionResponse session, Girl girl, Integer currentMoney) throws Exception {
@@ -81,12 +87,8 @@ public class GirlsManagerOperation extends HHOperation {
 		return requestProcessor.continueQuest(session, idQuest).getSuccess();
 	}
 
-
-	private void feedGirl(HHRequestProcessor requestProcessor, SessionResponse session, Girl girl) {
-	}
-
-	private Girl getGirlToUpgrade() {
-		return ownedGirls.stream()
+	private List<Girl> getGirlsToUpgrade(List<Girl> girls) {
+		return girls.stream()
 				.filter(g -> g.isCanUpgrade())
 				.sorted(new Comparator<Girl>() {
 					@Override
@@ -98,18 +100,35 @@ public class GirlsManagerOperation extends HHOperation {
 						}
 						return g1.getAffection().getLevel().compareTo(g2.getAffection().getLevel());
 					}
-				}).findFirst().orElse(null);
+				}).collect(Collectors.toList());
+	}
+	
+	private void autoFeedGirls(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session, List<Girl> girls) throws Exception {
+		List<Girl> girlsToFeed = getGirlsToFeed(girls);
+		for (Girl toFeed : girlsToFeed) {
+			if (feedGirl(requestProcessor, session, toFeed)) {
+				runner.getBotLogger().info("Girl {} fed", toFeed.getId());
+			} else {
+				runner.getBotLogger().info("Couldn't feed girl {}.", toFeed.getId());
+				break;
+			}
+		}
 	}
 
-	private Girl getGirlToFeed() {
-		return ownedGirls.stream()
+	private List<Girl> getGirlsToFeed(List<Girl> girls) {
+		return girls.stream()
 				.filter(g -> !g.getAffection().getMaxed())
 				.sorted(new Comparator<Girl>() {
 					@Override
 					public int compare(Girl g1, Girl g2) {
 						return g1.getAffection().getLeft().compareTo(g2.getAffection().getLeft());
 					}
-				}).findFirst().orElse(null);
+				}).collect(Collectors.toList());
+	}
+	
+	private boolean feedGirl(HHRequestProcessor requestProcessor, SessionResponse session, Girl girl) {
+		
+		return false;
 	}
 
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Champion {
 	
 	@JsonProperty
-	private String id;
+	private Integer id;
 	
 	@JsonProperty
 	private String name;
@@ -14,11 +14,11 @@ public class Champion {
 	private Integer currentTickets;
 
 	
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
