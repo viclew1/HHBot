@@ -33,6 +33,11 @@ public class ChampionFightOperation extends HHOperation {
 		String championContent = requestProcessor.getChampionPageContent(session, championId);
 		ChampionData championData = HtmlAnalyzer.INSTANCE.getChampionData(championContent);
 		
+		if (championData.getChampion().getCurrentTickets() == 0) {
+			runner.getBotLogger().info("Not more ticket, can't fight champion {}. Trying again in 10 hours", championId);
+			return new Delay(10, TimeScale.HOURS);
+		}
+		
 		List<Girl> team = championData.getTeam();
 		for (int i = 0 ; i < championData.getFreeDrafts() ; i++) {
 			team.sort((g1, g2) -> g1.getDamage() - g2.getDamage()); 
@@ -50,7 +55,7 @@ public class ChampionFightOperation extends HHOperation {
 		TeamBattleResponse battleResp = requestProcessor.fightChampion(session, Currency.TICKET, championId, teamIds);
 		if (!battleResp.getSuccess()) {
 			runner.getBotLogger().info("Can't fight champion {}. Trying again in 4 hours", championId);
-			return new Delay(2, TimeScale.HOURS);
+			return new Delay(4, TimeScale.HOURS);
 		}
 		
 		if (battleResp.getFnl().getAttackerEgo() < 0) {

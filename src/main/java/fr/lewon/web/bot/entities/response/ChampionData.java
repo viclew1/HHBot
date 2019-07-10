@@ -4,10 +4,14 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import fr.lewon.web.bot.entities.champions.Champion;
 import fr.lewon.web.bot.entities.girls.Girl;
 
 public class ChampionData {
 
+	@JsonProperty
+	private Champion champion;
+	
 	@JsonProperty
 	private List<Girl> team;
 	
@@ -19,6 +23,15 @@ public class ChampionData {
 
 	@JsonProperty
 	private Integer priceEnergy;
+
+	
+	public Champion getChampion() {
+		return champion;
+	}
+
+	public void setChampion(Champion champion) {
+		this.champion = champion;
+	}
 
 	public List<Girl> getTeam() {
 		return team;
