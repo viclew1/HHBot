@@ -10,6 +10,7 @@ public enum HHBotProperties implements IBotPropertyDescriptorEnum {
 	FIGHT_ENERGY_TO_KEEP("fight_energy_to_keep", BotPropertyType.INTEGER, 0, true, false, "Energy to keep when fighting trolls."),
 	TOWER_ENERGY_TO_KEEP("tower_energy_to_keep", BotPropertyType.INTEGER, 0, true, false, "Energy to keep when fighting in tower of fame."), 
 	AUTO_FEED_GIRLS("auto_feed_girls", BotPropertyType.BOOLEAN, true, true, false, "If true, the girls will be automatically fed with presents.", true, false),
+	AUTO_XP_GIRLS("auto_xp_girls", BotPropertyType.BOOLEAN, true, true, false, "If true, the girls will be automatically given books for xp.", true, false),
 	AUTO_UPGRADE_GIRLS("auto_upgrade_girls", BotPropertyType.BOOLEAN, true, true, false, "If true, the girls will be automatically upgraded once you can buy the upgrade.", true, false),
 	AUTO_SHOP_BOOKS("auto_shop_books", BotPropertyType.BOOLEAN, true, true, false, "If true, the books in the store will be automatically bought.", true, false),
 	AUTO_SHOP_GIFTS("auto_shop_gifts", BotPropertyType.BOOLEAN, true, true, false, "If true, the gifts in the store will be automatically bought.", true, false);

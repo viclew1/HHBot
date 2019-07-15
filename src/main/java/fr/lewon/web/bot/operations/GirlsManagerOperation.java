@@ -54,6 +54,10 @@ public class GirlsManagerOperation extends HHOperation {
 		if ((boolean) runner.getBot().getPropStore().get(HHBotProperties.AUTO_UPGRADE_GIRLS.getDescriptor())) {
 			autoUpgradeGirls(runner, requestProcessor, session, ownedGirls);
 		}
+		
+		if ((boolean) runner.getBot().getPropStore().get(HHBotProperties.AUTO_XP_GIRLS.getDescriptor())) {
+			autoXpGirls(runner, requestProcessor, session, ownedGirls);
+		}
 
 		return new Delay(3, TimeScale.HOURS);
 	}
@@ -129,6 +133,9 @@ public class GirlsManagerOperation extends HHOperation {
 	private boolean feedGirl(HHRequestProcessor requestProcessor, HHSession session, Girl girl) {
 		
 		return false;
+	}
+	
+	private void autoXpGirls(BotRunner runner, HHRequestProcessor requestProcessor, HHSession session, List<Girl> girls) throws Exception {
 	}
 
 }

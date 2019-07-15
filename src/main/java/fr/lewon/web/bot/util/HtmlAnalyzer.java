@@ -39,6 +39,19 @@ public enum HtmlAnalyzer {
 		}
 		return competitions;
 	}
+	
+	public Integer getSecondsUntilNextCompetition(String activityPage) throws IOException {
+		String regex = "data-remaining_time=\"([0-9]+)\"";
+		Matcher matcher = matchPattern(activityPage, regex);
+		Integer minTimeSeconds = null;
+		while (matcher.find()) {
+			Integer waitTimeSeconds = Integer.parseInt(matcher.group(1));
+			if (minTimeSeconds == null || minTimeSeconds > waitTimeSeconds) {
+				minTimeSeconds = waitTimeSeconds;
+			}
+		}
+		return minTimeSeconds == null ? 24 * 60 * 60 : minTimeSeconds;
+	}
 
 	public ChampionData getChampionData(String championContent) throws IOException {
 		String regex = "var championData = (\\{.*?});";

@@ -30,8 +30,9 @@ public class ExecuteCompetitionOperation extends HHOperation {
 				endedCompetitions.add(id);
 			}
 		}
-		runner.getBotLogger().info("Competitions finished : {}. Trying again in 1 day.", endedCompetitions);
-		return new Delay(1, TimeScale.DAYS);
+		Integer secondsUntilNextCompetition = HtmlAnalyzer.INSTANCE.getSecondsUntilNextCompetition(activityPage);
+		runner.getBotLogger().info("Competitions finished : {}. Trying again in {} seconds.", endedCompetitions, secondsUntilNextCompetition);
+		return new Delay(secondsUntilNextCompetition, TimeScale.SECONDS);
 	}
 
 }
