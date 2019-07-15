@@ -24,6 +24,7 @@ public class InitHentaiHeroesBotOperation extends HHOperation {
 		runner.addAction(new ContinueQuestOperation(sessionManager, requestProcessor));
 		runner.addAction(new AutoShopOperation(sessionManager, requestProcessor));
 		runner.addAction(new ChampionsFightsManagerOperation(sessionManager, requestProcessor));
+		runner.addAction(new ExecuteCompetitionOperation(sessionManager, requestProcessor));
 		runner.getBotLogger().info("Initial operations started.");
 		return null;
 	}

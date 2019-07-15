@@ -5,13 +5,13 @@ import java.util.List;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.TimeScale;
-import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
-import fr.lewon.web.bot.entities.input.others.battle.TowerOfFameOpponentPremise;
+import fr.lewon.web.bot.entities.battle.BattlePlayer;
+import fr.lewon.web.bot.entities.battle.TowerOfFameOpponentPremise;
 import fr.lewon.web.bot.entities.response.Response;
-import fr.lewon.web.bot.entities.response.SessionResponse;
 import fr.lewon.web.bot.entities.response.UserInfos;
 import fr.lewon.web.bot.properties.HHBotProperties;
 import fr.lewon.web.bot.util.HHRequestProcessor;
+import fr.lewon.web.bot.util.HHSession;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
@@ -25,7 +25,7 @@ public class FightTowerOfFameOperation extends HHOperation {
 	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		SessionResponse session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession();
 		
 		String homeContent = requestProcessor.getHomeContent(session);
 		UserInfos userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);

@@ -1,4 +1,4 @@
-package fr.lewon.web.bot.entities.input.others.battle;
+package fr.lewon.web.bot.entities.battle;
 
 import java.math.BigDecimal;
 

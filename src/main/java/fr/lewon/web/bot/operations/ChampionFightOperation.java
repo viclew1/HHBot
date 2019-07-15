@@ -10,9 +10,9 @@ import fr.lewon.web.bot.entities.enums.Currency;
 import fr.lewon.web.bot.entities.girls.Girl;
 import fr.lewon.web.bot.entities.response.ChampionData;
 import fr.lewon.web.bot.entities.response.DraftResponse;
-import fr.lewon.web.bot.entities.response.SessionResponse;
 import fr.lewon.web.bot.entities.response.TeamBattleResponse;
 import fr.lewon.web.bot.util.HHRequestProcessor;
+import fr.lewon.web.bot.util.HHSession;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
@@ -29,12 +29,12 @@ public class ChampionFightOperation extends HHOperation {
 	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 		
-		SessionResponse session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession();
 		String championContent = requestProcessor.getChampionPageContent(session, championId);
 		ChampionData championData = HtmlAnalyzer.INSTANCE.getChampionData(championContent);
 		
 		if (championData.getChampion().getCurrentTickets() == 0) {
-			runner.getBotLogger().info("Not more ticket, can't fight champion {}. Trying again in 10 hours", championId);
+			runner.getBotLogger().info("No ticket left, can't fight champion {}. Trying again in 10 hours", championId);
 			return new Delay(10, TimeScale.HOURS);
 		}
 		

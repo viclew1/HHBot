@@ -1,7 +1,7 @@
 package fr.lewon.web.bot.entities.input.battle;
 
 import fr.lewon.bot.http.body.urlencoded.FUEMember;
-import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
+import fr.lewon.web.bot.entities.battle.BattleMob;
 
 public class ActionBattleMob extends ActionBattle {
 

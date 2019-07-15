@@ -3,8 +3,8 @@ package fr.lewon.web.bot.entities.input.battle;
 import java.math.BigDecimal;
 
 import fr.lewon.bot.http.body.urlencoded.FUEMember;
+import fr.lewon.web.bot.entities.battle.AbstractBattleOpponent;
 import fr.lewon.web.bot.entities.input.Action;
-import fr.lewon.web.bot.entities.input.others.battle.AbstractBattleOpponent;
 
 public abstract class ActionBattle extends Action {
 

@@ -3,12 +3,12 @@ package fr.lewon.web.bot.operations;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.TimeScale;
-import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
+import fr.lewon.web.bot.entities.battle.BattleMob;
 import fr.lewon.web.bot.entities.response.Response;
-import fr.lewon.web.bot.entities.response.SessionResponse;
 import fr.lewon.web.bot.entities.response.UserInfos;
 import fr.lewon.web.bot.properties.HHBotProperties;
 import fr.lewon.web.bot.util.HHRequestProcessor;
+import fr.lewon.web.bot.util.HHSession;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
@@ -22,7 +22,7 @@ public class FightTrollOperation extends HHOperation {
 	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		SessionResponse session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession();
 
 		String homeContent = requestProcessor.getHomeContent(session);
 		UserInfos userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
@@ -58,7 +58,7 @@ public class FightTrollOperation extends HHOperation {
 		return new Delay(2, TimeScale.HOURS);
 	}
 
-	private String getWorldId(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session) throws Exception {
+	private String getWorldId(BotRunner runner, HHRequestProcessor requestProcessor, HHSession session) throws Exception {
 		Integer preferedWorldId = (Integer) runner.getBot().getPropStore().get(HHBotProperties.TROLL_WORLD.getDescriptor().getKey());
 		if (preferedWorldId != null) {
 			return String.valueOf(preferedWorldId);

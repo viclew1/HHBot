@@ -11,10 +11,10 @@ import fr.lewon.bot.runner.TimeScale;
 import fr.lewon.web.bot.entities.enums.Rarity;
 import fr.lewon.web.bot.entities.girls.Girl;
 import fr.lewon.web.bot.entities.quests.QuestStep;
-import fr.lewon.web.bot.entities.response.SessionResponse;
 import fr.lewon.web.bot.entities.response.UserInfos;
 import fr.lewon.web.bot.properties.HHBotProperties;
 import fr.lewon.web.bot.util.HHRequestProcessor;
+import fr.lewon.web.bot.util.HHSession;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
@@ -30,7 +30,7 @@ public class GirlsManagerOperation extends HHOperation {
 	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		SessionResponse session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession();
 		String haremContent = requestProcessor.getHaremContent(session);
 
 		List<Girl> ownedGirls = HtmlAnalyzer.INSTANCE.findAllGirls(haremContent).stream()
@@ -58,12 +58,12 @@ public class GirlsManagerOperation extends HHOperation {
 		return new Delay(3, TimeScale.HOURS);
 	}
 
-	private UserInfos getUserInfos(HHRequestProcessor requestProcessor, SessionResponse session) throws Exception {
+	private UserInfos getUserInfos(HHRequestProcessor requestProcessor, HHSession session) throws Exception {
 		String homeContent = requestProcessor.getHomeContent(session);
 		return HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
 	}
 
-	private void autoUpgradeGirls(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session, List<Girl> girls) throws Exception {
+	private void autoUpgradeGirls(BotRunner runner, HHRequestProcessor requestProcessor, HHSession session, List<Girl> girls) throws Exception {
 		List<Girl> girlsToUpgrade = getGirlsToUpgrade(girls);
 		for (Girl toUpgrade : girlsToUpgrade) {
 			UserInfos userInfos = getUserInfos(requestProcessor, session);
@@ -76,7 +76,7 @@ public class GirlsManagerOperation extends HHOperation {
 		}
 	}
 
-	private boolean upgradeGirl(HHRequestProcessor requestProcessor, SessionResponse session, Girl girl, Integer currentMoney) throws Exception {
+	private boolean upgradeGirl(HHRequestProcessor requestProcessor, HHSession session, Girl girl, Integer currentMoney) throws Exception {
 		Long idQuest = girl.getQuests().getForUpgrade().getIdQuest();
 		String girlQuestContent = requestProcessor.getQuestContent(session, idQuest);
 		QuestStep[] steps = HtmlAnalyzer.INSTANCE.getQuestSteps(girlQuestContent);
@@ -103,7 +103,7 @@ public class GirlsManagerOperation extends HHOperation {
 				}).collect(Collectors.toList());
 	}
 	
-	private void autoFeedGirls(BotRunner runner, HHRequestProcessor requestProcessor, SessionResponse session, List<Girl> girls) throws Exception {
+	private void autoFeedGirls(BotRunner runner, HHRequestProcessor requestProcessor, HHSession session, List<Girl> girls) throws Exception {
 		List<Girl> girlsToFeed = getGirlsToFeed(girls);
 		for (Girl toFeed : girlsToFeed) {
 			if (feedGirl(requestProcessor, session, toFeed)) {
@@ -126,7 +126,7 @@ public class GirlsManagerOperation extends HHOperation {
 				}).collect(Collectors.toList());
 	}
 	
-	private boolean feedGirl(HHRequestProcessor requestProcessor, SessionResponse session, Girl girl) {
+	private boolean feedGirl(HHRequestProcessor requestProcessor, HHSession session, Girl girl) {
 		
 		return false;
 	}

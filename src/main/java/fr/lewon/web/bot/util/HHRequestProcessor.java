@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.Header;
+import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicHeader;
 
 import fr.lewon.bot.http.AbstractRequestProcessor;
-import fr.lewon.bot.http.DefaultResponse;
 import fr.lewon.bot.http.body.HttpBodyBuilder;
 import fr.lewon.bot.http.body.urlencoded.FUEBuilder;
+import fr.lewon.web.bot.entities.activities.Mission;
+import fr.lewon.web.bot.entities.battle.BattleMob;
+import fr.lewon.web.bot.entities.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.enums.Currency;
 import fr.lewon.web.bot.entities.input.battle.ActionBattleMob;
 import fr.lewon.web.bot.entities.input.battle.ActionBattlePlayer;
 import fr.lewon.web.bot.entities.input.champions.ActionChampionsTeamDraft;
+import fr.lewon.web.bot.entities.input.contest.ActionContestGiveReward;
 import fr.lewon.web.bot.entities.input.girl.ActionGirlAllSalaries;
 import fr.lewon.web.bot.entities.input.girl.ActionGirlSingleSalary;
 import fr.lewon.web.bot.entities.input.leagues.ActionLeaguesGetOpponentInfo;
@@ -21,9 +25,6 @@ import fr.lewon.web.bot.entities.input.mission.ActionMissionClaimReward;
 import fr.lewon.web.bot.entities.input.mission.ActionMissionGiveGift;
 import fr.lewon.web.bot.entities.input.mission.ActionMissionStartMission;
 import fr.lewon.web.bot.entities.input.others.PlayerInfos;
-import fr.lewon.web.bot.entities.input.others.activity.Mission;
-import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
-import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
 import fr.lewon.web.bot.entities.input.quest.ActionQuestNext;
 import fr.lewon.web.bot.entities.input.shop.ActionBuyItem;
 import fr.lewon.web.bot.entities.input.stat.ActionUpgradeStat;
@@ -32,7 +33,6 @@ import fr.lewon.web.bot.entities.response.DraftResponse;
 import fr.lewon.web.bot.entities.response.OpponentInfoResponse;
 import fr.lewon.web.bot.entities.response.Response;
 import fr.lewon.web.bot.entities.response.SalaryResponse;
-import fr.lewon.web.bot.entities.response.SessionResponse;
 import fr.lewon.web.bot.entities.response.TeamBattleResponse;
 import fr.lewon.web.bot.entities.shop.Item;
 
@@ -77,130 +77,135 @@ public class HHRequestProcessor extends AbstractRequestProcessor {
 		return neededHeaders;
 	}
 
-	public DefaultResponse<SessionResponse> getSession(String login, String password) throws Exception {
-		return processPostRequest(SessionResponse.class, BASE_URL + PHOENIX_AJAX, 
+	public HttpResponse getSession(String login, String password) throws Exception {
+		return processPostRequest(BASE_URL + PHOENIX_AJAX, 
 				bodyBuilder.generateBody(new PlayerInfos(login, password)));
 	}
 
-	public String getHomeContent(SessionResponse session) throws Exception {
+	public String getHomeContent(HHSession session) throws Exception {
 		return readAllPageContent(BASE_URL + HOME, session.getCookieHeader());
 	}
 
-	public String getHaremContent(SessionResponse session) throws Exception {
+	public String getHaremContent(HHSession session) throws Exception {
 		return readAllPageContent(BASE_URL + HAREM, session.getCookieHeader());
 	}
 
-	public String getMapContent(SessionResponse session) throws Exception {
+	public String getMapContent(HHSession session) throws Exception {
 		return readAllPageContent(BASE_URL + MAP, session.getCookieHeader());
 	}
 
-	public String getActivitiesContent(SessionResponse session) throws Exception {
+	public String getActivitiesContent(HHSession session) throws Exception {
 		return readAllPageContent(BASE_URL + ACTIVITIES, session.getCookieHeader());
 	}
 	
-	public String getChampionsMapContent(SessionResponse session) throws Exception {
+	public String getChampionsMapContent(HHSession session) throws Exception {
 		return readAllPageContent(BASE_URL + CHAMPIONS_MAP, session.getCookieHeader());
 	}
 	
-	public String getChampionPageContent(SessionResponse session, Integer championId) throws Exception {
+	public String getChampionPageContent(HHSession session, Integer championId) throws Exception {
 		return readAllPageContent(BASE_URL + CHAMPIONS + SLASH + championId, session.getCookieHeader());
 	}
 
-	public String getTowerOfFameContent(SessionResponse session) throws Exception {
+	public String getTowerOfFameContent(HHSession session) throws Exception {
 		return readAllPageContent(BASE_URL + TOWER_OF_FAME, session.getCookieHeader());
 	}
 
-	public String getArenaContent(SessionResponse session) throws Exception {
+	public String getArenaContent(HHSession session) throws Exception {
 		return readAllPageContent(BASE_URL + ARENA, session.getCookieHeader());
 	}
 
-	public String getWorldContent(SessionResponse session, String idWorld) throws Exception {
+	public String getWorldContent(HHSession session, String idWorld) throws Exception {
 		return readAllPageContent(BASE_URL + WORLD + SLASH + idWorld, session.getCookieHeader());
 	}
 
-	public String getBattleArenaContent(SessionResponse session, int idArena) throws Exception {
+	public String getBattleArenaContent(HHSession session, int idArena) throws Exception {
 		return readAllPageContent(BASE_URL + BATTLE + "?id_arena=" + idArena, session.getCookieHeader());
 	}
 
-	public String getBattleTrollContent(SessionResponse session, String idTroll) throws Exception {
+	public String getBattleTrollContent(HHSession session, String idTroll) throws Exception {
 		return readAllPageContent(BASE_URL + BATTLE + "?id_troll=" + idTroll, session.getCookieHeader());
 	}
 
-	public String getLeagueBattleContent(SessionResponse session, String id) throws Exception {
+	public String getLeagueBattleContent(HHSession session, String id) throws Exception {
 		return readAllPageContent(BASE_URL + BATTLE + "?league_battle=1&id_member=" + id, session.getCookieHeader());
 	}
 
-	public String getQuestContent(SessionResponse session, Long questId) throws Exception {
+	public String getQuestContent(HHSession session, Long questId) throws Exception {
 		return readAllPageContent(BASE_URL + QUEST + SLASH + questId, session.getCookieHeader());
 	}
 	
-	public String getShopContent(SessionResponse session) throws Exception {
+	public String getShopContent(HHSession session) throws Exception {
 		return readAllPageContent(BASE_URL + SHOP, session.getCookieHeader());
 	}
 
-	public OpponentInfoResponse getOpponentInfo(SessionResponse session, String opponentId) throws Exception {
+	public OpponentInfoResponse getOpponentInfo(HHSession session, String opponentId) throws Exception {
 		return processPostRequest(OpponentInfoResponse.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionLeaguesGetOpponentInfo(opponentId)), session.getCookieHeader()).getEntity();
 	}
 
-	public SalaryResponse getSalary(SessionResponse session, int which) throws Exception {
+	public SalaryResponse getSalary(HHSession session, int which) throws Exception {
 		return processPostRequest(SalaryResponse.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionGirlSingleSalary(which)), session.getCookieHeader()).getEntity();
 	}
 
-	public SalaryResponse getAllSalaries(SessionResponse session) throws Exception {
+	public SalaryResponse getAllSalaries(HHSession session) throws Exception {
 		return processPostRequest(SalaryResponse.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionGirlAllSalaries()), session.getCookieHeader()).getEntity();
 	}
 	
-	public DraftResponse draftChampionFight(SessionResponse session, Integer idChampion, List<Integer> girlsToKeep) throws Exception {
+	public DraftResponse draftChampionFight(HHSession session, Integer idChampion, List<Integer> girlsToKeep) throws Exception {
 		return processPostRequest(DraftResponse.class, BASE_URL + AJAX,
 				bodyBuilder.generateBody(new ActionChampionsTeamDraft(idChampion, girlsToKeep)), session.getCookieHeader()).getEntity();
 	}
 	
-	public TeamBattleResponse fightChampion(SessionResponse session, Currency currency, Integer championId, List<Integer> girls) throws Exception {
+	public TeamBattleResponse fightChampion(HHSession session, Currency currency, Integer championId, List<Integer> girls) throws Exception {
 		return processPostRequest(TeamBattleResponse.class, BASE_URL + AJAX,
 				bodyBuilder.generateBody(new ActionTeamBattleChampion(currency, championId, girls)), session.getCookieHeader()).getEntity();
 	}
 
-	public Response startMission(SessionResponse session, Mission mission) throws Exception {
+	public Response startMission(HHSession session, Mission mission) throws Exception {
 		return processPostRequest(SalaryResponse.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionMissionStartMission(mission.getIdMission(), mission.getIdMemberMission())), session.getCookieHeader()).getEntity();
 	}
 
-	public Response getFinalMissionGift(SessionResponse session) throws Exception {
+	public Response getFinalMissionGift(HHSession session) throws Exception {
 		return processPostRequest(SalaryResponse.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionMissionGiveGift()), session.getCookieHeader()).getEntity();
 	}
 
-	public Response claimReward(SessionResponse session, Mission mission) throws Exception {
+	public Response claimReward(HHSession session, Mission mission) throws Exception {
 		return processPostRequest(SalaryResponse.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionMissionClaimReward(mission.getIdMission(), mission.getIdMemberMission())), session.getCookieHeader()).getEntity();
 	}
 
-	public Response fightOpponentPlayer(SessionResponse session, BattlePlayer battlePlayer) throws Exception {
+	public Response fightOpponentPlayer(HHSession session, BattlePlayer battlePlayer) throws Exception {
 		return processPostRequest(Response.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionBattlePlayer(battlePlayer)), session.getCookieHeader()).getEntity();
 	}
 
-	public Response fightOpponentMob(SessionResponse session, BattleMob battleMob) throws Exception {
+	public Response fightOpponentMob(HHSession session, BattleMob battleMob) throws Exception {
 		return processPostRequest(Response.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionBattleMob(battleMob)), session.getCookieHeader()).getEntity();
 	}
 
-	public Response continueQuest(SessionResponse session, Long questId) throws Exception {
+	public Response continueQuest(HHSession session, Long questId) throws Exception {
 		return processPostRequest(Response.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionQuestNext(questId)), session.getCookieHeader()).getEntity();
 	}
 
-	public Response upgradeStat(SessionResponse session, int statToUpgrade) throws Exception {
+	public Response upgradeStat(HHSession session, int statToUpgrade) throws Exception {
 		return processPostRequest(Response.class, BASE_URL + AJAX, 
 				bodyBuilder.generateBody(new ActionUpgradeStat(statToUpgrade)), session.getCookieHeader()).getEntity();
 	}
 
-	public Response buyItem(Item item, SessionResponse session) throws Exception {
+	public Response buyItem(Item item, HHSession session) throws Exception {
 		return processPostRequest(Response.class, BASE_URL + AJAX,
 				bodyBuilder.generateBody(new ActionBuyItem(item)), session.getCookieHeader()).getEntity();
+	}
+
+	public Response collectCompetitionRewards(Integer idContest, HHSession session) throws Exception {
+		return processPostRequest(Response.class, BASE_URL + AJAX,
+				bodyBuilder.generateBody(new ActionContestGiveReward(idContest)), session.getCookieHeader()).getEntity();
 	}
 
 

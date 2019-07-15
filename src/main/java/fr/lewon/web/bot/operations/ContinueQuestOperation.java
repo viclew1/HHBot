@@ -3,9 +3,9 @@ package fr.lewon.web.bot.operations;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.TimeScale;
-import fr.lewon.web.bot.entities.response.SessionResponse;
 import fr.lewon.web.bot.entities.response.UserInfos;
 import fr.lewon.web.bot.util.HHRequestProcessor;
+import fr.lewon.web.bot.util.HHSession;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
@@ -19,7 +19,7 @@ public class ContinueQuestOperation extends HHOperation {
 	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		SessionResponse session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession();
 
 		String homeContent = requestProcessor.getHomeContent(session);
 		UserInfos userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);

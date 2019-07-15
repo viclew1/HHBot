@@ -5,9 +5,9 @@ import java.util.List;
 import fr.lewon.bot.runner.BotRunner;
 import fr.lewon.bot.runner.Delay;
 import fr.lewon.bot.runner.TimeScale;
-import fr.lewon.web.bot.entities.input.others.activity.Mission;
-import fr.lewon.web.bot.entities.response.SessionResponse;
+import fr.lewon.web.bot.entities.activities.Mission;
 import fr.lewon.web.bot.util.HHRequestProcessor;
+import fr.lewon.web.bot.util.HHSession;
 import fr.lewon.web.bot.util.HHSessionManager;
 import fr.lewon.web.bot.util.HtmlAnalyzer;
 
@@ -22,7 +22,7 @@ public class ExecuteMissionOperation extends HHOperation {
 	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		SessionResponse session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession();
 		String activityPage = requestProcessor.getActivitiesContent(session);
 		List<Mission> missions = HtmlAnalyzer.INSTANCE.getMissions(activityPage);
 		missions.sort((m1, m2) -> m2.getRarity().getValue() - m1.getRarity().getValue());

@@ -1,4 +1,4 @@
-package fr.lewon.web.bot.entities.input.others.activity;
+package fr.lewon.web.bot.entities.activities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

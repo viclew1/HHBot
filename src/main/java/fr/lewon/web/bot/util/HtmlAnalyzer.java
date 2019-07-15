@@ -7,13 +7,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.lewon.bot.http.util.JsonHelper;
+import fr.lewon.web.bot.entities.activities.Mission;
+import fr.lewon.web.bot.entities.battle.BattleMob;
+import fr.lewon.web.bot.entities.battle.BattlePlayer;
+import fr.lewon.web.bot.entities.battle.TowerOfFameOpponentPremise;
 import fr.lewon.web.bot.entities.champions.ChampionPremise;
 import fr.lewon.web.bot.entities.girls.Girl;
-import fr.lewon.web.bot.entities.input.others.activity.Competition;
-import fr.lewon.web.bot.entities.input.others.activity.Mission;
-import fr.lewon.web.bot.entities.input.others.battle.BattleMob;
-import fr.lewon.web.bot.entities.input.others.battle.BattlePlayer;
-import fr.lewon.web.bot.entities.input.others.battle.TowerOfFameOpponentPremise;
 import fr.lewon.web.bot.entities.quests.QuestStep;
 import fr.lewon.web.bot.entities.response.ChampionData;
 import fr.lewon.web.bot.entities.response.UserInfos;
@@ -27,13 +26,20 @@ public enum HtmlAnalyzer {
 	private HtmlAnalyzer() {}
 
 	private JsonHelper jsonHelper = new JsonHelper();
-	
-	public List<Competition> getCompetitions(String activityPage) {
-		List<Competition> competitions = new ArrayList<>();
-		// TODO récupérer les compétitions finies
+
+	public List<Integer> getCompetitions(String activityPage) throws IOException {
+		String regex = "<div class=\"contest\" id_contest=\"([0-9]+)\">.*?<div class=\"(.*?)\"";
+		Matcher matcher = matchPattern(activityPage, regex);
+		List<Integer> competitions = new ArrayList<>();
+		while (matcher.find()) {
+			String divEndedClass = matcher.group(2);
+			if ("contest_header ended".equals(divEndedClass)) {
+				competitions.add(Integer.parseInt(matcher.group(1)));
+			}
+		}
 		return competitions;
 	}
-	
+
 	public ChampionData getChampionData(String championContent) throws IOException {
 		String regex = "var championData = (\\{.*?});";
 		Matcher matcher = matchPattern(championContent, regex);
@@ -42,7 +48,7 @@ public enum HtmlAnalyzer {
 		}
 		return null;
 	}
-	
+
 	public List<ChampionPremise> getChampionsIds(String championsMapContent) {
 		String regex = "<a href=\"champions/([0-9]+)\" class=\"champion-lair\""
 				+ ".*?"
@@ -58,7 +64,7 @@ public enum HtmlAnalyzer {
 		}
 		return premises;
 	}
-	
+
 	private int getWaitTime(String championLairContent) {
 		String regex = "<div rel=\"timer\" timer=\"([0-9]+)\">";
 		Matcher matcher = matchPattern(championLairContent, regex);
@@ -144,7 +150,7 @@ public enum HtmlAnalyzer {
 		}
 		return null;
 	}
-	
+
 	public Integer getNextStock(String shopContent) {
 		String regex = "<span rel=\"count\" time=\"([0-9]+)\">";
 		Matcher matcher = matchPattern(shopContent, regex);
@@ -153,7 +159,7 @@ public enum HtmlAnalyzer {
 		}
 		return null;
 	}
-	
+
 	public Shop getShop(String shopContent) throws IOException {
 		String regex = "<div tab class=\"armor\" type=\"armor\">(.*?)<button rel=\"buy\"";
 		Matcher matcher = matchPattern(shopContent, regex);
@@ -217,7 +223,7 @@ public enum HtmlAnalyzer {
 	private Matcher matchPattern(String content, String regex) {
 		return matchPattern(content, regex, true);
 	}
-	
+
 	private Matcher matchPattern(String content, String regex, boolean flatten) {
 		content = flatten ? flattenContent(content) : content;
 		Pattern pattern = Pattern.compile(regex);

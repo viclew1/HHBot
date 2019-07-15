@@ -8,26 +8,25 @@ import java.util.Map.Entry;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
+import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 
 import fr.lewon.bot.http.AbstractSessionManager;
-import fr.lewon.bot.http.DefaultResponse;
-import fr.lewon.web.bot.entities.response.SessionResponse;
 
-public class HHSessionManager extends AbstractSessionManager<HHRequestProcessor, SessionResponse> {
+public class HHSessionManager extends AbstractSessionManager<HHRequestProcessor, HHSession> {
 
 	public HHSessionManager(HHRequestProcessor requestProcessor, String login, String password, Long sessionDurability) {
 		super(requestProcessor, login, password, sessionDurability);
 	}
 
 	@Override
-	protected SessionResponse generateSessionObject(HHRequestProcessor requestProcessor, String login, String password) throws Exception {
-		DefaultResponse<SessionResponse> response = requestProcessor.getSession(login, password);
+	protected HHSession generateSessionObject(HHRequestProcessor requestProcessor, String login, String password) throws Exception {
+		HttpResponse response = requestProcessor.getSession(login, password);
 		String hhSess = "";
 		String stayOnline = "";
-		for (Header h : response.getHttpResponse().getHeaders("Set-Cookie")) {
+		for (Header h : response.getHeaders("Set-Cookie")) {
 			for (HeaderElement he : h.getElements()) {
 				if (he.getName().equals("HH_SESS_13")) {
 					hhSess = he.getValue();
@@ -53,12 +52,9 @@ public class HHSessionManager extends AbstractSessionManager<HHRequestProcessor,
 			cookieHeaderValue += entry.getKey() + "=" + entry.getValue() + "; ";
 		}
 		
-		Header cookie = new BasicHeader("Cookie", cookieHeaderValue);
+		Header cookieHeader = new BasicHeader("Cookie", cookieHeaderValue);
 
-		SessionResponse session = response.getEntity();
-		session.setCookieHeader(cookie);
-		session.setCookies(cookies);
-		return session;
+		return new HHSession(cookieHeader, cookies);
 	}
 
 }
