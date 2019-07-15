@@ -40,10 +40,16 @@ public class ChampionFightOperation extends HHOperation {
 		
 		List<Girl> team = championData.getTeam();
 		for (int i = 0 ; i < championData.getFreeDrafts() ; i++) {
-			team.sort((g1, g2) -> g1.getDamage() - g2.getDamage()); 
-			List<Integer> girlsToKeep = team.subList(0, Math.min(team.size(), 5)).stream()
+			Integer minPower = (int) team.stream()
+					.mapToInt(Girl::getDamage)
+					.average()
+					.orElse(0);
+			List<Integer> girlsToKeep = team.stream()
+					.filter(g -> g.getDamage() > minPower)
+					.sorted((g1, g2) -> g1.getDamage() - g2.getDamage())
 					.map(Girl::getId)
-					.collect(Collectors.toList());
+					.collect(Collectors.toList())
+					.subList(0, Math.min(team.size(), 5));
 			DraftResponse draftResp = requestProcessor.draftChampionFight(session, championId, girlsToKeep);
 			team = draftResp.getTeam();
 		}
