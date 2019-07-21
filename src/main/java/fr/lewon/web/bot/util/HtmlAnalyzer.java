@@ -207,27 +207,13 @@ public enum HtmlAnalyzer {
 		return books;
 	}
 
-	public List<TowerOfFameOpponentPremise> findHallOfFameOpponents(String content) {
-		String regexLeadTable = "<div class=\"lead_table_view\">.*?<tbody class=\"leadTable\" sorting_table>(.*?)<\\/div>";
-		Matcher matcherLeadTable = matchPattern(content, regexLeadTable);
-		if (!matcherLeadTable.find()) {
-			return new ArrayList<>();
-		}
-		content = matcherLeadTable.group(1);
-
-		String regex = "<tr sorting_id=\"(.*?)\".*?<span class=\"nickname\">(.*?)<\\/span>.*?<td>.*?([0-9]+).*?<td>([0-9])\\/3.*?<\\/tr>";
+	public List<TowerOfFameOpponentPremise> findHallOfFameOpponents(String content) throws IOException {
+		String regex = "leagues_list\\.push\\( (\\{.*?}) \\);";
 		Matcher matcher = matchPattern(content, regex);
 
 		List<TowerOfFameOpponentPremise> premises = new ArrayList<>();
 		while (matcher.find()) {
-			int timesFought = Integer.parseInt(matcher.group(4));
-			if (timesFought == 3) {
-				continue;
-			}
-			String id = matcher.group(1);
-			String nickName = matcher.group(2);
-			int lvl = Integer.parseInt(matcher.group(3));
-			premises.add(new TowerOfFameOpponentPremise(id, nickName, lvl));
+			premises.add(jsonHelper.jsonToObject(TowerOfFameOpponentPremise.class, matcher.group(1)));
 		}
 
 		return premises;

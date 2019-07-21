@@ -1,36 +1,41 @@
 package fr.lewon.web.bot.entities.battle;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TowerOfFameOpponentPremise {
 
+	@JsonProperty("id_player")
 	private String id;
-	private String nickName;
+	
+	@JsonProperty("level")
 	private int lvl;
+	
+	@JsonProperty("nb_challenges_played")
+	private int nbChallengesPlayed;
 
-
-	public TowerOfFameOpponentPremise(String id, String nickName, int lvl) {
-		this.id = id;
-		this.nickName = nickName;
-		this.lvl = lvl;
-	}
-
-
+	
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getNickName() {
-		return nickName;
-	}
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
+
 	public int getLvl() {
 		return lvl;
 	}
+
 	public void setLvl(int lvl) {
 		this.lvl = lvl;
+	}
+
+	public int getNbChallengesPlayed() {
+		return nbChallengesPlayed;
+	}
+
+	public void setNbChallengesPlayed(int nbChallengesPlayed) {
+		this.nbChallengesPlayed = nbChallengesPlayed;
 	}
 
 }
