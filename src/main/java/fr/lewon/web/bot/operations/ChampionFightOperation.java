@@ -48,8 +48,8 @@ public class ChampionFightOperation extends HHOperation {
 					.filter(g -> g.getDamage() > minPower)
 					.sorted((g1, g2) -> g1.getDamage() - g2.getDamage())
 					.map(Girl::getId)
-					.collect(Collectors.toList())
-					.subList(0, Math.min(team.size(), 5));
+					.collect(Collectors.toList());
+			girlsToKeep = girlsToKeep.subList(0, Math.min(girlsToKeep.size(), 5));
 			DraftResponse draftResp = requestProcessor.draftChampionFight(session, championId, girlsToKeep);
 			team = draftResp.getTeam();
 		}
