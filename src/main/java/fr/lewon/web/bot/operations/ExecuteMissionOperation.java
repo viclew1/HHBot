@@ -14,15 +14,11 @@ import fr.lewon.web.bot.util.HtmlAnalyzer;
 public class ExecuteMissionOperation extends HHOperation {
 
 
-	public ExecuteMissionOperation(HHSessionManager manager, HHRequestProcessor requestProcessor) {
-		super(manager, requestProcessor);
-	}
-
 	@Override
-	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
+	public Delay process(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		HHSession session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession(requestProcessor);
 		String activityPage = requestProcessor.getActivitiesContent(session);
 		List<Mission> missions = HtmlAnalyzer.INSTANCE.getMissions(activityPage);
 		missions.sort((m1, m2) -> m2.getRarity().getValue() - m1.getRarity().getValue());

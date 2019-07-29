@@ -27,7 +27,7 @@ public class GetUserInfosMethod extends HHBotProcessor {
 			BotPropertyStore params) throws BotRunnerException {
 		
 		try {
-			String homeContent = requestProcessor.getHomeContent(sessionManager.getSession());
+			String homeContent = requestProcessor.getHomeContent(sessionManager.getSession(requestProcessor));
 			return HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);
 		} catch (Exception e) {
 			return e.getMessage();

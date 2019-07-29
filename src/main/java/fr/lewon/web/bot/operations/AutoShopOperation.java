@@ -17,18 +17,14 @@ import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class AutoShopOperation extends HHOperation {
 
-	public AutoShopOperation(HHSessionManager manager, HHRequestProcessor requestProcessor) {
-		super(manager, requestProcessor);
-	}
-
 	@Override
-	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
+	public Delay process(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
 		boolean autoShopBooks = (boolean) runner.getBot().getPropStore().get(HHBotProperties.AUTO_SHOP_BOOKS.getDescriptor());
 		boolean autoShopGifts = (boolean) runner.getBot().getPropStore().get(HHBotProperties.AUTO_SHOP_GIFTS.getDescriptor());
 
-		HHSession session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession(requestProcessor);
 		
 		String homeContent = requestProcessor.getHomeContent(session);
 		UserInfos userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent);

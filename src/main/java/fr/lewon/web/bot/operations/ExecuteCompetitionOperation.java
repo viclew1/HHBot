@@ -13,15 +13,11 @@ import fr.lewon.web.bot.util.HtmlAnalyzer;
 
 public class ExecuteCompetitionOperation extends HHOperation {
 
-	public ExecuteCompetitionOperation(HHSessionManager manager, HHRequestProcessor requestProcessor) {
-		super(manager, requestProcessor);
-	}
-
 	@Override
-	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
+	public Delay process(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		HHSession session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession(requestProcessor);
 		String activityPage = requestProcessor.getActivitiesContent(session);
 		List<Integer> competitionsIds = HtmlAnalyzer.INSTANCE.getCompetitions(activityPage);
 		List<Integer> endedCompetitions = new ArrayList<>();

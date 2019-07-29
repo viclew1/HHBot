@@ -11,16 +11,15 @@ public class HarvestGirlOperation extends HHOperation {
 
 	private int girlId;
 
-	public HarvestGirlOperation(HHSessionManager manager, HHRequestProcessor requestProcessor, int girlId) {
-		super(manager, requestProcessor);
+	public HarvestGirlOperation(int girlId) {
 		this.girlId = girlId;
 	}
 
 	@Override
-	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
+	public Delay process(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		SalaryResponse sr = requestProcessor.getSalary(sessionManager.getSession(), girlId);
+		SalaryResponse sr = requestProcessor.getSalary(sessionManager.getSession(requestProcessor), girlId);
 		if (sr.getSuccess()) {
 			int nextHarvestTime = sr.getTime();
 			runner.getBotLogger().info("Girl {} collected. Money made : {}. Next harvest in {} seconds.", girlId, sr.getMoney(), nextHarvestTime);

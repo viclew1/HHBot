@@ -17,16 +17,15 @@ public class ChampionsFightsManagerOperation extends HHOperation {
 
 	private List<Integer> managedChampionsIds;
 	
-	public ChampionsFightsManagerOperation(HHSessionManager manager, HHRequestProcessor requestProcessor) {
-		super(manager, requestProcessor);
+	public ChampionsFightsManagerOperation() {
 		this.managedChampionsIds = new ArrayList<>();
 	}
 
 	@Override
-	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
+	public Delay process(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 		
-		HHSession session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession(requestProcessor);
 		String championsContent = requestProcessor.getChampionsMapContent(session);
 		List<ChampionPremise> championPremises = HtmlAnalyzer.INSTANCE.getChampionsIds(championsContent).stream()
 				.filter(c -> !managedChampionsIds.contains(c.getChampionId()))
@@ -35,7 +34,7 @@ public class ChampionsFightsManagerOperation extends HHOperation {
 		for (ChampionPremise premise : championPremises) {
 			Integer id = premise.getChampionId();
 			Integer waitTime = premise.getSecondsToWait();
-			runner.addAction(new ChampionFightOperation(sessionManager, requestProcessor, id), waitTime);
+			runner.addAction(new ChampionFightOperation(id), waitTime);
 			managedChampionsIds.add(id);
 			runner.getBotLogger().info("Farming champion {} in {} seconds", id, waitTime);
 		}

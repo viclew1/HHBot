@@ -37,7 +37,7 @@ public class UpgradeStatMethod extends HHBotProcessor {
 		Integer statToUpgrade = (Integer) params.get(STAT_TO_UPGRADE_KEY);
 		int cpt = 0;
 		try {
-			while (cpt < maxUpgradeCount && requestProcessor.upgradeStat(sessionManager.getSession(), statToUpgrade).getSuccess()) {
+			while (cpt < maxUpgradeCount && requestProcessor.upgradeStat(sessionManager.getSession(requestProcessor), statToUpgrade).getSuccess()) {
 				cpt++;
 			}
 		} catch (Exception e) {

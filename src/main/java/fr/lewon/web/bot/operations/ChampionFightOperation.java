@@ -20,16 +20,15 @@ public class ChampionFightOperation extends HHOperation {
 
 	private int championId;
 	
-	public ChampionFightOperation(HHSessionManager manager, HHRequestProcessor requestProcessor, int championId) {
-		super(manager, requestProcessor);
+	public ChampionFightOperation(int championId) {
 		this.championId = championId;
 	}
 
 	@Override
-	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
+	public Delay process(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 		
-		HHSession session = sessionManager.getSession();
+		HHSession session = sessionManager.getSession(requestProcessor);
 		String championContent = requestProcessor.getChampionPageContent(session, championId);
 		ChampionData championData = HtmlAnalyzer.INSTANCE.getChampionData(championContent);
 		
@@ -64,7 +63,7 @@ public class ChampionFightOperation extends HHOperation {
 			return new Delay(4, TimeScale.HOURS);
 		}
 		
-		if (battleResp.getFnl().getAttackerEgo() < 0) {
+		if (battleResp.getFnl().getAttackerEgo() <= 0) {
 			runner.getBotLogger().info("Lost against champion {}. Trying again in 15 minutes", championId);
 			return new Delay(15, TimeScale.MINUTES);
 		}

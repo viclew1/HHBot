@@ -6,8 +6,4 @@ import fr.lewon.web.bot.util.HHSessionManager;
 
 public abstract class HHOperation extends AbstractOperation<HHSessionManager, HHRequestProcessor>{
 
-	public HHOperation(HHSessionManager manager, HHRequestProcessor requestProcessor) {
-		super(manager, requestProcessor);
-	}
-
 }

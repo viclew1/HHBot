@@ -8,23 +8,20 @@ import fr.lewon.web.bot.util.HHSessionManager;
 
 public class InitHentaiHeroesBotOperation extends HHOperation {
 
-	public InitHentaiHeroesBotOperation(HHSessionManager manager, HHRequestProcessor requestProcessor) {
-		super(manager, requestProcessor);
-	}
-
 	@Override
-	public Delay doProcess(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
+	public Delay process(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor)
 			throws Exception {
 
-		runner.addAction(new GirlsManagerOperation(sessionManager, requestProcessor));
-		runner.addAction(new FightArenaOperation(sessionManager, requestProcessor));
-		runner.addAction(new ExecuteMissionOperation(sessionManager, requestProcessor));
-		runner.addAction(new FightTowerOfFameOperation(sessionManager, requestProcessor));
-		runner.addAction(new FightTrollOperation(sessionManager, requestProcessor));
-		runner.addAction(new ContinueQuestOperation(sessionManager, requestProcessor));
-		runner.addAction(new AutoShopOperation(sessionManager, requestProcessor));
-		runner.addAction(new ChampionsFightsManagerOperation(sessionManager, requestProcessor));
-		runner.addAction(new ExecuteCompetitionOperation(sessionManager, requestProcessor));
+		runner.addAction(new GirlsManagerOperation());
+		runner.addAction(new FightArenaOperation());
+		runner.addAction(new ExecuteMissionOperation());
+		runner.addAction(new FightTowerOfFameOperation());
+		runner.addAction(new FightTrollOperation());
+		runner.addAction(new ContinueQuestOperation());
+		runner.addAction(new AutoShopOperation());
+		runner.addAction(new ChampionsFightsManagerOperation());
+		runner.addAction(new ExecuteCompetitionOperation());
+		
 		runner.getBotLogger().info("Initial operations started.");
 		return null;
 	}

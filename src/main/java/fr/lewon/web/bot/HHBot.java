@@ -19,12 +19,12 @@ public class HHBot extends AbstractBot<HHSessionManager, HHRequestProcessor> {
 
 	@Override
 	protected List<AbstractOperation<HHSessionManager, HHRequestProcessor>> getDefaultOperations(BotRunner runner, HHSessionManager sessionManager, HHRequestProcessor requestProcessor) {
-		return Arrays.asList(new InitHentaiHeroesBotOperation(sessionManager, requestProcessor));
+		return Arrays.asList(new InitHentaiHeroesBotOperation());
 	}
 
 	@Override
-	protected HHSessionManager initSessionManager(HHRequestProcessor requestProcessor, String login, String password) {
-		return new HHSessionManager(requestProcessor, login, password, 3600 * 12 * 1000L);
+	protected HHSessionManager initSessionManager(String login, String password) {
+		return new HHSessionManager(login, password, 3600 * 12 * 1000L);
 	}
 
 	@Override
