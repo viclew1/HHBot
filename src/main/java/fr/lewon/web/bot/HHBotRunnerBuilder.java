@@ -7,13 +7,13 @@ import fr.lewon.web.bot.properties.HHBotProperties;
 
 public class HHBotRunnerBuilder extends AbstractBotRunnerBuilder<HHBot> {
 
-	public HHBotRunnerBuilder() {
-		super(HHBotProperties.class, HHBotMethods.class);
-	}
+    public HHBotRunnerBuilder() {
+        super(HHBotProperties.values(), HHBotMethods.values());
+    }
 
-	@Override
-	protected HHBot initBot(String login, String password, BotPropertyStore properties) {
-		return new HHBot(login, password, properties);
-	}
+    @Override
+    protected HHBot buildBot(String login, String password, BotPropertyStore properties) {
+        return new HHBot(login, password, properties);
+    }
 
 }
