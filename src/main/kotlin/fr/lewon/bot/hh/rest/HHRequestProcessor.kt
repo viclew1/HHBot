@@ -21,19 +21,20 @@ import fr.lewon.bot.hh.entities.input.stat.ActionUpgradeStat
 import fr.lewon.bot.hh.entities.input.teambattle.ActionTeamBattleChampion
 import fr.lewon.bot.hh.entities.response.*
 import fr.lewon.bot.hh.entities.shop.Item
+import fr.lewon.bot.runner.session.helpers.FUEBodyBuilder
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Mono
 
 class HHRequestProcessor {
 
     @Throws(Exception::class)
-    fun getSession(webClient: WebClient, login: String, password: String): Mono<ClientResponse> {
+    fun getSession(webClient: WebClient, login: String, password: String): ClientResponse? {
         return webClient.post()
                 .uri(PHOENIX_AJAX)
-                .bodyValue(PlayerInfo(login, password))
+                .bodyValue(FUEBodyBuilder().generateBody(PlayerInfo(login, password)))
                 .exchange()
+                .block()
     }
 
     @Throws(Exception::class)
@@ -87,7 +88,7 @@ class HHRequestProcessor {
     }
 
     @Throws(Exception::class)
-    fun getBattleTrollContent(webClient: WebClient, session: HHSession, idTroll: Int): String {
+    fun getBattleTrollContent(webClient: WebClient, session: HHSession, idTroll: String): String {
         return readAllPage(webClient, session, "$BATTLE?id_troll=$idTroll")
     }
 
@@ -190,7 +191,7 @@ class HHRequestProcessor {
         return webClient.post()
                 .uri(uri)
                 .header(session.cookieHeaderName, session.cookieHeaderValue)
-                .bodyValue(body)
+                .bodyValue(FUEBodyBuilder().generateBody(body))
                 .retrieve()
                 .bodyToMono(T::class.java)
                 .block()

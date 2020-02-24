@@ -1,5 +1,6 @@
 package fr.lewon.bot.hh.rest
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fr.lewon.bot.hh.entities.activities.Mission
@@ -21,10 +22,10 @@ import java.util.regex.Pattern
 enum class HtmlAnalyzer {
     INSTANCE;
 
-    private val objectMapper = ObjectMapper()
+    private val objectMapper = ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
     @Throws(IOException::class)
-    fun getCompetitions(activityPage: String?): List<Int> {
+    fun getCompetitions(activityPage: String): List<Int> {
         val regex = "<div class=\"contest\" id_contest=\"([0-9]+)\">.*?<div class=\"(.*?)\""
         val matcher = matchPattern(activityPage, regex)
         val competitions: MutableList<Int> = ArrayList()
@@ -38,7 +39,7 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun getSecondsUntilNextCompetition(activityPage: String?): Int {
+    fun getSecondsUntilNextCompetition(activityPage: String): Int {
         val regex = "data-remaining_time=\"([0-9]+)\""
         val matcher = matchPattern(activityPage, regex)
         var minTimeSeconds: Int? = null
@@ -52,7 +53,7 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun getChampionData(championContent: String?): ChampionData? {
+    fun getChampionData(championContent: String): ChampionData? {
         val regex = "var championData = (\\{.*?});"
         val matcher = matchPattern(championContent, regex)
         return if (matcher.find()) {
@@ -60,7 +61,7 @@ enum class HtmlAnalyzer {
         } else null
     }
 
-    fun getChampionsIds(championsMapContent: String?): List<ChampionPremise> {
+    fun getChampionsIds(championsMapContent: String): List<ChampionPremise> {
         val regex = ("<a href=\"champions/([0-9]+)\" class=\"champion-lair\""
                 + ".*?"
                 + "<div class=\"champion-lair-name map-label-link\">"
@@ -88,14 +89,14 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun getQuestSteps(questContent: String?): Array<QuestStep>? {
+    fun getQuestSteps(questContent: String): Array<QuestStep> {
         val regex = "Q.steps = (\\[.*?\\]);"
         val matcher = matchPattern(questContent, regex)
         if (!matcher.find()) {
-            return null
+            return emptyArray()
         }
         val json = matcher.group(1).replace("\"cost\":[]", "\"cost\":{}")
-        return objectMapper.readValue<Array<QuestStep>>(json)
+        return objectMapper.readValue(json)
     }
 
     @Throws(IOException::class)
@@ -111,7 +112,7 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun getPlayerInfos(homeContent: String?): UserInfos? {
+    fun getPlayerInfos(homeContent: String): UserInfos? {
         val regex = "Hero.infos = (\\{.*?};)"
         val matcher = matchPattern(homeContent, regex)
         return if (!matcher.find()) {
@@ -120,7 +121,7 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun findOpponentBattlePlayer(content: String?): BattlePlayer? {
+    fun findOpponentBattlePlayer(content: String): BattlePlayer? {
         val regex = "hh_battle_players =.*?\\{.*?},.*?(\\{.*?})"
         val matcher = matchPattern(content, regex)
         if (!matcher.find()) {
@@ -131,7 +132,7 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun findOpponentBattleMob(battleTrollContent: String?): BattleMob? {
+    fun findOpponentBattleMob(battleTrollContent: String): BattleMob? {
         val regex = "hh_battle_players =.*?\\{.*?},.*?(\\{.*?})"
         val matcher = matchPattern(battleTrollContent, regex)
         if (!matcher.find()) {
@@ -141,7 +142,7 @@ enum class HtmlAnalyzer {
         return objectMapper.readValue<BattleMob>(battlePlayerStr)
     }
 
-    fun getCurrentWorldId(mapContent: String?): String? {
+    fun getCurrentWorldId(mapContent: String): String? {
         val regex = "<a class=\"link-world\" href=\"/world/([0-9])\""
         val matcher = matchPattern(mapContent, regex)
         var lastWorldId: String? = null
@@ -151,7 +152,7 @@ enum class HtmlAnalyzer {
         return lastWorldId
     }
 
-    fun getTrollId(worldContent: String?): String? {
+    fun getTrollId(worldContent: String): String? {
         val regex = "id_troll=([0-9])"
         val matcher = matchPattern(worldContent, regex)
         return if (matcher.find()) {
@@ -159,7 +160,7 @@ enum class HtmlAnalyzer {
         } else null
     }
 
-    fun getNextStock(shopContent: String?): Int? {
+    fun getNextStock(shopContent: String): Int? {
         val regex = "<span rel=\"count\" time=\"([0-9]+)\">"
         val matcher = matchPattern(shopContent, regex)
         return if (matcher.find()) {
@@ -168,7 +169,7 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun getShop(shopContent: String?): Shop? {
+    fun getShop(shopContent: String): Shop? {
         val regex = "<div tab class=\"armor\" type=\"armor\">(.*?)<button rel=\"buy\""
         val matcher = matchPattern(shopContent, regex)
         if (matcher.find()) {
@@ -205,17 +206,17 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun findHallOfFameOpponents(content: String?): List<TowerOfFameOpponentPremise?> {
+    fun findHallOfFameOpponents(content: String): List<TowerOfFameOpponentPremise> {
         val regex = "leagues_list\\.push\\( (\\{.*?}) \\);"
         val matcher = matchPattern(content, regex)
-        val premises: MutableList<TowerOfFameOpponentPremise?> = ArrayList()
+        val premises: MutableList<TowerOfFameOpponentPremise> = ArrayList()
         while (matcher.find()) {
-            premises.add(objectMapper.readValue<TowerOfFameOpponentPremise>(matcher.group(1)))
+            premises.add(objectMapper.readValue(matcher.group(1)))
         }
         return premises
     }
 
-    private fun matchPattern(content: String?, regex: String, flatten: Boolean = true): Matcher {
+    private fun matchPattern(content: String, regex: String, flatten: Boolean = true): Matcher {
         var content = content
         content = if (flatten) flattenContent(content) else content
         val pattern = Pattern.compile(regex)

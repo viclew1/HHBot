@@ -7,8 +7,8 @@ class ActionChampionsTeamDraft(idChampion: Int, girlsToKeep: List<Int>) : Action
     @JsonProperty(value = "id_champion")
     val idChampion: Int = idChampion
     @JsonProperty
-    val namespace = "h%5CChampions"
-    @JsonProperty(value = "girls_to_keep%5B%5D")
+    val namespace = "h\\Champions"
+    @JsonProperty(value = "girls_to_keep[]")
     val girlsToKeep: List<Int> = girlsToKeep
 
 }

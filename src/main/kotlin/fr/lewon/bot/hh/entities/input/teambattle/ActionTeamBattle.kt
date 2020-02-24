@@ -11,6 +11,8 @@ abstract class ActionTeamBattle(action: String?, battleType: String, currency: C
     val currency: String = currency.strValue
     @JsonProperty("defender_id")
     val defenderId: Int = defenderId
-    @JsonProperty("attacker%5Bteam%5D%5B%5D")
+    @JsonProperty("attacker[team][]")
     val attackerTeam: List<Int> = attackerTeam
+    @JsonProperty("battles_amount")
+    val battlesAmount: Int = 1
 }

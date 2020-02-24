@@ -33,7 +33,7 @@ class GirlsManagerTask(bot: Bot) : BotTask(bot) {
                 .filter { g: Girl -> !ownedGirlsIds.contains(g.id) }
                 .collect(Collectors.toList())
         for (girl: Girl in newGirls) {
-            newTasks.add(HarvestGirlTask(bot, girl.id, (girl.payIn.plus(1)).toLong()))
+            newTasks.add(HarvestGirlTask(bot, girl.id, (girl.payIn.plus(1).times(1000)).toLong()))
             bot.logger.info("Harvest will start on girl ${girl.id} in ${girl.payIn + 1} seconds")
             ownedGirlsIds.add(girl.id)
         }

@@ -1,7 +1,10 @@
 package fr.lewon.bot.hh
 
+import fr.lewon.bot.hh.operations.FightChampionMethod
+import fr.lewon.bot.hh.operations.GetUserInfosMethod
+import fr.lewon.bot.hh.operations.UpgradeStatMethod
 import fr.lewon.bot.hh.rest.HHSessionManager
-import fr.lewon.bot.hh.tasks.GirlsManagerTask
+import fr.lewon.bot.hh.tasks.*
 import fr.lewon.bot.runner.AbstractBotBuilder
 import fr.lewon.bot.runner.Bot
 import fr.lewon.bot.runner.bot.operation.BotOperation
@@ -9,6 +12,7 @@ import fr.lewon.bot.runner.bot.props.BotPropertyDescriptor
 import fr.lewon.bot.runner.bot.props.BotPropertyType
 import fr.lewon.bot.runner.bot.task.BotTask
 import fr.lewon.bot.runner.session.AbstractSessionManager
+import fr.lewon.web.bot.methods.ProcessTrollFightsMethod
 import org.springframework.web.reactive.function.client.WebClient
 
 class HHBotBuilder : AbstractBotBuilder("Hentai Heroes", listOf(
@@ -20,7 +24,12 @@ class HHBotBuilder : AbstractBotBuilder("Hentai Heroes", listOf(
 )) {
 
     override fun getBotOperations(): List<BotOperation> {
-        return listOf()
+        return listOf(
+                FightChampionMethod(),
+                GetUserInfosMethod(),
+                ProcessTrollFightsMethod(),
+                UpgradeStatMethod()
+        )
     }
 
     override fun buildSessionManager(login: String, password: String): AbstractSessionManager {
@@ -42,7 +51,14 @@ class HHBotBuilder : AbstractBotBuilder("Hentai Heroes", listOf(
 
     override fun getInitialTasks(bot: Bot): List<BotTask> {
         return listOf(
-                GirlsManagerTask(bot)
+                GirlsManagerTask(bot),
+                AutoShopTask(bot),
+                CollectCompetitionRewardsTask(bot),
+                ContinueQuestTask(bot),
+                FightArenaOpponentsTask(bot),
+                FightTowerOfFameOpponentsTask(bot),
+                FightTrollTask(bot),
+                ProcessMissionTask(bot)
         )
     }
 
