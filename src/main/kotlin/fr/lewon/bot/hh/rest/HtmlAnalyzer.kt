@@ -227,7 +227,7 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun getMissions(activityPage: String?): List<Mission> {
+    fun getMissions(activityPage: String): MutableList<Mission> {
         val missions: MutableList<Mission> = ArrayList()
         val regexMissionsWrap = "<div class=\"missions_wrap\">(.*?)<script type=\"text/javascript\""
         val matcherMissionsWrap = matchPattern(activityPage, regexMissionsWrap)

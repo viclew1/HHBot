@@ -8,7 +8,7 @@ class ChampionData {
     @JsonProperty
     var champion: Champion? = null
     @JsonProperty
-    var team: List<Girl?>? = null
+    var team: List<Girl> = emptyList()
     @JsonProperty
     var isCanDraft = false
     @JsonProperty

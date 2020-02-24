@@ -1,3 +1,5 @@
 package fr.lewon.bot.hh.entities.input.mission
 
-class ActionMissionStartMission(idMission: Long, idMemberMission: Long) : ActionMission("start_mission", idMission, idMemberMission)
+import fr.lewon.bot.hh.entities.activities.Mission
+
+class ActionMissionStartMission(mission: Mission) : ActionMission("start_mission", mission.idMission, mission.idMemberMission)

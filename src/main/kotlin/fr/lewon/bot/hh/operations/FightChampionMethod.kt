@@ -18,7 +18,7 @@ class FightChampionMethod : BotOperation("Fight champion") {
     }
 
     override fun run(bot: Bot, paramsPropertyStore: BotPropertyStore): OperationResult {
-//        val id = paramsPropertyStore.getByKey(CHAMPION_ID_PARAM) as Int
+        val id = paramsPropertyStore.getByKey(CHAMPION_ID_PARAM) as Int
 //        try {
 //            val session = bot.sessionManager.getSession() as HHSession
 //            val championsContent = HHRequestProcessor().getChampionsMapContent(session)
@@ -30,9 +30,9 @@ class FightChampionMethod : BotOperation("Fight champion") {
 //                    ?: return "Invalid id, no champion found"
 //        } catch (e: Exception) {
 //            return "ERROR : " + e.message
-//        }ab
-//        runner.addAction(ChampionFightOperation(id))
-//        return "Now fighting champion $id"
-        return OperationResult(false, null, null)
+//        }
+//        bot.startTask(ChampionFightTask(bot, id))
+//        BeanUtil.getBean<BotTaskScheduler>().startTaskAutoExecution(ChampionFightTask(bot, id))
+        return OperationResult(true, "Now fighting champion $id")
     }
 }

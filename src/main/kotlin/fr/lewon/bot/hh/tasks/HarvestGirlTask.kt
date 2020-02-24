@@ -22,10 +22,10 @@ class HarvestGirlTask(bot: Bot, private val girlId: Int, initialDelayMillis: Lon
 
         val sr = requestProcessor.getSalary(webClient = webClient, session = session, which = girlId)
         sr?.time?.plus(5)?.toLong()?.let {
-            //            runner.getBotLogger().info("Girl {} collected. Money made : {}. Next harvest in {} seconds.", girlId, sr.money, nextHarvestTime)
+            bot.logger.info("Girl $girlId collected. Money made : ${sr.money}. Next harvest in $it seconds.")
             return TaskResult(Delay(it, TimeUnit.SECONDS))
         }
-//        runner.getBotLogger().info("Girl {} can't be collected. Trying again in 20 minutes", girlId)
+        bot.logger.info("Girl $girlId can't be collected. Trying again in 20 minutes")
         return TaskResult(Delay(20, TimeUnit.MINUTES))
     }
 

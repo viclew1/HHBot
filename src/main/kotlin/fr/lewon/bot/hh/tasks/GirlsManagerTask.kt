@@ -34,10 +34,10 @@ class GirlsManagerTask(bot: Bot) : BotTask(bot) {
                 .collect(Collectors.toList())
         for (girl: Girl in newGirls) {
             newTasks.add(HarvestGirlTask(bot, girl.id, (girl.payIn.plus(1)).toLong()))
-//            runner.getBotLogger().info("Harvest will start on girl {} in {} seconds", girl.id, girl.payIn + 1)
+            bot.logger.info("Harvest will start on girl ${girl.id} in ${girl.payIn + 1} seconds")
             ownedGirlsIds.add(girl.id)
         }
-        println("Harem size : ${ownedGirlsIds.size}")
+        bot.logger.info("Harem size : ${ownedGirlsIds.size}")
         return TaskResult(Delay(3, TimeUnit.HOURS), newTasks)
     }
 

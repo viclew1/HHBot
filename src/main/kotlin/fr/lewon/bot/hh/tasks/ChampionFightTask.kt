@@ -1,8 +1,15 @@
 package fr.lewon.bot.hh.tasks
 
+import fr.lewon.bot.hh.entities.enums.Currency
+import fr.lewon.bot.hh.rest.HHRequestProcessor
+import fr.lewon.bot.hh.rest.HHSession
+import fr.lewon.bot.hh.rest.HtmlAnalyzer
 import fr.lewon.bot.runner.Bot
 import fr.lewon.bot.runner.bot.task.BotTask
+import fr.lewon.bot.runner.bot.task.Delay
 import fr.lewon.bot.runner.bot.task.TaskResult
+import java.util.concurrent.TimeUnit
+import java.util.stream.Collectors
 
 class ChampionFightTask(bot: Bot, private val championId: Int) : BotTask(bot) {
 
@@ -11,28 +18,32 @@ class ChampionFightTask(bot: Bot, private val championId: Int) : BotTask(bot) {
     }
 
     override fun doExecute(bot: Bot): TaskResult {
-//        val session = sessionManager.getSession(requestProcessor)
-//        val championContent = requestProcessor.getChampionPageContent(session, Integer.valueOf(championId))
-//        val championData = HtmlAnalyzer.INSTANCE.getChampionData(championContent)
-//        if (championData.champion.currentTickets.toInt() == 0) {
-//            runner.botLogger.info("No ticket left, can't fight champion {}. Trying again in 4 hours", *arrayOf<Any>(Integer.valueOf(championId)))
-//            return Delay(Integer.valueOf(4), TimeScale.HOURS)
-//        }
-//        val teamIds = championData.team
-//                .stream()
-//                .map { obj: Girl? -> obj.getId() }
-//                .collect(Collectors.toList())
-//        val battleResp = requestProcessor.fightChampion(session, Currency.TICKET, championId, teamIds)
-//        if (!battleResp.success.toBoolean()) {
-//            runner.botLogger.info("Can't fight champion {}. Trying again in 4 hours", championId)
-//            return Delay(Integer.valueOf(4), TimeScale.HOURS)
-//        }
-//        if (battleResp.fnl.attackerEgo.toInt() <= 0) {
-//            runner.botLogger.info("Lost against champion {}. Trying again in 15 minutes", championId)
-//            return Delay(Integer.valueOf(15), TimeScale.MINUTES)
-//        }
-//        runner.botLogger.info("Won against champion {}.", championId)
-//        return null
+        val webClient = bot.sessionManager.getWebClient()
+        val session = bot.sessionManager.getSession() as HHSession
+        val requestProcessor = HHRequestProcessor()
+        val championContent = requestProcessor.getChampionPageContent(webClient, session, championId)
+        val championData = HtmlAnalyzer.INSTANCE.getChampionData(championContent)
+        championData?.champion?.currentTickets?.let {
+            if (it == 0) {
+                bot.logger.info("No ticket left, can't fight champion ${championId}.")
+                return TaskResult()
+            }
+        }
+        var teamIds = championData?.team?.stream()
+                ?.map { g -> g.id }
+                ?.collect(Collectors.toList()) ?: emptyList<Int>()
+        val battleResp = requestProcessor.fightChampion(webClient, session, Currency.TICKET, championId, teamIds)
+        if (battleResp?.success != true) {
+            bot.logger.info("Can't fight champion ${championId}.")
+            return TaskResult()
+        }
+        battleResp.fnl?.attackerEgo?.let {
+            if (it <= 0) {
+                bot.logger.info("Lost against champion ${championId}. Trying again in 15 minutes")
+                return TaskResult(Delay(15, TimeUnit.MINUTES))
+            }
+        }
+        bot.logger.info("Won against champion ${championId}.")
         return TaskResult()
     }
 
