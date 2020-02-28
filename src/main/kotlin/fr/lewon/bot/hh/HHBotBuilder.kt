@@ -7,7 +7,6 @@ import fr.lewon.bot.hh.rest.HHSessionManager
 import fr.lewon.bot.hh.tasks.*
 import fr.lewon.bot.runner.AbstractBotBuilder
 import fr.lewon.bot.runner.Bot
-import fr.lewon.bot.runner.bot.operation.BotOperation
 import fr.lewon.bot.runner.bot.props.BotPropertyDescriptor
 import fr.lewon.bot.runner.bot.props.BotPropertyType
 import fr.lewon.bot.runner.bot.task.BotTask
@@ -15,22 +14,18 @@ import fr.lewon.bot.runner.session.AbstractSessionManager
 import fr.lewon.web.bot.methods.ProcessTrollFightsMethod
 import org.springframework.web.reactive.function.client.WebClient
 
-class HHBotBuilder : AbstractBotBuilder("Hentai Heroes", listOf(
+class HHBotBuilder : AbstractBotBuilder(listOf(
         BotPropertyDescriptor("troll_world", BotPropertyType.INTEGER, null, "World containing the troll to farm. NULL to define based on the current world.", isNeeded = false, isNullable = true),
         BotPropertyDescriptor("fight_energy_to_keep", BotPropertyType.INTEGER, 0, "Energy to keep when fighting trolls.", isNeeded = false, isNullable = false),
         BotPropertyDescriptor("tower_energy_to_keep", BotPropertyType.INTEGER, 0, "Energy to keep when fighting in tower of fame.", isNeeded = false, isNullable = false),
         BotPropertyDescriptor("auto_shop_books", BotPropertyType.BOOLEAN, false, "If true, the books in the store will be automatically bought.", isNeeded = false, isNullable = false),
         BotPropertyDescriptor("auto_shop_gifts", BotPropertyType.BOOLEAN, false, "If true, the gifts in the store will be automatically bought.", isNeeded = false, isNullable = false)
+), listOf(
+        FightChampionMethod(),
+        GetUserInfosMethod(),
+        ProcessTrollFightsMethod(),
+        UpgradeStatMethod()
 )) {
-
-    override fun getBotOperations(): List<BotOperation> {
-        return listOf(
-                FightChampionMethod(),
-                GetUserInfosMethod(),
-                ProcessTrollFightsMethod(),
-                UpgradeStatMethod()
-        )
-    }
 
     override fun buildSessionManager(login: String, password: String): AbstractSessionManager {
         return HHSessionManager(login, password, 16000000,
