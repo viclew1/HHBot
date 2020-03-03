@@ -104,7 +104,7 @@ class HHRequestProcessor {
 
     @Throws(Exception::class)
     fun getShopContent(webClient: WebClient, session: HHSession): String {
-        return readAllPage(webClient, session, HOME)
+        return readAllPage(webClient, session, SHOP)
     }
 
     @Throws(Exception::class)

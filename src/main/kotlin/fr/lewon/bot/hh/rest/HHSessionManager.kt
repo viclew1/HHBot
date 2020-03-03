@@ -23,6 +23,7 @@ class HHSessionManager(login: String, password: String, sessionDurability: Long,
         for ((key, value) in cookieValues) {
             cookieHeaderValue += "$key=$value; "
         }
+        response?.releaseBody()
         return HHSession("Cookie", cookieHeaderValue)
     }
 }
