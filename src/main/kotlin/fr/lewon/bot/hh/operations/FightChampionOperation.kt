@@ -1,6 +1,5 @@
 package fr.lewon.bot.hh.operations
 
-import fr.lewon.bot.hh.entities.champions.ChampionPremise
 import fr.lewon.bot.hh.rest.HHRequestProcessor
 import fr.lewon.bot.hh.rest.HHSession
 import fr.lewon.bot.hh.rest.HtmlAnalyzer
@@ -12,7 +11,7 @@ import fr.lewon.bot.runner.bot.props.BotPropertyDescriptor
 import fr.lewon.bot.runner.bot.props.BotPropertyStore
 import fr.lewon.bot.runner.bot.props.BotPropertyType
 
-class FightChampionMethod : BotOperation("Fight champion") {
+class FightChampionOperation : BotOperation("Fight champion") {
 
     companion object {
         private const val CHAMPION_ID_PARAM = "CHAMPION_ID"
@@ -27,11 +26,8 @@ class FightChampionMethod : BotOperation("Fight champion") {
         try {
             val session = bot.sessionManager.getSession() as HHSession
             val championsContent = HHRequestProcessor().getChampionsMapContent(bot.sessionManager.getWebClient(), session)
-            val championPremises = HtmlAnalyzer.INSTANCE.getChampionsIds(championsContent)
-            val championPremise = championPremises.stream()
-                    .filter { c: ChampionPremise -> id == c.championId }
-                    .findFirst()
-                    .orElse(null)
+            HtmlAnalyzer.INSTANCE.getChampionsIds(championsContent)
+                    .firstOrNull { c -> id == c.championId }
                     ?: return OperationResult(false, "Invalid id, no champion found")
         } catch (e: Exception) {
             bot.logger.error("Couldn't retrieve champion info")

@@ -1,8 +1,8 @@
 package fr.lewon.bot.hh
 
-import fr.lewon.bot.hh.operations.FightChampionMethod
-import fr.lewon.bot.hh.operations.GetUserInfosMethod
-import fr.lewon.bot.hh.operations.UpgradeStatMethod
+import fr.lewon.bot.hh.operations.FightChampionOperation
+import fr.lewon.bot.hh.operations.GetUserInfoOperation
+import fr.lewon.bot.hh.operations.UpgradeStatOperation
 import fr.lewon.bot.hh.rest.HHSessionManager
 import fr.lewon.bot.hh.tasks.*
 import fr.lewon.bot.runner.AbstractBotBuilder
@@ -11,7 +11,7 @@ import fr.lewon.bot.runner.bot.props.BotPropertyDescriptor
 import fr.lewon.bot.runner.bot.props.BotPropertyType
 import fr.lewon.bot.runner.bot.task.BotTask
 import fr.lewon.bot.runner.session.AbstractSessionManager
-import fr.lewon.web.bot.methods.ProcessTrollFightsMethod
+import fr.lewon.web.bot.methods.ProcessTrollFightsOperation
 import org.springframework.web.reactive.function.client.WebClient
 
 class HHBotBuilder : AbstractBotBuilder(listOf(
@@ -21,10 +21,10 @@ class HHBotBuilder : AbstractBotBuilder(listOf(
         BotPropertyDescriptor("auto_shop_books", BotPropertyType.BOOLEAN, false, "If true, the books in the store will be automatically bought.", isNeeded = false, isNullable = false),
         BotPropertyDescriptor("auto_shop_gifts", BotPropertyType.BOOLEAN, false, "If true, the gifts in the store will be automatically bought.", isNeeded = false, isNullable = false)
 ), listOf(
-        FightChampionMethod(),
-        GetUserInfosMethod(),
-        ProcessTrollFightsMethod(),
-        UpgradeStatMethod()
+        FightChampionOperation(),
+        GetUserInfoOperation(),
+        ProcessTrollFightsOperation(),
+        UpgradeStatOperation()
 )) {
 
     override fun buildSessionManager(login: String, password: String): AbstractSessionManager {

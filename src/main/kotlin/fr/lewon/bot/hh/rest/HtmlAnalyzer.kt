@@ -217,10 +217,9 @@ enum class HtmlAnalyzer {
     }
 
     private fun matchPattern(content: String, regex: String, flatten: Boolean = true): Matcher {
-        var content = content
-        content = if (flatten) flattenContent(content) else content
+        val treatedContent = if (flatten) flattenContent(content) else content
         val pattern = Pattern.compile(regex)
-        return pattern.matcher(content)
+        return pattern.matcher(treatedContent)
     }
 
     private fun flattenContent(content: String?): String {

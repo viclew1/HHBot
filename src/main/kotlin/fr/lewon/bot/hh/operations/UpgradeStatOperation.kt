@@ -9,7 +9,7 @@ import fr.lewon.bot.runner.bot.props.BotPropertyDescriptor
 import fr.lewon.bot.runner.bot.props.BotPropertyStore
 import fr.lewon.bot.runner.bot.props.BotPropertyType
 
-class UpgradeStatMethod : BotOperation("Upgrade stat") {
+class UpgradeStatOperation : BotOperation("Upgrade stat") {
 
     companion object {
         private const val UPGRADE_COUNT_KEY = "upgrade_count"

@@ -10,7 +10,7 @@ import fr.lewon.bot.runner.bot.props.BotPropertyDescriptor
 import fr.lewon.bot.runner.bot.props.BotPropertyStore
 
 
-class GetUserInfosMethod : BotOperation("Get user info") {
+class GetUserInfoOperation : BotOperation("Get user info") {
 
     override fun getNeededProperties(bot: Bot): List<BotPropertyDescriptor> {
         return ArrayList()

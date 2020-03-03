@@ -11,7 +11,7 @@ import fr.lewon.bot.runner.bot.props.BotPropertyStore
 import fr.lewon.bot.runner.bot.props.BotPropertyType
 import kotlin.math.min
 
-class ProcessTrollFightsMethod : BotOperation("Process troll fight") {
+class ProcessTrollFightsOperation : BotOperation("Process troll fight") {
 
     companion object {
         private const val TROLL_WORLD_PARAM = "troll_world"
