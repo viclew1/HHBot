@@ -8,11 +8,7 @@ import fr.lewon.bot.runner.bot.task.Delay
 import fr.lewon.bot.runner.bot.task.TaskResult
 import java.util.concurrent.TimeUnit
 
-class HarvestGirlTask(bot: Bot, private val girlId: Int, initialDelayMillis: Long) : BotTask(bot, initialDelayMillis) {
-
-    override fun getLabel(): String {
-        return "Harvest [$girlId]"
-    }
+class HarvestGirlTask(bot: Bot, private val girlId: Int, initialDelayMillis: Long) : BotTask("Harvest [$girlId]", bot, initialDelayMillis) {
 
     @Throws(Exception::class)
     override fun doExecute(bot: Bot): TaskResult {

@@ -9,11 +9,7 @@ import fr.lewon.bot.runner.bot.task.Delay
 import fr.lewon.bot.runner.bot.task.TaskResult
 import java.util.concurrent.TimeUnit
 
-class CollectCompetitionRewardsTask(bot: Bot) : BotTask(bot) {
-
-    override fun getLabel(): String {
-        return "Collect competitions rewards"
-    }
+class CollectCompetitionRewardsTask(bot: Bot) : BotTask("Collect competitions rewards", bot) {
 
     override fun doExecute(bot: Bot): TaskResult {
         val webClient = bot.sessionManager.getWebClient()

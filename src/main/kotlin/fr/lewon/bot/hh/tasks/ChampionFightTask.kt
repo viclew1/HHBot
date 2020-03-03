@@ -11,11 +11,7 @@ import fr.lewon.bot.runner.bot.task.TaskResult
 import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
-class ChampionFightTask(bot: Bot, private val championId: Int) : BotTask(bot) {
-
-    override fun getLabel(): String {
-        return "Champion fight"
-    }
+class ChampionFightTask(bot: Bot, private val championId: Int) : BotTask("Champion fight", bot) {
 
     override fun doExecute(bot: Bot): TaskResult {
         val webClient = bot.sessionManager.getWebClient()

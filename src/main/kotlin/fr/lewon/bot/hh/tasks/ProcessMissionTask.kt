@@ -9,11 +9,7 @@ import fr.lewon.bot.runner.bot.task.Delay
 import fr.lewon.bot.runner.bot.task.TaskResult
 import java.util.concurrent.TimeUnit
 
-class ProcessMissionTask(bot: Bot) : BotTask(bot) {
-
-    override fun getLabel(): String {
-        return "process mission"
-    }
+class ProcessMissionTask(bot: Bot) : BotTask("process mission", bot) {
 
     override fun doExecute(bot: Bot): TaskResult {
         val requestProcessor = HHRequestProcessor()

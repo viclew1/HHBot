@@ -12,11 +12,7 @@ import fr.lewon.bot.runner.bot.task.TaskResult
 import org.springframework.web.reactive.function.client.WebClient
 import java.util.concurrent.TimeUnit
 
-class AutoShopTask(bot: Bot) : BotTask(bot) {
-
-    override fun getLabel(): String {
-        return "Auto shop"
-    }
+class AutoShopTask(bot: Bot) : BotTask("Auto shop", bot) {
 
     override fun doExecute(bot: Bot): TaskResult {
         val webClient = bot.sessionManager.getWebClient()

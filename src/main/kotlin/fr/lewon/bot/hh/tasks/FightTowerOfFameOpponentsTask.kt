@@ -10,11 +10,7 @@ import fr.lewon.bot.runner.bot.task.TaskResult
 import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
-class FightTowerOfFameOpponentsTask(bot: Bot) : BotTask(bot) {
-
-    override fun getLabel(): String {
-        return "Fight tower of fame opponents"
-    }
+class FightTowerOfFameOpponentsTask(bot: Bot) : BotTask("Fight tower of fame opponents", bot) {
 
     override fun doExecute(bot: Bot): TaskResult {
         val webClient = bot.sessionManager.getWebClient()

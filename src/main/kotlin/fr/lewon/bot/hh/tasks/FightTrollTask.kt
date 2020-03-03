@@ -10,11 +10,7 @@ import fr.lewon.bot.runner.bot.task.TaskResult
 import org.springframework.web.reactive.function.client.WebClient
 import java.util.concurrent.TimeUnit
 
-class FightTrollTask(bot: Bot) : BotTask(bot) {
-
-    override fun getLabel(): String {
-        return "Fight troll"
-    }
+class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
 
     override fun doExecute(bot: Bot): TaskResult {
         val webClient = bot.sessionManager.getWebClient()

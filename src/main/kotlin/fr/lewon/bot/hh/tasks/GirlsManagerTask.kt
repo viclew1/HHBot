@@ -12,11 +12,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
-class GirlsManagerTask(bot: Bot) : BotTask(bot) {
-
-    override fun getLabel(): String {
-        return "Girls manager"
-    }
+class GirlsManagerTask(bot: Bot) : BotTask("Girls manager", bot) {
 
     override fun doExecute(bot: Bot): TaskResult {
 
