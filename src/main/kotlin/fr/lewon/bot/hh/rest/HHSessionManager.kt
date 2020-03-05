@@ -8,8 +8,9 @@ class HHSessionManager(login: String, password: String, sessionDurability: Long,
     @Throws(Exception::class)
     override fun generateSessionObject(webClient: WebClient, login: String, password: String): HHSession {
         val response = HHRequestProcessor().getSession(webClient, login, password)
+                ?: throw Exception("Unable to connect to Hentai Heroes, unknown error")
         val cookieValues: MutableMap<String, String> = HashMap()
-        response?.cookies()?.let {
+        response.cookies().let {
             cookieValues["stay_online"] = it.getFirst("stay_online")?.value ?: ""
             cookieValues["HH_SESS_13"] = it.getFirst("HH_SESS_13")?.value ?: ""
         }
@@ -19,11 +20,11 @@ class HHSessionManager(login: String, password: String, sessionDurability: Long,
         cookieValues["lang"] = "fr"
         cookieValues["member_guid"] = "A55C4849-F42D-4A1A-A6C6-11556C261A9C"
         cookieValues["_pk_id.2.6e07"] = "cda6c741be7d8090.1562523528.2.1562529541.1562528524."
-        var cookieHeaderValue = ""
-        for ((key, value) in cookieValues) {
-            cookieHeaderValue += "$key=$value; "
-        }
-        response?.releaseBody()?.block()
+        val cookieHeaderValue = cookieValues
+                .map { "$it.key=$it.value" }
+                .joinToString("; ")
+        
+        response.releaseBody().block()
         return HHSession("Cookie", cookieHeaderValue)
     }
 }
