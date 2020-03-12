@@ -11,8 +11,10 @@ class HHSessionManager(login: String, password: String, sessionDurability: Long,
                 ?: throw Exception("Unable to connect to Hentai Heroes, unknown error")
         val cookieValues: MutableMap<String, String> = HashMap()
         response.cookies().let {
-            cookieValues["stay_online"] = it.getFirst("stay_online")?.value ?: ""
-            cookieValues["HH_SESS_13"] = it.getFirst("HH_SESS_13")?.value ?: ""
+            cookieValues["stay_online"] = it.getFirst("stay_online")?.value
+                    ?: throw Exception("Unable to connect to Hentai Heroes, unknown error")
+            cookieValues["HH_SESS_13"] = it.getFirst("HH_SESS_13")?.value
+                    ?: throw Exception("Unable to connect to Hentai Heroes, unknown error")
         }
         cookieValues["HAPBK"] = "web5"
         cookieValues["age_verification"] = "1"
@@ -21,9 +23,9 @@ class HHSessionManager(login: String, password: String, sessionDurability: Long,
         cookieValues["member_guid"] = "A55C4849-F42D-4A1A-A6C6-11556C261A9C"
         cookieValues["_pk_id.2.6e07"] = "cda6c741be7d8090.1562523528.2.1562529541.1562528524."
         val cookieHeaderValue = cookieValues
-                .map { "$it.key=$it.value" }
+                .map { "${it.key}=${it.value}" }
                 .joinToString("; ")
-        
+
         response.releaseBody().block()
         return HHSession("Cookie", cookieHeaderValue)
     }
