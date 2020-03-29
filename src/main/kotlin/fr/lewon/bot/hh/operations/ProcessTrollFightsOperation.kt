@@ -21,7 +21,7 @@ class ProcessTrollFightsOperation : BotOperation("Process troll fight") {
     override fun getNeededProperties(bot: Bot): List<BotPropertyDescriptor> {
         return listOf(
                 BotPropertyDescriptor(TROLL_WORLD_PARAM, BotPropertyType.INTEGER, null, "World in which the troll will be fought", isNeeded = true, isNullable = false),
-                BotPropertyDescriptor(FIGHTS_COUNT_PARAM, BotPropertyType.INTEGER, null, "Number of fights to process. Will fight all you can if null", isNeeded = false, isNullable = true)
+                BotPropertyDescriptor(FIGHTS_COUNT_PARAM, BotPropertyType.INTEGER, null, "Number of fights to process. Will fight all you can if null", isNeeded = true, isNullable = false)
         )
     }
 
@@ -33,8 +33,8 @@ class ProcessTrollFightsOperation : BotOperation("Process troll fight") {
         val requestProcessor = HHRequestProcessor()
 
         val homeContent = requestProcessor.getHomeContent(webClient, session)
-        val userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
-        val energy = userInfos?.energyFight ?: 0
+        val userInfo = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
+        val energy = userInfo?.energyFight ?: 0
 
         if (energy == 0) {
             bot.logger.info("No energy left to fight trolls")

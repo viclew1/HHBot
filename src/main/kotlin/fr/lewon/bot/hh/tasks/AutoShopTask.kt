@@ -23,14 +23,15 @@ class AutoShopTask(bot: Bot) : BotTask("Auto shop", bot) {
         val shopContent = requestProcessor.getShopContent(webClient, session)
         val nextShopFill = HtmlAnalyzer.INSTANCE.getNextStock(shopContent)
         val shop = HtmlAnalyzer.INSTANCE.getShop(shopContent)
-        if (bot.botPropertyStore.getByKey("auto_shop_books") as Boolean) {
+        if (bot.botPropertyStore.getByKey("auto_shop_gifts") as Boolean) {
             val giftsBought = buyItems(requestProcessor, webClient, session, userInfos, shop?.gifts ?: emptyList())
             bot.logger.info("Gifts bought : $giftsBought")
         }
-        if (bot.botPropertyStore.getByKey("auto_shop_gifts") as Boolean) {
+        if (bot.botPropertyStore.getByKey("auto_shop_books") as Boolean) {
             val booksBought = buyItems(requestProcessor, webClient, session, userInfos, shop?.books ?: emptyList())
             bot.logger.info("Books bought : $booksBought")
         }
+        bot.logger.info("Auto shop task done. Trying again in ${nextShopFill?.plus(5)?.toLong() ?: -1} seconds")
         return TaskResult(Delay(nextShopFill?.plus(5)?.toLong() ?: -1, TimeUnit.SECONDS))
     }
 
@@ -40,11 +41,11 @@ class AutoShopTask(bot: Bot) : BotTask("Auto shop", bot) {
         for (item in items) {
             userInfos?.softCurrency?.minus(item.price ?: 0)?.let {
                 userInfos.softCurrency = it
-                if (it > 0 && requestProcessor.buyItem(webClient, session, item)?.success == true) {
+                if (it < 0 || requestProcessor.buyItem(webClient, session, item)?.success == false) {
                     return boughtIds
                 }
+                item.id?.let { id -> boughtIds.add(id) }
             }
-            item.id?.let { boughtIds.add(it) }
         }
         return boughtIds
     }

@@ -8,13 +8,13 @@ class HHSessionManager(login: String, password: String, sessionDurability: Long,
     @Throws(Exception::class)
     override fun generateSessionObject(webClient: WebClient, login: String, password: String): HHSession {
         val response = HHRequestProcessor().getSession(webClient, login, password)
-                ?: throw Exception("Unable to connect to Hentai Heroes, unknown error")
+                ?: throw Exception("Unable to connect to Hentai Heroes, website may be down")
         val cookieValues: MutableMap<String, String> = HashMap()
         response.cookies().let {
             cookieValues["stay_online"] = it.getFirst("stay_online")?.value
-                    ?: throw Exception("Unable to connect to Hentai Heroes, unknown error")
+                    ?: throw Exception("Unable to connect to Hentai Heroes, your user/password may be wrong")
             cookieValues["HH_SESS_13"] = it.getFirst("HH_SESS_13")?.value
-                    ?: throw Exception("Unable to connect to Hentai Heroes, unknown error")
+                    ?: throw Exception("Unable to connect to Hentai Heroes, your user/password may be wrong")
         }
         cookieValues["HAPBK"] = "web5"
         cookieValues["age_verification"] = "1"

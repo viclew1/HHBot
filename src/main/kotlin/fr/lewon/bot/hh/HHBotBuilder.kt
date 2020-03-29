@@ -1,6 +1,7 @@
 package fr.lewon.bot.hh
 
 import fr.lewon.bot.hh.operations.FightChampionOperation
+import fr.lewon.bot.hh.operations.GetEventInfoOperation
 import fr.lewon.bot.hh.operations.GetUserInfoOperation
 import fr.lewon.bot.hh.operations.UpgradeStatOperation
 import fr.lewon.bot.hh.rest.HHSessionManager
@@ -19,12 +20,14 @@ class HHBotBuilder : AbstractBotBuilder(listOf(
         BotPropertyDescriptor("fight_energy_to_keep", BotPropertyType.INTEGER, 0, "Energy to keep when fighting trolls.", isNeeded = false, isNullable = false),
         BotPropertyDescriptor("tower_energy_to_keep", BotPropertyType.INTEGER, 0, "Energy to keep when fighting in tower of fame.", isNeeded = false, isNullable = false),
         BotPropertyDescriptor("auto_shop_books", BotPropertyType.BOOLEAN, false, "If true, the books in the store will be automatically bought.", isNeeded = false, isNullable = false),
-        BotPropertyDescriptor("auto_shop_gifts", BotPropertyType.BOOLEAN, false, "If true, the gifts in the store will be automatically bought.", isNeeded = false, isNullable = false)
+        BotPropertyDescriptor("auto_shop_gifts", BotPropertyType.BOOLEAN, false, "If true, the gifts in the store will be automatically bought.", isNeeded = false, isNullable = false),
+        BotPropertyDescriptor("fight_troll_events", BotPropertyType.BOOLEAN, false, "If true, the 'troll_world' property will be ignored during events and girls holding trolls will be fought.", isNeeded = false, isNullable = false)
 ), listOf(
         FightChampionOperation(),
         GetUserInfoOperation(),
         ProcessTrollFightsOperation(),
-        UpgradeStatOperation()
+        UpgradeStatOperation(),
+        GetEventInfoOperation()
 )) {
 
     override fun buildSessionManager(login: String, password: String): AbstractSessionManager {

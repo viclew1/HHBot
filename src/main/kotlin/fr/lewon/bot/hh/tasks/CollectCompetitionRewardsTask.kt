@@ -23,7 +23,7 @@ class CollectCompetitionRewardsTask(bot: Bot) : BotTask("Collect competitions re
                 endedCompetitions.add(id)
             }
         }
-        val secondsUntilNextCompetition = HtmlAnalyzer.INSTANCE.getSecondsUntilNextCompetition(activityPage)
+        val secondsUntilNextCompetition = HtmlAnalyzer.INSTANCE.getSecondsUntilNextCompetition(activityPage) + 5
         bot.logger.info("Competitions finished : $endedCompetitions. Trying again in $secondsUntilNextCompetition seconds.")
         return TaskResult(Delay(secondsUntilNextCompetition.toLong(), TimeUnit.SECONDS))
     }

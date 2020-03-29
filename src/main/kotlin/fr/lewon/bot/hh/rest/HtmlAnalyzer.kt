@@ -8,6 +8,7 @@ import fr.lewon.bot.hh.entities.battle.BattleMob
 import fr.lewon.bot.hh.entities.battle.BattlePlayer
 import fr.lewon.bot.hh.entities.battle.TowerOfFameOpponentPremise
 import fr.lewon.bot.hh.entities.champions.ChampionPremise
+import fr.lewon.bot.hh.entities.event.EventData
 import fr.lewon.bot.hh.entities.girls.Girl
 import fr.lewon.bot.hh.entities.quests.QuestStep
 import fr.lewon.bot.hh.entities.response.ChampionData
@@ -58,6 +59,14 @@ enum class HtmlAnalyzer {
         val matcher = matchPattern(championContent, regex)
         return if (matcher.find()) {
             objectMapper.readValue<ChampionData>(matcher.group(1))
+        } else null
+    }
+
+    fun getEventData(homeContent: String): EventData? {
+        val regex = "event_object_data = (\\{.*});"
+        val matcher = matchPattern(homeContent, regex, false)
+        return if (matcher.find()) {
+            objectMapper.readValue<EventData>(matcher.group(1))
         } else null
     }
 
@@ -143,7 +152,7 @@ enum class HtmlAnalyzer {
     }
 
     fun getCurrentWorldId(mapContent: String): String? {
-        val regex = "<a class=\"link-world\" href=\"/world/([0-9])\""
+        val regex = "<a class=\"link-world\" href=\"/world/([0-9]+)\""
         val matcher = matchPattern(mapContent, regex)
         var lastWorldId: String? = null
         while (matcher.find()) {
@@ -153,7 +162,7 @@ enum class HtmlAnalyzer {
     }
 
     fun getTrollId(worldContent: String): String? {
-        val regex = "id_troll=([0-9])"
+        val regex = "id_troll=([0-9]+)"
         val matcher = matchPattern(worldContent, regex)
         return if (matcher.find()) {
             matcher.group(1)
@@ -248,5 +257,14 @@ enum class HtmlAnalyzer {
             missions.add(mission)
         }
         return missions
+    }
+
+    fun getNextArenaReset(arenaContent: String): Long? {
+        val regex = "\\.arena_refresh_counter \\[rel=\"count\"\\]'\\), ([0-9]+), reload\\);"
+        val matcher = matchPattern(arenaContent, regex)
+        if (matcher.find()) {
+            return matcher.group(1).toLong()
+        }
+        return null
     }
 }

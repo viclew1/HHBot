@@ -15,16 +15,14 @@ class FightArenaOpponentsTask(bot: Bot) : BotTask("Fight arena opponents", bot) 
         val webClient = bot.sessionManager.getWebClient()
         val requestProcessor = HHRequestProcessor()
         val session = bot.sessionManager.getSession() as HHSession
-        requestProcessor.getArenaContent(webClient, session)
-        var cpt = 0
+        val arenaContent = requestProcessor.getArenaContent(webClient, session)
         for (i in 0..2) {
             val pageContent = requestProcessor.getBattleArenaContent(webClient, session, i)
             val battlePlayer = HtmlAnalyzer.INSTANCE.findOpponentBattlePlayer(pageContent) ?: continue
-            if (requestProcessor.fightOpponentPlayer(webClient, session, battlePlayer)?.success == true) {
-                cpt++
-            }
+            requestProcessor.fightOpponentPlayer(webClient, session, battlePlayer)
         }
-        bot.logger.info("$cpt arena fights done. Trying again in 15 minutes.")
-        return TaskResult(Delay(15, TimeUnit.MINUTES))
+        val nextExec = (HtmlAnalyzer.INSTANCE.getNextArenaReset(arenaContent) ?: 30 * 60) + 5
+        bot.logger.info("Arena fights done. Trying again in $nextExec seconds")
+        return TaskResult(Delay(nextExec, TimeUnit.SECONDS))
     }
 }
