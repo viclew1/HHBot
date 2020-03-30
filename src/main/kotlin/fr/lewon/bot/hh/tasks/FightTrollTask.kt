@@ -75,7 +75,7 @@ class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
                 ?.filter { it.troll?.idTroll != null }
                 ?.filter { (it.troll?.idTroll?.toLong() ?: -1) <= currentTrollId.toLong() }
                 ?.sortedByDescending { it.shards }
-                ?.first()
+                ?.firstOrNull()
                 ?.troll
                 ?.idTroll
     }
