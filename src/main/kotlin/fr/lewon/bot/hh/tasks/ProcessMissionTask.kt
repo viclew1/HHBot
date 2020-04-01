@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 class ProcessMissionTask(bot: Bot) : BotTask("process mission", bot) {
 
-    override fun doExecute(bot: Bot): TaskResult {
+    override fun doExecute(): TaskResult {
         val requestProcessor = HHRequestProcessor()
         val webClient = bot.sessionManager.getWebClient()
         val session = bot.sessionManager.getSession() as HHSession
@@ -22,17 +22,18 @@ class ProcessMissionTask(bot: Bot) : BotTask("process mission", bot) {
             m.remainingTime?.let {
                 if (it <= 0) {
                     requestProcessor.claimReward(webClient, session, m)
-                    bot.logger.info("Mission ${m.idMission} claimed.")
+                    logger.info("Mission ${m.idMission} claimed.")
                 }
             }
             if (m.isStartable) {
                 requestProcessor.startMission(webClient, session, m)
-                bot.logger.info("Mission ${m.idMission} started. Claiming it in ${m.duration} seconds")
+                logger.info("Mission ${m.idMission} started. Claiming it in ${m.duration} seconds")
                 return TaskResult(Delay(m.duration?.plus(5)?.toLong() ?: -1, TimeUnit.SECONDS))
             }
         }
         requestProcessor.getFinalMissionGift(webClient, session)
-        bot.logger.info("Every mission finished and final gift collected. Trying again in 2 hours.")
-        return TaskResult(Delay(2, TimeUnit.HOURS))
+        val nextExecution = HtmlAnalyzer.INSTANCE.getNextMissionsUpdate(activityPage)?.plus(5) ?: 10 * 60 * 60
+        logger.info("Every mission finished and final gift collected. Trying again in $nextExecution seconds.")
+        return TaskResult(Delay(nextExecution, TimeUnit.SECONDS))
     }
 }

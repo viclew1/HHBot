@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 class ContinueQuestTask(bot: Bot) : BotTask("Continue quest", bot) {
 
-    override fun doExecute(bot: Bot): TaskResult {
+    override fun doExecute(): TaskResult {
         val webClient = bot.sessionManager.getWebClient()
         val session = bot.sessionManager.getSession() as HHSession
         val requestProcessor = HHRequestProcessor()
@@ -22,7 +22,7 @@ class ContinueQuestTask(bot: Bot) : BotTask("Continue quest", bot) {
             while (requestProcessor.continueQuest(webClient, session, it)?.success == true) {
                 stepCpt++
             }
-            bot.logger.info("Quest $it advanced $stepCpt steps. Trying again in 4 hours")
+            logger.info("Quest $it advanced $stepCpt steps. Trying again in 4 hours")
         }
         return TaskResult(Delay(4, TimeUnit.HOURS))
     }

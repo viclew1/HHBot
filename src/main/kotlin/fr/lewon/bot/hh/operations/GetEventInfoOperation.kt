@@ -6,7 +6,6 @@ import fr.lewon.bot.hh.rest.HtmlAnalyzer
 import fr.lewon.bot.runner.Bot
 import fr.lewon.bot.runner.bot.operation.BotOperation
 import fr.lewon.bot.runner.bot.operation.OperationResult
-import fr.lewon.bot.runner.bot.operation.ResultType
 import fr.lewon.bot.runner.bot.props.BotPropertyDescriptor
 import fr.lewon.bot.runner.bot.props.BotPropertyStore
 
@@ -24,7 +23,7 @@ class GetEventInfoOperation : BotOperation("Get event info") {
             val homeContent = requestProcessor.getHomeContent(webClient, session)
             HtmlAnalyzer.INSTANCE.getEventData(homeContent)?.let {
                 bot.logger.info("Event info retrieved")
-                return OperationResult(true, "Retrieved event info", ResultType.OBJECT, it)
+                return OperationResult.ofObject(true, "Retrieved event info", it)
             }
             bot.logger.warn("Couldn't retrieve event info - no current event")
             return OperationResult(false, "Couldn't retrieve event info - no current event")

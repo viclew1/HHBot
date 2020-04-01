@@ -267,4 +267,28 @@ enum class HtmlAnalyzer {
         }
         return null
     }
+
+    fun getEndOfWeekTimer(towerOfFameContent: String): Long? {
+        val regex = "var till_end_of_week_timer = \\{\"in_seconds\":([0-9]+),\"days\":[0-9]+};"
+        val matcher = matchPattern(towerOfFameContent, regex, false)
+        return if (matcher.find()) {
+            matcher.group(1).toLong()
+        } else null
+    }
+
+    fun getRewardsVar(towerOfFameContent: String): Int? {
+        val regex = "var getRewards = ([0-9]+);"
+        val matcher = matchPattern(towerOfFameContent, regex, false)
+        return if (matcher.find()) {
+            matcher.group(1).toInt()
+        } else null
+    }
+
+    fun getNextMissionsUpdate(activityPage: String): Long? {
+        val regex = "var next_update = ([0-9]+);"
+        val matcher = matchPattern(activityPage, regex, false)
+        return if (matcher.find()) {
+            matcher.group(1).toLong()
+        } else null
+    }
 }

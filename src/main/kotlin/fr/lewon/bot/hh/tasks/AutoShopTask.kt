@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 class AutoShopTask(bot: Bot) : BotTask("Auto shop", bot) {
 
-    override fun doExecute(bot: Bot): TaskResult {
+    override fun doExecute(): TaskResult {
         val webClient = bot.sessionManager.getWebClient()
         val session = bot.sessionManager.getSession() as HHSession
         var requestProcessor = HHRequestProcessor()
@@ -25,13 +25,13 @@ class AutoShopTask(bot: Bot) : BotTask("Auto shop", bot) {
         val shop = HtmlAnalyzer.INSTANCE.getShop(shopContent)
         if (bot.botPropertyStore.getByKey("auto_shop_gifts") as Boolean) {
             val giftsBought = buyItems(requestProcessor, webClient, session, userInfos, shop?.gifts ?: emptyList())
-            bot.logger.info("Gifts bought : $giftsBought")
+            logger.info("Gifts bought : $giftsBought")
         }
         if (bot.botPropertyStore.getByKey("auto_shop_books") as Boolean) {
             val booksBought = buyItems(requestProcessor, webClient, session, userInfos, shop?.books ?: emptyList())
-            bot.logger.info("Books bought : $booksBought")
+            logger.info("Books bought : $booksBought")
         }
-        bot.logger.info("Auto shop task done. Trying again in ${nextShopFill?.plus(5)?.toLong() ?: -1} seconds")
+        logger.info("Auto shop task done. Trying again in ${nextShopFill?.plus(5)?.toLong() ?: -1} seconds")
         return TaskResult(Delay(nextShopFill?.plus(5)?.toLong() ?: -1, TimeUnit.SECONDS))
     }
 

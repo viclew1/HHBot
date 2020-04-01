@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 class FightArenaOpponentsTask(bot: Bot) : BotTask("Fight arena opponents", bot) {
 
-    override fun doExecute(bot: Bot): TaskResult {
+    override fun doExecute(): TaskResult {
         val webClient = bot.sessionManager.getWebClient()
         val requestProcessor = HHRequestProcessor()
         val session = bot.sessionManager.getSession() as HHSession
@@ -22,7 +22,7 @@ class FightArenaOpponentsTask(bot: Bot) : BotTask("Fight arena opponents", bot) 
             requestProcessor.fightOpponentPlayer(webClient, session, battlePlayer)
         }
         val nextExec = (HtmlAnalyzer.INSTANCE.getNextArenaReset(arenaContent) ?: 30 * 60) + 5
-        bot.logger.info("Arena fights done. Trying again in $nextExec seconds")
+        logger.info("Arena fights done. Trying again in $nextExec seconds")
         return TaskResult(Delay(nextExec, TimeUnit.SECONDS))
     }
 }

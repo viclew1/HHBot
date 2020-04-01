@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 class CollectCompetitionRewardsTask(bot: Bot) : BotTask("Collect competitions rewards", bot) {
 
-    override fun doExecute(bot: Bot): TaskResult {
+    override fun doExecute(): TaskResult {
         val webClient = bot.sessionManager.getWebClient()
         val requestProcessor = HHRequestProcessor()
         val session = bot.sessionManager.getSession() as HHSession
@@ -24,7 +24,7 @@ class CollectCompetitionRewardsTask(bot: Bot) : BotTask("Collect competitions re
             }
         }
         val secondsUntilNextCompetition = HtmlAnalyzer.INSTANCE.getSecondsUntilNextCompetition(activityPage) + 5
-        bot.logger.info("Competitions finished : $endedCompetitions. Trying again in $secondsUntilNextCompetition seconds.")
+        logger.info("Competitions finished : $endedCompetitions. Trying again in $secondsUntilNextCompetition seconds.")
         return TaskResult(Delay(secondsUntilNextCompetition.toLong(), TimeUnit.SECONDS))
     }
 }

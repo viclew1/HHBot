@@ -16,6 +16,7 @@ import fr.lewon.bot.hh.entities.input.mission.ActionMissionGiveGift
 import fr.lewon.bot.hh.entities.input.mission.ActionMissionStartMission
 import fr.lewon.bot.hh.entities.input.others.PlayerInfo
 import fr.lewon.bot.hh.entities.input.quest.ActionQuestNext
+import fr.lewon.bot.hh.entities.input.rewards.ActionWeeklyReward
 import fr.lewon.bot.hh.entities.input.shop.ActionBuyItem
 import fr.lewon.bot.hh.entities.input.stat.ActionUpgradeStat
 import fr.lewon.bot.hh.entities.input.teambattle.ActionTeamBattleChampion
@@ -175,6 +176,10 @@ class HHRequestProcessor {
     @Throws(Exception::class)
     fun collectCompetitionRewards(webClient: WebClient, session: HHSession, idContest: Int): Response? {
         return postForBody(webClient, session, AJAX, ActionContestGiveReward(idContest))
+    }
+
+    fun claimWeeklyRewards(webClient: WebClient, session: HHSession): Response? {
+        return postForBody(webClient, session, AJAX, ActionWeeklyReward())
     }
 
     @Throws(Exception::class)

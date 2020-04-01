@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
 
-    override fun doExecute(bot: Bot): TaskResult {
+    override fun doExecute(): TaskResult {
         val webClient = bot.sessionManager.getWebClient()
         val session = bot.sessionManager.getSession() as HHSession
         val requestProcessor = HHRequestProcessor()
@@ -22,7 +22,7 @@ class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
         val energyToKeep = bot.botPropertyStore.getByKey("fight_energy_to_keep") as Int
         val trollId = selectTrollIdToFight(webClient, session, requestProcessor, homeContent)
         if (trollId == null) {
-            bot.logger.info("No troll found. Trying again in 2 hours.")
+            logger.info("No troll found. Trying again in 2 hours.")
             return TaskResult(Delay(2, TimeUnit.HOURS))
         }
         val battleTrollContent = requestProcessor.getBattleTrollContent(webClient, session, trollId)
@@ -35,10 +35,10 @@ class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
                 }
                 fightCpt++
             }
-            bot.logger.info("Troll $trollId fought. $fightCpt fights done. Trying again in 2 hours.")
+            logger.info("Troll $trollId fought. $fightCpt fights done. Trying again in 2 hours.")
             return TaskResult(Delay(2, TimeUnit.HOURS))
         }
-        bot.logger.info("Troll $trollId not found. Trying again in 2 hours.")
+        logger.info("Troll $trollId not found. Trying again in 2 hours.")
         return TaskResult(Delay(2, TimeUnit.HOURS))
     }
 

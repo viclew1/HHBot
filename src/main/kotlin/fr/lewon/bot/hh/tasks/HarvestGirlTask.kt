@@ -10,18 +10,17 @@ import java.util.concurrent.TimeUnit
 
 class HarvestGirlTask(bot: Bot, private val girlId: Int, initialDelayMillis: Long) : BotTask("Harvest [$girlId]", bot, initialDelayMillis) {
 
-    @Throws(Exception::class)
-    override fun doExecute(bot: Bot): TaskResult {
+    override fun doExecute(): TaskResult {
         val webClient = bot.sessionManager.getWebClient()
         val session = bot.sessionManager.getSession() as HHSession
         val requestProcessor = HHRequestProcessor()
 
         val sr = requestProcessor.getSalary(webClient = webClient, session = session, which = girlId)
         sr?.time?.plus(5)?.toLong()?.let {
-            bot.logger.info("Girl $girlId collected. Money made : ${sr.money}. Next harvest in $it seconds.")
+            logger.info("Girl $girlId collected. Money made : ${sr.money}. Next harvest in $it seconds.")
             return TaskResult(Delay(it, TimeUnit.SECONDS))
         }
-        bot.logger.info("Girl $girlId can't be collected. Trying again in 20 minutes")
+        logger.info("Girl $girlId can't be collected. Trying again in 20 minutes")
         return TaskResult(Delay(20, TimeUnit.MINUTES))
     }
 
