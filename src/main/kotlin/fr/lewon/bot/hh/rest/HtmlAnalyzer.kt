@@ -276,6 +276,14 @@ enum class HtmlAnalyzer {
         } else null
     }
 
+    fun getEndOfLeagueTimer(towerOfFameContent: String): Long? {
+        val regex = "var season_end_at = ([0-9]+);"
+        val matcher = matchPattern(towerOfFameContent, regex, false)
+        return if (matcher.find()) {
+            matcher.group(1).toLong()
+        } else null
+    }
+
     fun getRewardsVar(towerOfFameContent: String): Int? {
         val regex = "var getRewards = ([0-9]+);"
         val matcher = matchPattern(towerOfFameContent, regex, false)
@@ -290,5 +298,11 @@ enum class HtmlAnalyzer {
         return if (matcher.find()) {
             matcher.group(1).toLong()
         } else null
+    }
+
+    fun isLeagueRewardCollectible(towerOfFameContent: String): Boolean {
+        val regex = "<div class=\"leagues_table lead_table\" >"
+        val matcher = matchPattern(towerOfFameContent, regex, false)
+        return matcher.find()
     }
 }

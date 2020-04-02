@@ -51,6 +51,7 @@ class HHBotBuilder : AbstractBotBuilder(listOf(
         return listOf(
                 GirlsManagerTask(bot),
                 AutoShopTask(bot),
+                CollectLeagueRewardTask(bot),
                 CollectWeeklyRewardTask(bot),
                 CollectCompetitionRewardsTask(bot),
                 ContinueQuestTask(bot),

@@ -10,6 +10,7 @@ import fr.lewon.bot.hh.entities.input.champions.ActionChampionsTeamDraft
 import fr.lewon.bot.hh.entities.input.contest.ActionContestGiveReward
 import fr.lewon.bot.hh.entities.input.girl.ActionGirlAllSalaries
 import fr.lewon.bot.hh.entities.input.girl.ActionGirlSingleSalary
+import fr.lewon.bot.hh.entities.input.leagues.ActionLeagueReward
 import fr.lewon.bot.hh.entities.input.leagues.ActionLeaguesGetOpponentInfo
 import fr.lewon.bot.hh.entities.input.mission.ActionMissionClaimReward
 import fr.lewon.bot.hh.entities.input.mission.ActionMissionGiveGift
@@ -178,8 +179,14 @@ class HHRequestProcessor {
         return postForBody(webClient, session, AJAX, ActionContestGiveReward(idContest))
     }
 
+    @Throws(Exception::class)
     fun claimWeeklyRewards(webClient: WebClient, session: HHSession): Response? {
         return postForBody(webClient, session, AJAX, ActionWeeklyReward())
+    }
+
+    @Throws(Exception::class)
+    fun claimLeagueRewards(webClient: WebClient, session: HHSession): Response? {
+        return postForBody(webClient, session, AJAX, ActionLeagueReward())
     }
 
     @Throws(Exception::class)
