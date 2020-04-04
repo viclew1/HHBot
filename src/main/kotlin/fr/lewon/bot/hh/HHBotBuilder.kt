@@ -9,29 +9,35 @@ import fr.lewon.bot.hh.tasks.*
 import fr.lewon.bot.runner.AbstractBotBuilder
 import fr.lewon.bot.runner.Bot
 import fr.lewon.bot.runner.bot.props.BotPropertyDescriptor
+import fr.lewon.bot.runner.bot.props.BotPropertyStore
 import fr.lewon.bot.runner.bot.props.BotPropertyType
 import fr.lewon.bot.runner.bot.task.BotTask
 import fr.lewon.bot.runner.session.AbstractSessionManager
 import fr.lewon.web.bot.methods.ProcessTrollFightsOperation
 import org.springframework.web.reactive.function.client.WebClient
 
-class HHBotBuilder : AbstractBotBuilder(listOf(
-        BotPropertyDescriptor("troll_world", BotPropertyType.INTEGER, null, "World containing the troll to farm. NULL to define based on the current world.", isNeeded = false, isNullable = true),
-        BotPropertyDescriptor("fight_energy_to_keep", BotPropertyType.INTEGER, 0, "Energy to keep when fighting trolls.", isNeeded = false, isNullable = false),
-        BotPropertyDescriptor("tower_energy_to_keep", BotPropertyType.INTEGER, 0, "Energy to keep when fighting in tower of fame.", isNeeded = false, isNullable = false),
-        BotPropertyDescriptor("auto_shop_books", BotPropertyType.BOOLEAN, false, "If true, the books in the store will be automatically bought.", isNeeded = false, isNullable = false),
-        BotPropertyDescriptor("auto_shop_gifts", BotPropertyType.BOOLEAN, false, "If true, the gifts in the store will be automatically bought.", isNeeded = false, isNullable = false),
-        BotPropertyDescriptor("fight_troll_events", BotPropertyType.BOOLEAN, false, "If true, the 'troll_world' property will be ignored during events and girls holding trolls will be fought.", isNeeded = false, isNullable = false)
-), listOf(
-        FightChampionOperation(),
-        GetUserInfoOperation(),
-        ProcessTrollFightsOperation(),
-        UpgradeStatOperation(),
-        GetEventInfoOperation()
-)) {
+class HHBotBuilder : AbstractBotBuilder(
+        expectedLoginProperties = listOf(
+                BotPropertyDescriptor("Password", BotPropertyType.STRING, null, "Your account password", isNeeded = true, isNullable = false)
+        ),
+        botPropertyDescriptors = listOf(
+                BotPropertyDescriptor("troll_world", BotPropertyType.INTEGER, null, "World containing the troll to farm. NULL to define based on the current world.", isNeeded = false, isNullable = true),
+                BotPropertyDescriptor("fight_energy_to_keep", BotPropertyType.INTEGER, 0, "Energy to keep when fighting trolls.", isNeeded = false, isNullable = false),
+                BotPropertyDescriptor("tower_energy_to_keep", BotPropertyType.INTEGER, 0, "Energy to keep when fighting in tower of fame.", isNeeded = false, isNullable = false),
+                BotPropertyDescriptor("auto_shop_books", BotPropertyType.BOOLEAN, false, "If true, the books in the store will be automatically bought.", isNeeded = false, isNullable = false),
+                BotPropertyDescriptor("auto_shop_gifts", BotPropertyType.BOOLEAN, false, "If true, the gifts in the store will be automatically bought.", isNeeded = false, isNullable = false),
+                BotPropertyDescriptor("fight_troll_events", BotPropertyType.BOOLEAN, false, "If true, the 'troll_world' property will be ignored during events and girls holding trolls will be fought.", isNeeded = false, isNullable = false)
+        ),
+        botOperations = listOf(
+                FightChampionOperation(),
+                GetUserInfoOperation(),
+                ProcessTrollFightsOperation(),
+                UpgradeStatOperation(),
+                GetEventInfoOperation()
+        )) {
 
-    override fun buildSessionManager(login: String, password: String): AbstractSessionManager {
-        return HHSessionManager(login, password, 16000000,
+    override fun buildSessionManager(login: String, loginPropertyStore: BotPropertyStore): AbstractSessionManager {
+        return HHSessionManager(login, loginPropertyStore, 16000000,
                 WebClient.builder()
                         .codecs { c -> c.defaultCodecs().maxInMemorySize(-1) }
                         .baseUrl("https://www.hentaiheroes.com/")

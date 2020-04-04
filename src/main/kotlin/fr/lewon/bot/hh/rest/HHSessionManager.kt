@@ -1,12 +1,14 @@
 package fr.lewon.bot.hh.rest
 
+import fr.lewon.bot.runner.bot.props.BotPropertyStore
 import fr.lewon.bot.runner.session.AbstractSessionManager
 import org.springframework.web.reactive.function.client.WebClient
 
-class HHSessionManager(login: String, password: String, sessionDurability: Long, webClientBuilder: WebClient.Builder) : AbstractSessionManager(login, password, sessionDurability, webClientBuilder) {
+class HHSessionManager(login: String, loginPropertyStore: BotPropertyStore, sessionDurability: Long, webClientBuilder: WebClient.Builder) : AbstractSessionManager(login, loginPropertyStore, sessionDurability, webClientBuilder) {
 
     @Throws(Exception::class)
-    override fun generateSessionObject(webClient: WebClient, login: String, password: String): HHSession {
+    override fun generateSessionObject(webClient: WebClient, login: String, loginPropertyStore: BotPropertyStore): HHSession {
+        val password = loginPropertyStore.getByKey("Password") as String
         val response = HHRequestProcessor().getSession(webClient, login, password)
                 ?: throw Exception("Unable to connect to Hentai Heroes, website may be down")
         val cookieValues: MutableMap<String, String> = HashMap()
