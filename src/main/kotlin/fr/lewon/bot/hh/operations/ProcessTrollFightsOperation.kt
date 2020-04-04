@@ -28,8 +28,9 @@ class ProcessTrollFightsOperation : BotOperation("Process troll fight") {
     override fun run(bot: Bot, paramsPropertyStore: BotPropertyStore): OperationResult {
         val worldId = paramsPropertyStore.getByKey(TROLL_WORLD_PARAM) as Int
         val fightsCountVal = paramsPropertyStore.getByKey(FIGHTS_COUNT_PARAM) as Int
-        val webClient = bot.sessionManager.getWebClient()
-        val session = bot.sessionManager.getSession() as HHSession
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val requestProcessor = HHRequestProcessor()
 
         val homeContent = requestProcessor.getHomeContent(webClient, session)

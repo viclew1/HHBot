@@ -14,8 +14,9 @@ import java.util.stream.Collectors
 class ChampionFightTask(bot: Bot, private val championId: Int) : BotTask("Champion fight", bot) {
 
     override fun doExecute(): TaskResult {
-        val webClient = bot.sessionManager.getWebClient()
-        val session = bot.sessionManager.getSession() as HHSession
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val requestProcessor = HHRequestProcessor()
         val championContent = requestProcessor.getChampionPageContent(webClient, session, championId)
         val championData = HtmlAnalyzer.INSTANCE.getChampionData(championContent)

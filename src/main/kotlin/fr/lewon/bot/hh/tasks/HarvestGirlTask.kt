@@ -11,8 +11,9 @@ import java.util.concurrent.TimeUnit
 class HarvestGirlTask(bot: Bot, private val girlId: Int, initialDelayMillis: Long) : BotTask("Harvest [$girlId]", bot, initialDelayMillis) {
 
     override fun doExecute(): TaskResult {
-        val webClient = bot.sessionManager.getWebClient()
-        val session = bot.sessionManager.getSession() as HHSession
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val requestProcessor = HHRequestProcessor()
 
         val sr = requestProcessor.getSalary(webClient = webClient, session = session, which = girlId)

@@ -12,9 +12,10 @@ import java.util.concurrent.TimeUnit
 class FightArenaOpponentsTask(bot: Bot) : BotTask("Fight arena opponents", bot) {
 
     override fun doExecute(): TaskResult {
-        val webClient = bot.sessionManager.getWebClient()
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val requestProcessor = HHRequestProcessor()
-        val session = bot.sessionManager.getSession() as HHSession
         val arenaContent = requestProcessor.getArenaContent(webClient, session)
         for (i in 0..2) {
             val pageContent = requestProcessor.getBattleArenaContent(webClient, session, i)

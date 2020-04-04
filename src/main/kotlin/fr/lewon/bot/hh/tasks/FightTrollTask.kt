@@ -13,8 +13,9 @@ import java.util.concurrent.TimeUnit
 class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
 
     override fun doExecute(): TaskResult {
-        val webClient = bot.sessionManager.getWebClient()
-        val session = bot.sessionManager.getSession() as HHSession
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val requestProcessor = HHRequestProcessor()
         val homeContent = requestProcessor.getHomeContent(webClient, session)
         val userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)

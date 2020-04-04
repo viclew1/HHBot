@@ -12,9 +12,10 @@ import java.util.concurrent.TimeUnit
 class CollectCompetitionRewardsTask(bot: Bot) : BotTask("Collect competitions rewards", bot) {
 
     override fun doExecute(): TaskResult {
-        val webClient = bot.sessionManager.getWebClient()
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val requestProcessor = HHRequestProcessor()
-        val session = bot.sessionManager.getSession() as HHSession
         val activityPage = requestProcessor.getActivitiesContent(webClient, session)
         val competitionsIds = HtmlAnalyzer.INSTANCE.getCompetitions(activityPage)
         val endedCompetitions: MutableList<Int> = ArrayList()

@@ -24,8 +24,9 @@ class FightChampionOperation : BotOperation("Fight champion") {
     override fun run(bot: Bot, paramsPropertyStore: BotPropertyStore): OperationResult {
         val id = paramsPropertyStore.getByKey(CHAMPION_ID_PARAM) as Int
         try {
-            val session = bot.sessionManager.getSession() as HHSession
-            val championsContent = HHRequestProcessor().getChampionsMapContent(bot.sessionManager.getWebClient(), session)
+            val sessionHolder = bot.sessionManager.buildSessionHolder()
+            val session = sessionHolder.sessionObject as HHSession
+            val championsContent = HHRequestProcessor().getChampionsMapContent(sessionHolder.webClient, session)
             HtmlAnalyzer.INSTANCE.getChampionsIds(championsContent)
                     .firstOrNull { c -> id == c.championId }
                     ?: return OperationResult(false, "Invalid id, no champion found")

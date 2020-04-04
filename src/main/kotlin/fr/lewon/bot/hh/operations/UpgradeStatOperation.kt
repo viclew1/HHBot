@@ -29,7 +29,10 @@ class UpgradeStatOperation : BotOperation("Upgrade stat") {
         var cpt = 0
         var requestProcessor = HHRequestProcessor()
         try {
-            while (cpt < maxUpgradeCount && requestProcessor.upgradeStat(bot.sessionManager.getWebClient(), bot.sessionManager.getSession() as HHSession, statToUpgrade)?.success == true) {
+            val sessionHolder = bot.sessionManager.buildSessionHolder()
+            val session = sessionHolder.sessionObject as HHSession
+            val webClient = sessionHolder.webClient
+            while (cpt < maxUpgradeCount && requestProcessor.upgradeStat(webClient, session, statToUpgrade)?.success == true) {
                 cpt++
             }
         } catch (e: Exception) {

@@ -13,8 +13,9 @@ class ProcessMissionTask(bot: Bot) : BotTask("process mission", bot) {
 
     override fun doExecute(): TaskResult {
         val requestProcessor = HHRequestProcessor()
-        val webClient = bot.sessionManager.getWebClient()
-        val session = bot.sessionManager.getSession() as HHSession
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val activityPage = requestProcessor.getActivitiesContent(webClient, session)
         val missions = HtmlAnalyzer.INSTANCE.getMissions(activityPage)
         missions.sortedByDescending { it.rarity?.value }

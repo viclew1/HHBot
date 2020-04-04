@@ -16,8 +16,9 @@ class GetEventInfoOperation : BotOperation("Get event info") {
     }
 
     override fun run(bot: Bot, paramsPropertyStore: BotPropertyStore): OperationResult {
-        val webClient = bot.sessionManager.getWebClient()
-        val session = bot.sessionManager.getSession() as HHSession
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val requestProcessor = HHRequestProcessor()
         try {
             val homeContent = requestProcessor.getHomeContent(webClient, session)

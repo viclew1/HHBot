@@ -14,8 +14,9 @@ class GirlsManagerTask(bot: Bot) : BotTask("Girls manager", bot) {
 
     override fun doExecute(): TaskResult {
         val newHarvestTasks: MutableList<BotTask> = ArrayList()
-        val webClient = bot.sessionManager.getWebClient()
-        val session = bot.sessionManager.getSession() as HHSession
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val requestProcessor = HHRequestProcessor()
         val haremContent = requestProcessor.getHaremContent(webClient, session)
 

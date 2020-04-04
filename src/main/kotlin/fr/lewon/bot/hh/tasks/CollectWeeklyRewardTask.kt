@@ -12,8 +12,9 @@ import java.util.concurrent.TimeUnit
 class CollectWeeklyRewardTask(bot: Bot) : BotTask("Collect weekly reward", bot) {
 
     override fun doExecute(): TaskResult {
-        val webClient = bot.sessionManager.getWebClient()
-        val session = bot.sessionManager.getSession() as HHSession
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
         val requestProcessor = HHRequestProcessor()
         val towerOfFameContent = requestProcessor.getTowerOfFameContent(webClient, session)
         val nextExecution = HtmlAnalyzer.INSTANCE.getEndOfWeekTimer(towerOfFameContent)
