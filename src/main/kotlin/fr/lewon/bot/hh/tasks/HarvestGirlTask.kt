@@ -1,6 +1,5 @@
 package fr.lewon.bot.hh.tasks
 
-import fr.lewon.bot.hh.rest.HHRequestProcessor
 import fr.lewon.bot.hh.rest.HHSession
 import fr.lewon.bot.runner.Bot
 import fr.lewon.bot.runner.bot.task.BotTask
@@ -14,9 +13,9 @@ class HarvestGirlTask(bot: Bot, private val girlId: Int, initialDelayMillis: Lon
         val sessionHolder = bot.sessionManager.buildSessionHolder()
         val session = sessionHolder.sessionObject as HHSession
         val webClient = sessionHolder.webClient
-        val requestProcessor = HHRequestProcessor()
+        val requestProcessor = session.requestProcessor
 
-        val sr = requestProcessor.getSalary(webClient = webClient, session = session, which = girlId)
+        val sr = requestProcessor.getSalary(webClient = webClient, which = girlId)
         sr?.time?.plus(5)?.toLong()?.let {
             logger.info("Girl $girlId collected. Money made : ${sr.money}. Next harvest in $it seconds.")
             return TaskResult(Delay(it, TimeUnit.SECONDS))

@@ -1,6 +1,5 @@
 package fr.lewon.bot.hh.operations
 
-import fr.lewon.bot.hh.rest.HHRequestProcessor
 import fr.lewon.bot.hh.rest.HHSession
 import fr.lewon.bot.hh.rest.HtmlAnalyzer
 import fr.lewon.bot.runner.Bot
@@ -20,9 +19,9 @@ class GetUserInfoOperation : BotOperation("Get user info") {
         val sessionHolder = bot.sessionManager.buildSessionHolder()
         val session = sessionHolder.sessionObject as HHSession
         val webClient = sessionHolder.webClient
-        val requestProcessor = HHRequestProcessor()
+        val requestProcessor = session.requestProcessor
         try {
-            val homeContent = requestProcessor.getHomeContent(webClient, session)
+            val homeContent = requestProcessor.getHomeContent(webClient)
             HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)?.let {
                 return OperationResult.ofObject(true, "Retrieved user info", it)
             }

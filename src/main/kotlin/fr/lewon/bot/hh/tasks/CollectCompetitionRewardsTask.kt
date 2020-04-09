@@ -1,6 +1,5 @@
 package fr.lewon.bot.hh.tasks
 
-import fr.lewon.bot.hh.rest.HHRequestProcessor
 import fr.lewon.bot.hh.rest.HHSession
 import fr.lewon.bot.hh.rest.HtmlAnalyzer
 import fr.lewon.bot.runner.Bot
@@ -15,12 +14,13 @@ class CollectCompetitionRewardsTask(bot: Bot) : BotTask("Collect competitions re
         val sessionHolder = bot.sessionManager.buildSessionHolder()
         val session = sessionHolder.sessionObject as HHSession
         val webClient = sessionHolder.webClient
-        val requestProcessor = HHRequestProcessor()
-        val activityPage = requestProcessor.getActivitiesContent(webClient, session)
+        val requestProcessor = session.requestProcessor
+
+        val activityPage = requestProcessor.getActivitiesContent(webClient)
         val competitionsIds = HtmlAnalyzer.INSTANCE.getCompetitions(activityPage)
         val endedCompetitions: MutableList<Int> = ArrayList()
         for (id in competitionsIds) {
-            if (requestProcessor.collectCompetitionRewards(webClient, session, id)?.success == true) {
+            if (requestProcessor.collectCompetitionRewards(webClient, id)?.success == true) {
                 endedCompetitions.add(id)
             }
         }

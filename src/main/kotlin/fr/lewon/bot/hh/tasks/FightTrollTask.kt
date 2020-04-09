@@ -16,22 +16,23 @@ class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
         val sessionHolder = bot.sessionManager.buildSessionHolder()
         val session = sessionHolder.sessionObject as HHSession
         val webClient = sessionHolder.webClient
-        val requestProcessor = HHRequestProcessor()
-        val homeContent = requestProcessor.getHomeContent(webClient, session)
+        val requestProcessor = session.requestProcessor
+
+        val homeContent = requestProcessor.getHomeContent(webClient)
         val userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
         val energy = userInfos?.energyFight ?: 0
         val energyToKeep = bot.botPropertyStore.getByKey("fight_energy_to_keep") as Int
-        val trollId = selectTrollIdToFight(webClient, session, requestProcessor, homeContent)
+        val trollId = selectTrollIdToFight(webClient, requestProcessor, homeContent)
         if (trollId == null) {
             logger.info("No troll found. Trying again in 2 hours.")
             return TaskResult(Delay(2, TimeUnit.HOURS))
         }
-        val battleTrollContent = requestProcessor.getBattleTrollContent(webClient, session, trollId)
+        val battleTrollContent = requestProcessor.getBattleTrollContent(webClient, trollId)
         val battleMob = HtmlAnalyzer.INSTANCE.findOpponentBattleMob(battleTrollContent)
         battleMob?.let {
             var fightCpt = 0
             for (i in energyToKeep until energy) {
-                if (requestProcessor.fightOpponentMob(webClient, session, battleMob)?.success == false) {
+                if (requestProcessor.fightOpponentMob(webClient, battleMob)?.success == false) {
                     break
                 }
                 fightCpt++
@@ -43,19 +44,19 @@ class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
         return TaskResult(Delay(2, TimeUnit.HOURS))
     }
 
-    private fun getCurrentWorldId(webClient: WebClient, session: HHSession, requestProcessor: HHRequestProcessor): String? {
-        val mapContent = requestProcessor.getMapContent(webClient, session)
+    private fun getCurrentWorldId(webClient: WebClient, requestProcessor: HHRequestProcessor): String? {
+        val mapContent = requestProcessor.getMapContent(webClient)
         return HtmlAnalyzer.INSTANCE.getCurrentWorldId(mapContent)
     }
 
-    private fun getTrollId(webClient: WebClient, session: HHSession, requestProcessor: HHRequestProcessor, worldId: String): String? {
-        val worldContent = requestProcessor.getWorldContent(webClient, session, worldId)
+    private fun getTrollId(webClient: WebClient, requestProcessor: HHRequestProcessor, worldId: String): String? {
+        val worldContent = requestProcessor.getWorldContent(webClient, worldId)
         return HtmlAnalyzer.INSTANCE.getTrollId(worldContent)
     }
 
-    private fun selectTrollIdToFight(webClient: WebClient, session: HHSession, requestProcessor: HHRequestProcessor, homeContent: String): String? {
-        val currentTrollId = getCurrentWorldId(webClient, session, requestProcessor)
-                ?.let { getTrollId(webClient, session, requestProcessor, it) }
+    private fun selectTrollIdToFight(webClient: WebClient, requestProcessor: HHRequestProcessor, homeContent: String): String? {
+        val currentTrollId = getCurrentWorldId(webClient, requestProcessor)
+                ?.let { getTrollId(webClient, requestProcessor, it) }
         if (bot.botPropertyStore.getByKey("fight_troll_events") == true) {
             currentTrollId
                     ?.let { getEventTrollId(homeContent, it) }
@@ -63,7 +64,7 @@ class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
         }
         val preferredWorldId = bot.botPropertyStore.getByKey("troll_world") as Int?
         preferredWorldId?.let {
-            return getTrollId(webClient, session, requestProcessor, it.toString())
+            return getTrollId(webClient, requestProcessor, it.toString())
         }
         return currentTrollId
     }

@@ -14,6 +14,9 @@ import fr.lewon.bot.runner.bot.props.BotPropertyType
 import fr.lewon.bot.runner.bot.task.BotTask
 import fr.lewon.bot.runner.session.AbstractSessionManager
 import fr.lewon.web.bot.methods.ProcessTrollFightsOperation
+import org.springframework.boot.CommandLineRunner
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 import org.springframework.web.reactive.function.client.WebClient
 
 class HHBotBuilder : AbstractBotBuilder(
@@ -68,4 +71,23 @@ class HHBotBuilder : AbstractBotBuilder(
         )
     }
 
+}
+
+@SpringBootApplication(scanBasePackages = ["fr.lewon.bot.runner", "fr.lewon.bot.manager"])
+open class BotManagerApp : CommandLineRunner {
+
+    override fun run(vararg args: String?) {
+        val hhbb = HHBotBuilder()
+        val loginProps = HashMap<String, String>()
+        loginProps["Password"] = "167943"
+        val bot = hhbb.buildBot("secejik288@smlmail.net", loginProps, HashMap())
+        bot.start()
+        Thread.sleep(15000)
+        bot.logger.getLogs().forEach { println(it.message) }
+    }
+
+}
+
+fun main(args: Array<String>) {
+    runApplication<BotManagerApp>(*args)
 }

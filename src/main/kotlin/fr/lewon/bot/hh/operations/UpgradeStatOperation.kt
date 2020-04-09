@@ -1,6 +1,5 @@
 package fr.lewon.bot.hh.operations
 
-import fr.lewon.bot.hh.rest.HHRequestProcessor
 import fr.lewon.bot.hh.rest.HHSession
 import fr.lewon.bot.runner.Bot
 import fr.lewon.bot.runner.bot.operation.BotOperation
@@ -18,21 +17,22 @@ class UpgradeStatOperation : BotOperation("Upgrade stat") {
 
     override fun getNeededProperties(bot: Bot): List<BotPropertyDescriptor> {
         return listOf(
-                BotPropertyDescriptor(UPGRADE_COUNT_KEY, BotPropertyType.INTEGER, 1, "Number of times to upgrade the property", true, false),
-                BotPropertyDescriptor(STAT_TO_UPGRADE_KEY, BotPropertyType.INTEGER, 1, "Stat to upgrade", true, false)
+                BotPropertyDescriptor(UPGRADE_COUNT_KEY, BotPropertyType.INTEGER, 1, "Number of times to upgrade the property", isNeeded = true, isNullable = false),
+                BotPropertyDescriptor(STAT_TO_UPGRADE_KEY, BotPropertyType.INTEGER, 1, "Stat to upgrade", isNeeded = true, isNullable = false)
         )
     }
 
     override fun run(bot: Bot, paramsPropertyStore: BotPropertyStore): OperationResult {
         val maxUpgradeCount = paramsPropertyStore.getByKey(UPGRADE_COUNT_KEY) as Int
         val statToUpgrade = paramsPropertyStore.getByKey(STAT_TO_UPGRADE_KEY) as Int
+        val sessionHolder = bot.sessionManager.buildSessionHolder()
+        val session = sessionHolder.sessionObject as HHSession
+        val webClient = sessionHolder.webClient
+        val requestProcessor = session.requestProcessor
+
         var cpt = 0
-        var requestProcessor = HHRequestProcessor()
         try {
-            val sessionHolder = bot.sessionManager.buildSessionHolder()
-            val session = sessionHolder.sessionObject as HHSession
-            val webClient = sessionHolder.webClient
-            while (cpt < maxUpgradeCount && requestProcessor.upgradeStat(webClient, session, statToUpgrade)?.success == true) {
+            while (cpt < maxUpgradeCount && requestProcessor.upgradeStat(webClient, statToUpgrade)?.success == true) {
                 cpt++
             }
         } catch (e: Exception) {

@@ -24,189 +24,202 @@ import fr.lewon.bot.hh.entities.input.teambattle.ActionTeamBattleChampion
 import fr.lewon.bot.hh.entities.response.*
 import fr.lewon.bot.hh.entities.shop.Item
 import fr.lewon.bot.runner.session.helpers.FUEBodyBuilder
-import org.springframework.web.reactive.function.client.ClientResponse
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.bodyToMono
 
 class HHRequestProcessor {
 
+    private val cookieStore = LinkedMultiValueMap<String, String>()
+
     @Throws(Exception::class)
-    fun getSession(webClient: WebClient, login: String, password: String): ClientResponse? {
-        return webClient.post()
-                .uri(PHOENIX_AJAX)
-                .bodyValue(FUEBodyBuilder().generateBody(PlayerInfo(login, password)))
+    fun login(webClient: WebClient, login: String, password: String) {
+        cookieStore.clear()
+        postForBody<String>(webClient, PHOENIX_AJAX, PlayerInfo(login, password))
+        if (!cookieStore.contains("stay_online") || !cookieStore.contains("HH_SESS_13")) {
+            throw Exception("Unable to connect to Hentai Heroes, website may be down")
+        }
+        cookieStore["lang"] = "fr"
+        cookieStore["_pk_id.2.6e07"] = "cda6c741be7d8090.1562523528.2.1562529541.1562528524."
+        cookieStore["_pk_ses.2.6e07"] = "1"
+        cookieStore["age_verification"] = "1"
+    }
+
+    @Throws(Exception::class)
+    fun getHomeContent(webClient: WebClient): String {
+        return readAllPage(webClient, HOME)
+    }
+
+    @Throws(Exception::class)
+    fun getHaremContent(webClient: WebClient): String {
+        return readAllPage(webClient, HAREM)
+    }
+
+    @Throws(Exception::class)
+    fun getMapContent(webClient: WebClient): String {
+        return readAllPage(webClient, MAP)
+    }
+
+    @Throws(Exception::class)
+    fun getActivitiesContent(webClient: WebClient): String {
+        return readAllPage(webClient, ACTIVITIES)
+    }
+
+    @Throws(Exception::class)
+    fun getChampionsMapContent(webClient: WebClient): String {
+        return readAllPage(webClient, CHAMPIONS_MAP)
+    }
+
+    @Throws(Exception::class)
+    fun getChampionPageContent(webClient: WebClient, championId: Int): String {
+        return readAllPage(webClient, CHAMPIONS + SLASH + championId)
+    }
+
+    @Throws(Exception::class)
+    fun getTowerOfFameContent(webClient: WebClient): String {
+        return readAllPage(webClient, TOWER_OF_FAME)
+    }
+
+    @Throws(Exception::class)
+    fun getArenaContent(webClient: WebClient): String {
+        return readAllPage(webClient, ARENA)
+    }
+
+    @Throws(Exception::class)
+    fun getWorldContent(webClient: WebClient, idWorld: String): String {
+        return readAllPage(webClient, WORLD + SLASH + idWorld)
+    }
+
+    @Throws(Exception::class)
+    fun getBattleArenaContent(webClient: WebClient, idArena: Int): String {
+        return readAllPage(webClient, "$BATTLE?id_arena=$idArena")
+    }
+
+    @Throws(Exception::class)
+    fun getBattleTrollContent(webClient: WebClient, idTroll: String): String {
+        return readAllPage(webClient, "$BATTLE?id_troll=$idTroll")
+    }
+
+    @Throws(Exception::class)
+    fun getLeagueBattleContent(webClient: WebClient, id: String): String {
+        return readAllPage(webClient, "$BATTLE?league_battle=1&id_member=$id")
+    }
+
+    @Throws(Exception::class)
+    fun getQuestContent(webClient: WebClient, questId: Long): String {
+        return readAllPage(webClient, QUEST + SLASH + questId)
+    }
+
+    @Throws(Exception::class)
+    fun getShopContent(webClient: WebClient): String {
+        return readAllPage(webClient, SHOP)
+    }
+
+    @Throws(Exception::class)
+    fun getOpponentInfo(webClient: WebClient, opponentId: String): OpponentInfoResponse? {
+        return postForBody(webClient, AJAX, ActionLeaguesGetOpponentInfo(opponentId))
+    }
+
+    @Throws(Exception::class)
+    fun getSalary(webClient: WebClient, which: Int): SalaryResponse? {
+        return postForBody(webClient, AJAX, ActionGirlSingleSalary(which))
+    }
+
+    @Throws(Exception::class)
+    fun getAllSalaries(webClient: WebClient): SalaryResponse? {
+        return postForBody(webClient, AJAX, ActionGirlAllSalaries())
+    }
+
+    @Throws(Exception::class)
+    fun draftChampionFight(webClient: WebClient, idChampion: Int, girlsToKeep: List<Int>): DraftResponse? {
+        return postForBody(webClient, AJAX, ActionChampionsTeamDraft(idChampion, girlsToKeep))
+    }
+
+    @Throws(Exception::class)
+    fun fightChampion(webClient: WebClient, currency: Currency, championId: Int, girls: List<Int>): TeamBattleResponse? {
+        return postForBody(webClient, AJAX, ActionTeamBattleChampion(currency, championId, girls))
+    }
+
+    @Throws(Exception::class)
+    fun startMission(webClient: WebClient, mission: Mission): Response? {
+        return postForBody(webClient, AJAX, ActionMissionStartMission(mission))
+    }
+
+    @Throws(Exception::class)
+    fun getFinalMissionGift(webClient: WebClient): Response? {
+        return postForBody(webClient, AJAX, ActionMissionGiveGift())
+    }
+
+    @Throws(Exception::class)
+    fun claimReward(webClient: WebClient, mission: Mission): Response? {
+        return postForBody(webClient, AJAX, ActionMissionClaimReward(mission))
+    }
+
+    @Throws(Exception::class)
+    fun fightOpponentPlayer(webClient: WebClient, battlePlayer: BattlePlayer): Response? {
+        return postForBody(webClient, AJAX, ActionBattlePlayer(battlePlayer))
+    }
+
+    @Throws(Exception::class)
+    fun fightOpponentMob(webClient: WebClient, battleMob: BattleMob): Response? {
+        return postForBody(webClient, AJAX, ActionBattleMob(battleMob))
+    }
+
+    @Throws(Exception::class)
+    fun continueQuest(webClient: WebClient, questId: Long): Response? {
+        return postForBody(webClient, AJAX, ActionQuestNext(questId))
+    }
+
+    @Throws(Exception::class)
+    fun upgradeStat(webClient: WebClient, statToUpgrade: Int): Response? {
+        return postForBody(webClient, AJAX, ActionUpgradeStat(statToUpgrade))
+    }
+
+    @Throws(Exception::class)
+    fun buyItem(webClient: WebClient, item: Item): Response? {
+        return postForBody(webClient, AJAX, ActionBuyItem(item))
+    }
+
+    @Throws(Exception::class)
+    fun collectCompetitionRewards(webClient: WebClient, idContest: Int): Response? {
+        return postForBody(webClient, AJAX, ActionContestGiveReward(idContest))
+    }
+
+    @Throws(Exception::class)
+    fun claimWeeklyRewards(webClient: WebClient): Response? {
+        return postForBody(webClient, AJAX, ActionWeeklyReward())
+    }
+
+    @Throws(Exception::class)
+    fun claimLeagueRewards(webClient: WebClient): Response? {
+        return postForBody(webClient, AJAX, ActionLeagueReward())
+    }
+
+    @Synchronized
+    private fun readAllPage(webClient: WebClient, uri: String): String {
+        println(cookieStore)
+        val response = webClient.get()
+                .uri(uri)
+                .header("Cookie", cookieStore.entries.joinToString("; ") { (k, v) -> "$k=${v[0]}" })
                 .exchange()
                 .block()
+        response?.cookies()?.forEach { (n, u) -> cookieStore[n] = u[0].value }
+        return response?.bodyToMono(String::class.java)?.block() ?: ""
     }
 
-    @Throws(Exception::class)
-    fun getHomeContent(webClient: WebClient, session: HHSession): String {
-        return readAllPage(webClient, session, HOME)
-    }
-
-    @Throws(Exception::class)
-    fun getHaremContent(webClient: WebClient, session: HHSession): String {
-        return readAllPage(webClient, session, HAREM)
-    }
-
-    @Throws(Exception::class)
-    fun getMapContent(webClient: WebClient, session: HHSession): String {
-        return readAllPage(webClient, session, MAP)
-    }
-
-    @Throws(Exception::class)
-    fun getActivitiesContent(webClient: WebClient, session: HHSession): String {
-        return readAllPage(webClient, session, ACTIVITIES)
-    }
-
-    @Throws(Exception::class)
-    fun getChampionsMapContent(webClient: WebClient, session: HHSession): String {
-        return readAllPage(webClient, session, CHAMPIONS_MAP)
-    }
-
-    @Throws(Exception::class)
-    fun getChampionPageContent(webClient: WebClient, session: HHSession, championId: Int): String {
-        return readAllPage(webClient, session, CHAMPIONS + SLASH + championId)
-    }
-
-    @Throws(Exception::class)
-    fun getTowerOfFameContent(webClient: WebClient, session: HHSession): String {
-        return readAllPage(webClient, session, TOWER_OF_FAME)
-    }
-
-    @Throws(Exception::class)
-    fun getArenaContent(webClient: WebClient, session: HHSession): String {
-        return readAllPage(webClient, session, ARENA)
-    }
-
-    @Throws(Exception::class)
-    fun getWorldContent(webClient: WebClient, session: HHSession, idWorld: String): String {
-        return readAllPage(webClient, session, WORLD + SLASH + idWorld)
-    }
-
-    @Throws(Exception::class)
-    fun getBattleArenaContent(webClient: WebClient, session: HHSession, idArena: Int): String {
-        return readAllPage(webClient, session, "$BATTLE?id_arena=$idArena")
-    }
-
-    @Throws(Exception::class)
-    fun getBattleTrollContent(webClient: WebClient, session: HHSession, idTroll: String): String {
-        return readAllPage(webClient, session, "$BATTLE?id_troll=$idTroll")
-    }
-
-    @Throws(Exception::class)
-    fun getLeagueBattleContent(webClient: WebClient, session: HHSession, id: String): String {
-        return readAllPage(webClient, session, "$BATTLE?league_battle=1&id_member=$id")
-    }
-
-    @Throws(Exception::class)
-    fun getQuestContent(webClient: WebClient, session: HHSession, questId: Long): String {
-        return readAllPage(webClient, session, QUEST + SLASH + questId)
-    }
-
-    @Throws(Exception::class)
-    fun getShopContent(webClient: WebClient, session: HHSession): String {
-        return readAllPage(webClient, session, SHOP)
-    }
-
-    @Throws(Exception::class)
-    fun getOpponentInfo(webClient: WebClient, session: HHSession, opponentId: String): OpponentInfoResponse? {
-        return postForBody(webClient, session, AJAX, ActionLeaguesGetOpponentInfo(opponentId))
-    }
-
-    @Throws(Exception::class)
-    fun getSalary(webClient: WebClient, session: HHSession, which: Int): SalaryResponse? {
-        return postForBody(webClient, session, AJAX, ActionGirlSingleSalary(which))
-    }
-
-    @Throws(Exception::class)
-    fun getAllSalaries(webClient: WebClient, session: HHSession): SalaryResponse? {
-        return postForBody(webClient, session, AJAX, ActionGirlAllSalaries())
-    }
-
-    @Throws(Exception::class)
-    fun draftChampionFight(webClient: WebClient, session: HHSession, idChampion: Int, girlsToKeep: List<Int>): DraftResponse? {
-        return postForBody(webClient, session, AJAX, ActionChampionsTeamDraft(idChampion, girlsToKeep))
-    }
-
-    @Throws(Exception::class)
-    fun fightChampion(webClient: WebClient, session: HHSession, currency: Currency, championId: Int, girls: List<Int>): TeamBattleResponse? {
-        return postForBody(webClient, session, AJAX, ActionTeamBattleChampion(currency, championId, girls))
-    }
-
-    @Throws(Exception::class)
-    fun startMission(webClient: WebClient, session: HHSession, mission: Mission): Response? {
-        return postForBody(webClient, session, AJAX, ActionMissionStartMission(mission))
-    }
-
-    @Throws(Exception::class)
-    fun getFinalMissionGift(webClient: WebClient, session: HHSession): Response? {
-        return postForBody(webClient, session, AJAX, ActionMissionGiveGift())
-    }
-
-    @Throws(Exception::class)
-    fun claimReward(webClient: WebClient, session: HHSession, mission: Mission): Response? {
-        return postForBody(webClient, session, AJAX, ActionMissionClaimReward(mission))
-    }
-
-    @Throws(Exception::class)
-    fun fightOpponentPlayer(webClient: WebClient, session: HHSession, battlePlayer: BattlePlayer): Response? {
-        return postForBody(webClient, session, AJAX, ActionBattlePlayer(battlePlayer))
-    }
-
-    @Throws(Exception::class)
-    fun fightOpponentMob(webClient: WebClient, session: HHSession, battleMob: BattleMob): Response? {
-        return postForBody(webClient, session, AJAX, ActionBattleMob(battleMob))
-    }
-
-    @Throws(Exception::class)
-    fun continueQuest(webClient: WebClient, session: HHSession, questId: Long): Response? {
-        return postForBody(webClient, session, AJAX, ActionQuestNext(questId))
-    }
-
-    @Throws(Exception::class)
-    fun upgradeStat(webClient: WebClient, session: HHSession, statToUpgrade: Int): Response? {
-        return postForBody(webClient, session, AJAX, ActionUpgradeStat(statToUpgrade))
-    }
-
-    @Throws(Exception::class)
-    fun buyItem(webClient: WebClient, session: HHSession, item: Item): Response? {
-        return postForBody(webClient, session, AJAX, ActionBuyItem(item))
-    }
-
-    @Throws(Exception::class)
-    fun collectCompetitionRewards(webClient: WebClient, session: HHSession, idContest: Int): Response? {
-        return postForBody(webClient, session, AJAX, ActionContestGiveReward(idContest))
-    }
-
-    @Throws(Exception::class)
-    fun claimWeeklyRewards(webClient: WebClient, session: HHSession): Response? {
-        return postForBody(webClient, session, AJAX, ActionWeeklyReward())
-    }
-
-    @Throws(Exception::class)
-    fun claimLeagueRewards(webClient: WebClient, session: HHSession): Response? {
-        return postForBody(webClient, session, AJAX, ActionLeagueReward())
-    }
-
-    @Throws(Exception::class)
-    private fun readAllPage(webClient: WebClient, session: HHSession, uri: String): String {
-        return webClient.get()
+    @Synchronized
+    private fun <T> postForBody(webClient: WebClient, uri: String, body: Any, responseType: Class<T>): T? {
+        println(cookieStore)
+        val response = webClient.post()
                 .uri(uri)
-                .header(session.cookieHeaderName, session.cookieHeaderValue)
-                .retrieve()
-                .bodyToMono<String>()
-                .block() ?: ""
-    }
-
-    private inline fun <reified T> postForBody(webClient: WebClient, session: HHSession, uri: String, body: Any): T? {
-        return webClient.post()
-                .uri(uri)
-                .header(session.cookieHeaderName, session.cookieHeaderValue)
+                .header("Cookie", cookieStore.entries.joinToString("; ") { (k, v) -> "$k=${v[0]}" })
                 .bodyValue(FUEBodyBuilder().generateBody(body))
-                .retrieve()
-                .bodyToMono(T::class.java)
-                .block()
+                .exchange().block()
+        response?.cookies()?.forEach { (n, u) -> cookieStore[n] = u[0].value }
+        return response?.bodyToMono(responseType)?.block()
+    }
+
+    private inline fun <reified T> postForBody(webClient: WebClient, uri: String, body: Any): T? {
+        return postForBody(webClient, uri, body, T::class.java)
     }
 
     companion object {

@@ -18,18 +18,19 @@ class AutoShopTask(bot: Bot) : BotTask("Auto shop", bot) {
         val sessionHolder = bot.sessionManager.buildSessionHolder()
         val session = sessionHolder.sessionObject as HHSession
         val webClient = sessionHolder.webClient
-        var requestProcessor = HHRequestProcessor()
-        val homeContent = requestProcessor.getHomeContent(webClient, session)
+        val requestProcessor = session.requestProcessor
+
+        val homeContent = requestProcessor.getHomeContent(webClient)
         val userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
-        val shopContent = requestProcessor.getShopContent(webClient, session)
+        val shopContent = requestProcessor.getShopContent(webClient)
         val nextShopFill = HtmlAnalyzer.INSTANCE.getNextStock(shopContent)
         val shop = HtmlAnalyzer.INSTANCE.getShop(shopContent)
         if (bot.botPropertyStore.getByKey("auto_shop_gifts") as Boolean) {
-            val giftsBought = buyItems(requestProcessor, webClient, session, userInfos, shop?.gifts ?: emptyList())
+            val giftsBought = buyItems(requestProcessor, webClient, userInfos, shop?.gifts ?: emptyList())
             logger.info("Gifts bought : $giftsBought")
         }
         if (bot.botPropertyStore.getByKey("auto_shop_books") as Boolean) {
-            val booksBought = buyItems(requestProcessor, webClient, session, userInfos, shop?.books ?: emptyList())
+            val booksBought = buyItems(requestProcessor, webClient, userInfos, shop?.books ?: emptyList())
             logger.info("Books bought : $booksBought")
         }
         logger.info("Auto shop task done. Trying again in ${nextShopFill?.plus(5)?.toLong() ?: -1} seconds")
@@ -37,12 +38,12 @@ class AutoShopTask(bot: Bot) : BotTask("Auto shop", bot) {
     }
 
     @Throws(Exception::class)
-    private fun buyItems(requestProcessor: HHRequestProcessor, webClient: WebClient, session: HHSession, userInfos: UserInfos?, items: List<Item>): List<String> {
+    private fun buyItems(requestProcessor: HHRequestProcessor, webClient: WebClient, userInfos: UserInfos?, items: List<Item>): List<String> {
         val boughtIds: MutableList<String> = ArrayList()
         for (item in items) {
             userInfos?.softCurrency?.minus(item.price ?: 0)?.let {
                 userInfos.softCurrency = it
-                if (it < 0 || requestProcessor.buyItem(webClient, session, item)?.success == false) {
+                if (it < 0 || requestProcessor.buyItem(webClient, item)?.success == false) {
                     return boughtIds
                 }
                 item.id?.let { id -> boughtIds.add(id) }

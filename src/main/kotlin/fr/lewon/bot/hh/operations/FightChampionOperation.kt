@@ -1,6 +1,5 @@
 package fr.lewon.bot.hh.operations
 
-import fr.lewon.bot.hh.rest.HHRequestProcessor
 import fr.lewon.bot.hh.rest.HHSession
 import fr.lewon.bot.hh.rest.HtmlAnalyzer
 import fr.lewon.bot.hh.tasks.ChampionFightTask
@@ -26,7 +25,7 @@ class FightChampionOperation : BotOperation("Fight champion") {
         try {
             val sessionHolder = bot.sessionManager.buildSessionHolder()
             val session = sessionHolder.sessionObject as HHSession
-            val championsContent = HHRequestProcessor().getChampionsMapContent(sessionHolder.webClient, session)
+            val championsContent = session.requestProcessor.getChampionsMapContent(sessionHolder.webClient)
             HtmlAnalyzer.INSTANCE.getChampionsIds(championsContent)
                     .firstOrNull { c -> id == c.championId }
                     ?: return OperationResult(false, "Invalid id, no champion found")

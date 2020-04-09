@@ -1,6 +1,5 @@
 package fr.lewon.bot.hh.tasks
 
-import fr.lewon.bot.hh.rest.HHRequestProcessor
 import fr.lewon.bot.hh.rest.HHSession
 import fr.lewon.bot.hh.rest.HtmlAnalyzer
 import fr.lewon.bot.runner.Bot
@@ -15,12 +14,13 @@ class FightArenaOpponentsTask(bot: Bot) : BotTask("Fight arena opponents", bot) 
         val sessionHolder = bot.sessionManager.buildSessionHolder()
         val session = sessionHolder.sessionObject as HHSession
         val webClient = sessionHolder.webClient
-        val requestProcessor = HHRequestProcessor()
-        val arenaContent = requestProcessor.getArenaContent(webClient, session)
+        val requestProcessor = session.requestProcessor
+        
+        val arenaContent = requestProcessor.getArenaContent(webClient)
         for (i in 0..2) {
-            val pageContent = requestProcessor.getBattleArenaContent(webClient, session, i)
+            val pageContent = requestProcessor.getBattleArenaContent(webClient, i)
             val battlePlayer = HtmlAnalyzer.INSTANCE.findOpponentBattlePlayer(pageContent) ?: continue
-            requestProcessor.fightOpponentPlayer(webClient, session, battlePlayer)
+            requestProcessor.fightOpponentPlayer(webClient, battlePlayer)
         }
         val nextExec = (HtmlAnalyzer.INSTANCE.getNextArenaReset(arenaContent) ?: 30 * 60) + 5
         logger.info("Arena fights done. Trying again in $nextExec seconds")

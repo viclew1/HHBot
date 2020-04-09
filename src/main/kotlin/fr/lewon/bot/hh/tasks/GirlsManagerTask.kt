@@ -1,7 +1,6 @@
 package fr.lewon.bot.hh.tasks
 
 import fr.lewon.bot.hh.entities.girls.Girl
-import fr.lewon.bot.hh.rest.HHRequestProcessor
 import fr.lewon.bot.hh.rest.HHSession
 import fr.lewon.bot.hh.rest.HtmlAnalyzer
 import fr.lewon.bot.runner.Bot
@@ -17,8 +16,9 @@ class GirlsManagerTask(bot: Bot) : BotTask("Girls manager", bot) {
         val sessionHolder = bot.sessionManager.buildSessionHolder()
         val session = sessionHolder.sessionObject as HHSession
         val webClient = sessionHolder.webClient
-        val requestProcessor = HHRequestProcessor()
-        val haremContent = requestProcessor.getHaremContent(webClient, session)
+        val requestProcessor = session.requestProcessor
+        
+        val haremContent = requestProcessor.getHaremContent(webClient)
 
         val newGirls = HtmlAnalyzer.INSTANCE.findAllGirls(haremContent)
                 .filter { it.own ?: false }
