@@ -196,7 +196,6 @@ class HHRequestProcessor {
 
     @Synchronized
     private fun readAllPage(webClient: WebClient, uri: String): String {
-        println(cookieStore)
         val response = webClient.get()
                 .uri(uri)
                 .header("Cookie", cookieStore.entries.joinToString("; ") { (k, v) -> "$k=${v[0]}" })
@@ -208,7 +207,6 @@ class HHRequestProcessor {
 
     @Synchronized
     private fun <T> postForBody(webClient: WebClient, uri: String, body: Any, responseType: Class<T>): T? {
-        println(cookieStore)
         val response = webClient.post()
                 .uri(uri)
                 .header("Cookie", cookieStore.entries.joinToString("; ") { (k, v) -> "$k=${v[0]}" })

@@ -231,8 +231,8 @@ enum class HtmlAnalyzer {
         return pattern.matcher(treatedContent)
     }
 
-    private fun flattenContent(content: String?): String {
-        return content!!.replace("[\r\n]+".toRegex(), " ")
+    private fun flattenContent(content: String): String {
+        return content.replace("[\r\n]+".toRegex(), " ")
     }
 
     @Throws(IOException::class)
