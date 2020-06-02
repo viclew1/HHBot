@@ -35,8 +35,8 @@ class ProcessMissionTask(bot: Bot) : BotTask("process mission", bot) {
             
         missions.firstOrNull { it.remainingTime != null }
                 ?.let {
-                    logger.info("Mission ${it.idMemberMission} running. Claiming it in ${it.duration} seconds")
-                    return TaskResult(Delay(it.duration?.plus(5)?.toLong() ?: -1, TimeUnit.SECONDS))
+                    logger.info("Mission ${it.idMemberMission} running. Claiming it in ${it.remainingTime} seconds")
+                    return TaskResult(Delay(it.remainingTime?.plus(5)?.toLong() ?: -1, TimeUnit.SECONDS))
                 }
 
         requestProcessor.getFinalMissionGift(webClient)

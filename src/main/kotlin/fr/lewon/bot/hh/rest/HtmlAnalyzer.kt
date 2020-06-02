@@ -63,7 +63,7 @@ enum class HtmlAnalyzer {
     }
 
     fun getEventData(homeContent: String): EventData? {
-        val regex = "event_object_data = (\\{.*});"
+        val regex = "event_data = (\\{.*});"
         val matcher = matchPattern(homeContent, regex, false)
         return if (matcher.find()) {
             objectMapper.readValue<EventData>(matcher.group(1))
