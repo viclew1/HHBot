@@ -238,22 +238,13 @@ enum class HtmlAnalyzer {
     @Throws(IOException::class)
     fun getMissions(activityPage: String): MutableList<Mission> {
         val missions: MutableList<Mission> = ArrayList()
-        val regexMissionsWrap = "<div class=\"missions_wrap\">(.*?)<script type=\"text/javascript\""
-        val matcherMissionsWrap = matchPattern(activityPage, regexMissionsWrap)
-        if (!matcherMissionsWrap.find()) {
-            return missions
-        }
-        val missionsWrapContent = matcherMissionsWrap.group(1)
-        val missionBodyRegex = "<div class=\"mission_object sub_block (.*?)\" data-d='(\\{.*?})'.*?<button rel=\"mission_start\" class=\"blue_text_button\" (.*?)>"
-        val matcherMissions = matchPattern(missionsWrapContent, missionBodyRegex)
-        while (matcherMissions.find()) {
-            val rarity = matcherMissions.group(1)
-            val missionBody = matcherMissions.group(2)
-            val displayStart = matcherMissions.group(3)
-            val startable = displayStart == null || "" == displayStart
+        val regex = "<div class=\"mission_object mission_entry (.*?)\" data-d='(\\{\"id_member_mission\".*?})'"
+        val matcher = matchPattern(activityPage, regex, false)
+        while (matcher.find()) {
+            val rarity = matcher.group(1)
+            val missionBody = matcher.group(2)
             val mission = objectMapper.readValue<Mission>(missionBody)
             mission.setRarity(rarity)
-            mission.isStartable = startable
             missions.add(mission)
         }
         return missions

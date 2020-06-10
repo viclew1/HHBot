@@ -18,25 +18,24 @@ class ProcessMissionTask(bot: Bot) : BotTask("process mission", bot) {
 
         val activityPage = requestProcessor.getActivitiesContent(webClient)
         val missions = HtmlAnalyzer.INSTANCE.getMissions(activityPage)
-        missions.sortedByDescending { it.rarity?.value }
-        for (m in missions) {
-            m.remainingTime?.let {
-                if (it <= 0) {
-                    requestProcessor.claimReward(webClient, m)
-                    logger.info("Mission ${m.idMission} claimed.")
-                }
-            }
-            if (m.isStartable) {
-                requestProcessor.startMission(webClient, m)
-                logger.info("Mission ${m.idMission} started. Claiming it in ${m.duration} seconds")
-                return TaskResult(Delay(m.duration?.plus(5)?.toLong() ?: -1, TimeUnit.SECONDS))
-            }
-        }
-            
-        missions.firstOrNull { it.remainingTime != null }
+
+        missions.firstOrNull { it.remainingTime?.compareTo(0) ?: -1 > 0 }
                 ?.let {
                     logger.info("Mission ${it.idMemberMission} running. Claiming it in ${it.remainingTime} seconds")
                     return TaskResult(Delay(it.remainingTime?.plus(5)?.toLong() ?: -1, TimeUnit.SECONDS))
+                }
+
+        missions.filter { it.remainingTime?.compareTo(0) ?: 1 <= 0 }
+                .forEach {
+                    requestProcessor.claimReward(webClient, it)
+                    logger.info("Mission ${it.idMission} claimed.")
+                }
+
+        missions.firstOrNull { it.remainingTime == null }
+                ?.let {
+                    requestProcessor.startMission(webClient, it)
+                    logger.info("Mission ${it.idMission} started. Claiming it in ${it.duration} seconds")
+                    return TaskResult(Delay(it.duration?.plus(5)?.toLong() ?: -1, TimeUnit.SECONDS))
                 }
 
         requestProcessor.getFinalMissionGift(webClient)

@@ -16,7 +16,6 @@ class Mission {
     var remainingTime: Int? = null
     var rarity: Rarity? = null
         private set
-    var isStartable = false
 
     fun setRarity(rarity: String) {
         this.rarity = Rarity.getValueByLabel(rarity)

@@ -1,3 +1,5 @@
 package fr.lewon.bot.hh.entities.input.mission
 
-class ActionMissionGiveGift : ActionMission("give_gift", null, null)
+import fr.lewon.bot.hh.entities.input.Action
+
+class ActionMissionGiveGift : Action("Missions", "give_gift")
