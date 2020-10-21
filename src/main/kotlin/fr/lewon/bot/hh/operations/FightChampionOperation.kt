@@ -33,6 +33,7 @@ class FightChampionOperation : BotOperation("Fight champion") {
             bot.logger.error("Couldn't retrieve champion info")
             return OperationResult(false, "Couldn't retrieve champion info")
         }
+        bot.sharedProperties["CHAMPION_$id"] = true
         bot.startTask(ChampionFightTask(bot, id))
         return OperationResult(true, "Now fighting champion $id")
     }

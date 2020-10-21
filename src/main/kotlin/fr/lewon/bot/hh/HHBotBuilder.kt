@@ -64,7 +64,8 @@ class HHBotBuilder : AbstractBotBuilder(
                 FightArenaOpponentsTask(bot),
                 FightTowerOfFameOpponentsTask(bot),
                 FightTrollTask(bot),
-                ProcessMissionTask(bot)
+                ProcessMissionTask(bot),
+                StartChampionFightsTask(bot)
         )
     }
 
