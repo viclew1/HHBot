@@ -14,6 +14,7 @@ class StartChampionFightsTask(bot: Bot): BotTask("Start champion fights", bot) {
             if (key.startsWith("CHAMPION_", true) && value == true) {
                 val championId = key.substringAfter('_').toInt()
                 fightChampionTasks.add(ChampionFightTask(bot, championId))
+                bot.logger.info("Restarting champion fight : Champion [$championId]")
             }
         }
         return TaskResult(tasksToCreate = fightChampionTasks)
