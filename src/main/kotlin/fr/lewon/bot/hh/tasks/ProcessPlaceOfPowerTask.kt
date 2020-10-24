@@ -26,7 +26,7 @@ class ProcessPlaceOfPowerTask(private val idPlaceOfPower: Int, bot: Bot) : BotTa
             return TaskResult(Delay(3, TimeUnit.HOURS))
         }
 
-        if (pop.remainingTime ?: 1 <= 0.0) {
+        if ("can_start" != pop.status && pop.remainingTime ?: 1 <= 0.0) {
             requestProcessor.collectPlaceOfPower(webClient, idPlaceOfPower)
             logger.info("Place of power [$idPlaceOfPower] collected. Starting it again in 5 seconds.")
             return TaskResult(Delay(5, TimeUnit.SECONDS))

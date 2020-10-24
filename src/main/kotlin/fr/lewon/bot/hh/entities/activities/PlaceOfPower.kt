@@ -15,5 +15,7 @@ class PlaceOfPower {
     @JsonProperty("max_team_power")
     var maxTeamPower: Int? = null
     @JsonProperty
+    var status: String? = null
+    @JsonProperty
     var girls: List<Girl> = emptyList()
 }
