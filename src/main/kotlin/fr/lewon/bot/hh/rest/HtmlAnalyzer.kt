@@ -238,7 +238,7 @@ enum class HtmlAnalyzer {
 
     @Throws(IOException::class)
     fun getPlacesOfPower(activityPage: String): MutableList<PlaceOfPower> {
-        val regex = "var pop_data.*?=.*?\\{.*?\\};"
+        val regex = "var pop_data.*?=.*?(\\{.*?\\});"
         val matcher = matchPattern(activityPage, regex, false)
         if (matcher.find()) {
             val body = matcher.group(1)
