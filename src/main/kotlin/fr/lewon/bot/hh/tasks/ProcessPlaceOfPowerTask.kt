@@ -26,7 +26,7 @@ class ProcessPlaceOfPowerTask(private val idPlaceOfPower: Int, bot: Bot) : BotTa
             return TaskResult(Delay(3, TimeUnit.HOURS))
         }
 
-        if (pop.remainingTime ?: Long.MAX_VALUE <= 0) {
+        if (pop.remainingTime ?: 1 <= 0.0) {
             requestProcessor.collectPlaceOfPower(webClient, idPlaceOfPower)
             logger.info("Place of power [$idPlaceOfPower] collected. Starting it again in 5 seconds.")
             return TaskResult(Delay(5, TimeUnit.SECONDS))
@@ -54,7 +54,7 @@ class ProcessPlaceOfPowerTask(private val idPlaceOfPower: Int, bot: Bot) : BotTa
             }
         }
         requestProcessor.startPlaceOfPower(webClient, idPlaceOfPower, girls)
-        logger.info("Place of power [$idPlaceOfPower] started.")
+        logger.info("Place of power [$idPlaceOfPower] started using girls [${girls.joinToString(",")}]")
         return TaskResult(Delay(5, TimeUnit.SECONDS))
     }
 
