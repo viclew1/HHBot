@@ -25,5 +25,11 @@ class Girl {
     var quests: GirlQuests? = null
     @JsonProperty
     var damage: Int? = null
+    @JsonProperty("carac_1")
+    var carac1: Double? = null
+    @JsonProperty("carac_2")
+    var carac2: Double? = null
+    @JsonProperty("carac_3")
+    var carac3: Double? = null
 
 }

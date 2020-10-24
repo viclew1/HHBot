@@ -16,6 +16,8 @@ import fr.lewon.bot.hh.entities.input.mission.ActionMissionClaimReward
 import fr.lewon.bot.hh.entities.input.mission.ActionMissionGiveGift
 import fr.lewon.bot.hh.entities.input.mission.ActionMissionStartMission
 import fr.lewon.bot.hh.entities.input.others.PlayerInfo
+import fr.lewon.bot.hh.entities.input.powerplaces.ActionPlaceOfPowerCollect
+import fr.lewon.bot.hh.entities.input.powerplaces.ActionPlaceOfPowerStart
 import fr.lewon.bot.hh.entities.input.quest.ActionQuestNext
 import fr.lewon.bot.hh.entities.input.rewards.ActionWeeklyReward
 import fr.lewon.bot.hh.entities.input.shop.ActionBuyItem
@@ -142,6 +144,16 @@ class HHRequestProcessor {
     @Throws(Exception::class)
     fun startMission(webClient: WebClient, mission: Mission): Response? {
         return postForBody(webClient, AJAX, ActionMissionStartMission(mission))
+    }
+
+    @Throws(Exception::class)
+    fun startPlaceOfPower(webClient: WebClient, placeOfPowerId: Int, selectedGirls: List<Int>): Response? {
+        return postForBody(webClient, AJAX, ActionPlaceOfPowerStart(placeOfPowerId, selectedGirls))
+    }
+
+    @Throws(Exception::class)
+    fun collectPlaceOfPower(webClient: WebClient, placeOfPowerId: Int): Response? {
+        return postForBody(webClient, AJAX, ActionPlaceOfPowerCollect(placeOfPowerId))
     }
 
     @Throws(Exception::class)

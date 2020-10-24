@@ -65,7 +65,8 @@ class HHBotBuilder : AbstractBotBuilder(
                 FightTowerOfFameOpponentsTask(bot),
                 FightTrollTask(bot),
                 ProcessMissionTask(bot),
-                StartChampionFightsTask(bot)
+                StartChampionFightsTask(bot),
+                PlacesOfPowerManagerTask(bot)
         )
     }
 

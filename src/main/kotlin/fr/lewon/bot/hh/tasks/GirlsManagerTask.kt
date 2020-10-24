@@ -11,13 +11,15 @@ import java.util.concurrent.TimeUnit
 
 class GirlsManagerTask(bot: Bot) : BotTask("Girls manager", bot) {
 
+    private val ownedGirlsIds: MutableList<Int?> = ArrayList()
+
     override fun doExecute(): TaskResult {
         val newHarvestTasks: MutableList<BotTask> = ArrayList()
         val sessionHolder = bot.sessionManager.buildSessionHolder()
         val session = sessionHolder.sessionObject as HHSession
         val webClient = sessionHolder.webClient
         val requestProcessor = session.requestProcessor
-        
+
         val haremContent = requestProcessor.getHaremContent(webClient)
 
         val newGirls = HtmlAnalyzer.INSTANCE.findAllGirls(haremContent)
@@ -32,7 +34,5 @@ class GirlsManagerTask(bot: Bot) : BotTask("Girls manager", bot) {
         logger.info("Harem size : ${ownedGirlsIds.size}")
         return TaskResult(Delay(3, TimeUnit.HOURS), newHarvestTasks)
     }
-
-    private val ownedGirlsIds: MutableList<Int?> = ArrayList()
 
 }

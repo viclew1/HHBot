@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fr.lewon.bot.hh.entities.activities.Mission
+import fr.lewon.bot.hh.entities.activities.PlaceOfPower
 import fr.lewon.bot.hh.entities.battle.BattleMob
 import fr.lewon.bot.hh.entities.battle.BattlePlayer
 import fr.lewon.bot.hh.entities.battle.TowerOfFameOpponentPremise
@@ -29,7 +30,7 @@ enum class HtmlAnalyzer {
     fun getCompetitions(activityPage: String): List<Int> {
         val regex = "<div class=\"contest\" id_contest=\"([0-9]+)\">.*?<div class=\"(.*?)\""
         val matcher = matchPattern(activityPage, regex)
-        val competitions: MutableList<Int> = ArrayList()
+        val competitions = ArrayList<Int>()
         while (matcher.find()) {
             val divEndedClass = matcher.group(2)
             if ("contest_header ended" == divEndedClass) {
@@ -236,6 +237,18 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
+    fun getPlacesOfPower(activityPage: String): MutableList<PlaceOfPower> {
+        val regex = "var pop_data.*?=.*?{.*?};"
+        val matcher = matchPattern(activityPage, regex, false)
+        if (matcher.find()) {
+            val body = matcher.group(1)
+            val popMap = objectMapper.readValue<Map<String, PlaceOfPower>>(body)
+            return ArrayList(popMap.values)
+        }
+        return ArrayList()
+    }
+
+    @Throws(IOException::class)
     fun getMissions(activityPage: String): MutableList<Mission> {
         val missions: MutableList<Mission> = ArrayList()
         val regex = "<div class=\"mission_object mission_entry (.*?)\" data-d='(\\{\"id_member_mission\".*?})'"
@@ -296,4 +309,5 @@ enum class HtmlAnalyzer {
         val matcher = matchPattern(towerOfFameContent, regex, false)
         return matcher.find()
     }
+
 }
