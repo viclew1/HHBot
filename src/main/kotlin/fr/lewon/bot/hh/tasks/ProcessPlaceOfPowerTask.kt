@@ -31,7 +31,7 @@ class ProcessPlaceOfPowerTask(private val idPlaceOfPower: Int, bot: Bot) : BotTa
             logger.info("Place of power [$idPlaceOfPower] collected. Starting it again in 5 seconds.")
             return TaskResult(Delay(5, TimeUnit.SECONDS))
         }
-        if (pop.remainingTime != null) {
+        if ("in_progress" == pop.status) {
             requestProcessor.collectPlaceOfPower(webClient, idPlaceOfPower)
             val remaining = pop.remainingTime ?: 36000
             logger.info("Place of power [$idPlaceOfPower] running. Collecting it in $remaining seconds.")
