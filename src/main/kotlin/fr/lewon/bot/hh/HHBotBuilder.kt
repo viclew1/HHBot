@@ -66,7 +66,8 @@ class HHBotBuilder : AbstractBotBuilder(
                 FightTrollTask(bot),
                 ProcessMissionTask(bot),
                 StartChampionFightsTask(bot),
-                PlacesOfPowerManagerTask(bot)
+                PlacesOfPowerManagerTask(bot),
+                FightSeasonOpponentsTask(bot)
         )
     }
 
