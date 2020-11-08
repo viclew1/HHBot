@@ -10,6 +10,8 @@ class UserInfos {
     var energyFight: Int? = null
     @JsonProperty("energy_challenge")
     var energyChallenge: Int? = null
+    @JsonProperty("energy_kiss")
+    var energyKiss: Int? = null
     @JsonProperty("soft_currency")
     var softCurrency: Int? = null
     @JsonProperty("hard_currency")

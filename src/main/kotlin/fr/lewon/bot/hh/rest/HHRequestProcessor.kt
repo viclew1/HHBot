@@ -3,9 +3,11 @@ package fr.lewon.bot.hh.rest
 import fr.lewon.bot.hh.entities.activities.Mission
 import fr.lewon.bot.hh.entities.battle.BattleMob
 import fr.lewon.bot.hh.entities.battle.BattlePlayer
+import fr.lewon.bot.hh.entities.battle.BattlePlayerSeason
 import fr.lewon.bot.hh.entities.enums.Currency
 import fr.lewon.bot.hh.entities.input.battle.ActionBattleMob
 import fr.lewon.bot.hh.entities.input.battle.ActionBattlePlayer
+import fr.lewon.bot.hh.entities.input.battle.ActionBattlePlayerSeason
 import fr.lewon.bot.hh.entities.input.champions.ActionChampionsTeamDraft
 import fr.lewon.bot.hh.entities.input.contest.ActionContestGiveReward
 import fr.lewon.bot.hh.entities.input.girl.ActionGirlAllSalaries
@@ -107,6 +109,11 @@ class HHRequestProcessor {
     }
 
     @Throws(Exception::class)
+    fun getBattleSeasonArenaContent(webClient: WebClient, idSeasonArena: String): String {
+        return readAllPage(webClient, "$BATTLE?id_season_arena=$idSeasonArena")
+    }
+
+    @Throws(Exception::class)
     fun getQuestContent(webClient: WebClient, questId: Long): String {
         return readAllPage(webClient, QUEST + SLASH + questId)
     }
@@ -114,6 +121,16 @@ class HHRequestProcessor {
     @Throws(Exception::class)
     fun getShopContent(webClient: WebClient): String {
         return readAllPage(webClient, SHOP)
+    }
+
+    @Throws(Exception::class)
+    fun getSeasonContent(webClient: WebClient): String {
+        return readAllPage(webClient, SEASON)
+    }
+
+    @Throws(Exception::class)
+    fun getSeasonArenaContent(webClient: WebClient): String {
+        return readAllPage(webClient, SEASON_ARENA)
     }
 
     @Throws(Exception::class)
@@ -174,6 +191,11 @@ class HHRequestProcessor {
     @Throws(Exception::class)
     fun fightOpponentMob(webClient: WebClient, battleMob: BattleMob): Response? {
         return postForBody(webClient, AJAX, ActionBattleMob(battleMob))
+    }
+
+    @Throws(Exception::class)
+    fun fightOpponentSeason(webClient: WebClient, battlePlayerSeason: BattlePlayerSeason): Response? {
+        return postForBody(webClient, AJAX, ActionBattlePlayerSeason(battlePlayerSeason))
     }
 
     @Throws(Exception::class)
@@ -244,6 +266,8 @@ class HHRequestProcessor {
         private const val ACTIVITIES = "/activities.html"
         private const val CHAMPIONS_MAP = "champions-map.html"
         private const val MAP = "/map.html"
+        private const val SEASON = "/season.html"
+        private const val SEASON_ARENA = "/season-arena.html"
         private const val WORLD = "/world"
         private const val CHAMPIONS = "/champions"
         private const val QUEST = "/quest"

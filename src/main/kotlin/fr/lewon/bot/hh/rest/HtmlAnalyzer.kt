@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fr.lewon.bot.hh.entities.activities.Mission
 import fr.lewon.bot.hh.entities.activities.PlaceOfPower
-import fr.lewon.bot.hh.entities.battle.BattleMob
-import fr.lewon.bot.hh.entities.battle.BattlePlayer
-import fr.lewon.bot.hh.entities.battle.TowerOfFameOpponentPremise
+import fr.lewon.bot.hh.entities.battle.*
 import fr.lewon.bot.hh.entities.champions.ChampionPremise
 import fr.lewon.bot.hh.entities.event.EventData
 import fr.lewon.bot.hh.entities.girls.Girl
@@ -132,24 +130,28 @@ enum class HtmlAnalyzer {
 
     @Throws(IOException::class)
     fun findOpponentBattlePlayer(content: String): BattlePlayer? {
+        return findOpponent(content)
+    }
+
+    @Throws(IOException::class)
+    fun findOpponentBattleMob(content: String): BattleMob? {
+        return findOpponent(content)
+    }
+
+    @Throws(IOException::class)
+    fun findOpponentBattleSeason(content: String): BattlePlayerSeason? {
+        return findOpponent(content)
+    }
+
+    @Throws(IOException::class)
+    private inline fun <reified T : AbstractBattleOpponent> findOpponent(content: String): T? {
         val regex = "hh_battle_players =.*?\\{.*?},.*?(\\{.*?})"
         val matcher = matchPattern(content, regex)
         if (!matcher.find()) {
             return null
         }
         val battlePlayerStr = matcher.group(1)
-        return objectMapper.readValue<BattlePlayer>(battlePlayerStr)
-    }
-
-    @Throws(IOException::class)
-    fun findOpponentBattleMob(battleTrollContent: String): BattleMob? {
-        val regex = "hh_battle_players =.*?\\{.*?},.*?(\\{.*?})"
-        val matcher = matchPattern(battleTrollContent, regex)
-        if (!matcher.find()) {
-            return null
-        }
-        val battlePlayerStr = matcher.group(1)
-        return objectMapper.readValue<BattleMob>(battlePlayerStr)
+        return objectMapper.readValue<T>(battlePlayerStr)
     }
 
     fun getCurrentWorldId(mapContent: String): String? {
@@ -308,6 +310,24 @@ enum class HtmlAnalyzer {
         val regex = "<div class=\"leagues_table lead_table\" >"
         val matcher = matchPattern(towerOfFameContent, regex, false)
         return matcher.find()
+    }
+
+    fun getSeasonId(seasonContent: String): Int? {
+        val regex = "var season_id = '([0-9]+)'"
+        val matcher = matchPattern(seasonContent, regex)
+        return if (matcher.find()) {
+            matcher.group(1).toInt()
+        } else null
+    }
+
+    fun getSeasonArenaOpponentIds(seasonArenaContent: String): List<String> {
+        val opponents = ArrayList<String>()
+        val regex = "id_season_arena=([0-9]+)"
+        val matcher = matchPattern(seasonArenaContent, regex)
+        while (matcher.find()) {
+            opponents.add(matcher.group(1))
+        }
+        return opponents
     }
 
 }
