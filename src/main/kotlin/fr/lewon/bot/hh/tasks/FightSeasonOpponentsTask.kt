@@ -24,7 +24,7 @@ class FightSeasonOpponentsTask(bot: Bot) : BotTask("Fight season opponents", bot
 
         val homeContent = requestProcessor.getHomeContent(webClient)
         val userInfo = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
-        val energy = userInfo?.energyChallenge ?: 0
+        val energy = userInfo?.energyKiss ?: 0
         if (energy == 0) {
             logger.info("No kiss energy for season fights. Trying again in 3 hours")
             return TaskResult(Delay(3, TimeUnit.HOURS))
