@@ -19,8 +19,8 @@ class FightTrollTask(bot: Bot) : BotTask("Fight troll", bot) {
         val requestProcessor = session.requestProcessor
 
         val homeContent = requestProcessor.getHomeContent(webClient)
-        val userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
-        val energy = userInfos?.energyFight ?: 0
+        val userEnergies = HtmlAnalyzer.INSTANCE.getPlayerEnergies(homeContent)
+        val energy = userEnergies?.fight?.amount ?: 0
         val energyToKeep = bot.botPropertyStore.getByKey("fight_energy_to_keep") as Int
         val trollId = selectTrollIdToFight(webClient, requestProcessor, homeContent)
         if (trollId == null) {

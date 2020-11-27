@@ -11,7 +11,8 @@ import fr.lewon.bot.hh.entities.event.EventData
 import fr.lewon.bot.hh.entities.girls.Girl
 import fr.lewon.bot.hh.entities.quests.QuestStep
 import fr.lewon.bot.hh.entities.response.ChampionData
-import fr.lewon.bot.hh.entities.response.UserInfos
+import fr.lewon.bot.hh.entities.response.HeroEnergies
+import fr.lewon.bot.hh.entities.response.HeroInfos
 import fr.lewon.bot.hh.entities.shop.Item
 import fr.lewon.bot.hh.entities.shop.Shop
 import java.io.IOException
@@ -120,12 +121,21 @@ enum class HtmlAnalyzer {
     }
 
     @Throws(IOException::class)
-    fun getPlayerInfos(homeContent: String): UserInfos? {
+    fun getPlayerInfos(homeContent: String): HeroInfos? {
         val regex = "Hero.infos = (\\{.*?};)"
         val matcher = matchPattern(homeContent, regex)
         return if (!matcher.find()) {
             null
-        } else objectMapper.readValue<UserInfos>(matcher.group(1))
+        } else objectMapper.readValue<HeroInfos>(matcher.group(1))
+    }
+
+    @Throws(IOException::class)
+    fun getPlayerEnergies(homeContent: String): HeroEnergies? {
+        val regex = "Hero.energies = (\\{.*?};)"
+        val matcher = matchPattern(homeContent, regex)
+        return if (!matcher.find()) {
+            null
+        } else objectMapper.readValue<HeroEnergies>(matcher.group(1))
     }
 
     @Throws(IOException::class)

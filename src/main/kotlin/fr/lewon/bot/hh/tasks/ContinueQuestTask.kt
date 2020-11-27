@@ -17,7 +17,8 @@ class ContinueQuestTask(bot: Bot) : BotTask("Continue quest", bot) {
         val requestProcessor = session.requestProcessor
 
         val homeContent = requestProcessor.getHomeContent(webClient)
-        val userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
+        var userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
+        var userEnergies = HtmlAnalyzer.INSTANCE.getPlayerEnergies(homeContent)
         userInfos?.questing?.idQuest?.let {
             var stepCpt = 0
             while (requestProcessor.continueQuest(webClient, it)?.success == true) {
@@ -25,6 +26,10 @@ class ContinueQuestTask(bot: Bot) : BotTask("Continue quest", bot) {
             }
             logger.info("Quest $it advanced $stepCpt steps. Trying again in 4 hours")
         }
+
+        userInfos = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
+        logger.info("Quest energy spent. Quest energy left : ${userEnergies?.quest?.amount}")
+
         return TaskResult(Delay(4, TimeUnit.HOURS))
     }
 }

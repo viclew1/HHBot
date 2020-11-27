@@ -17,8 +17,8 @@ class FightTowerOfFameOpponentsTask(bot: Bot) : BotTask("Fight tower of fame opp
         val requestProcessor = session.requestProcessor
 
         val homeContent = requestProcessor.getHomeContent(webClient)
-        val userInfo = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
-        val energy = userInfo?.energyChallenge ?: 0
+        val userInfo = HtmlAnalyzer.INSTANCE.getPlayerEnergies(homeContent)
+        val energy = userInfo?.challenge?.amount ?: 0
         val energyToKeep = bot.botPropertyStore.getByKey("tower_energy_to_keep") as Int
         val fightCount = energy - energyToKeep
         if (fightCount <= 0) {

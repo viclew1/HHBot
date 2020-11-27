@@ -1,6 +1,6 @@
 package fr.lewon.bot.hh.tasks
 
-import fr.lewon.bot.hh.entities.response.UserInfos
+import fr.lewon.bot.hh.entities.response.HeroInfos
 import fr.lewon.bot.hh.entities.shop.Item
 import fr.lewon.bot.hh.rest.HHRequestProcessor
 import fr.lewon.bot.hh.rest.HHSession
@@ -38,7 +38,7 @@ class AutoShopTask(bot: Bot) : BotTask("Auto shop", bot) {
     }
 
     @Throws(Exception::class)
-    private fun buyItems(requestProcessor: HHRequestProcessor, webClient: WebClient, userInfos: UserInfos?, items: List<Item>): List<String> {
+    private fun buyItems(requestProcessor: HHRequestProcessor, webClient: WebClient, userInfos: HeroInfos?, items: List<Item>): List<String> {
         val boughtIds: MutableList<String> = ArrayList()
         for (item in items) {
             userInfos?.softCurrency?.minus(item.price ?: 0)?.let {

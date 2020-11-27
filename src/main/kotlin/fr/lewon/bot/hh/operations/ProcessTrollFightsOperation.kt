@@ -33,8 +33,8 @@ class ProcessTrollFightsOperation : BotOperation("Process troll fight") {
         val requestProcessor = session.requestProcessor
 
         val homeContent = requestProcessor.getHomeContent(webClient)
-        val userInfo = HtmlAnalyzer.INSTANCE.getPlayerInfos(homeContent)
-        val energy = userInfo?.energyFight ?: 0
+        val heroEnergies = HtmlAnalyzer.INSTANCE.getPlayerEnergies(homeContent)
+        val energy = heroEnergies?.fight?.amount ?: 0
 
         if (energy == 0) {
             bot.logger.info("No energy left to fight trolls")
